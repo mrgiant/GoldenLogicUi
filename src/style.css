@@ -1,0 +1,185 @@
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+
+
+@layer base {
+
+    .no-tailwindcss-base h1,
+    .no-tailwindcss-base h2,
+    .no-tailwindcss-base h3,
+    .no-tailwindcss-base h4,
+    .no-tailwindcss-base h5,
+    .no-tailwindcss-base h6 {
+        font-size: revert;
+        font-weight: revert;
+    }
+
+    .no-tailwindcss-base ol,
+    .no-tailwindcss-base ul {
+        list-style: revert;
+        margin: revert;
+        padding: revert;
+    }
+}
+
+
+.btn {
+    @apply px-6 py-2 rounded;
+  }
+  .btn-primary {
+    @apply text-white bg-blue-500 rounded-md hover:bg-blue-600 hover:text-white;
+  }
+  .btn-secondary {
+    @apply text-white bg-gray-500 rounded-md hover:bg-gray-600 hover:text-white;
+  }
+  .btn-success {
+    @apply text-white bg-green-500 rounded-md hover:bg-green-600 hover:text-white
+  }
+  .btn-danger {
+    @apply text-white bg-red-500 rounded-md hover:bg-red-600 hover:text-white;
+  }
+  .btn-warning {
+    @apply text-white bg-yellow-500 rounded-md hover:bg-yellow-600;
+  }
+  .btn-info {
+    @apply text-white bg-blue-400 rounded-md hover:bg-blue-500 hover:text-white;
+  }
+  .btn-light {
+    @apply text-gray-800 rounded-md bg-gray-50 hover:bg-gray-100 hover:text-gray-800;
+  }
+  .btn-dark {
+    @apply text-white bg-gray-700 rounded-md hover:bg-gray-900 hover:text-white;
+  }
+
+  .main.active {
+    @apply md:w-full md:ml-0;
+}
+
+
+.btn-dark {
+    @apply text-white bg-gray-700 rounded-md hover:bg-gray-900 hover:text-white;
+  }
+
+
+
+  /*  GL custom styles  */
+
+  .gl-label-form-invalid
+
+  {
+    @apply block mb-2 text-sm font-medium text-red-700 dark:text-red-500
+  }
+
+
+  .gl-label-form
+
+  {
+    @apply block  mb-2 text-sm font-medium text-gray-900 dark:text-white
+  }
+
+
+
+  .gl-label-translation-form-invalid
+
+  {
+    @apply  text-sm font-medium text-red-700 dark:text-red-500
+  }
+
+
+  .gl-label-translation-form
+
+  {
+    @apply text-sm  font-medium text-gray-900 dark:text-white
+  }
+
+
+
+
+  .gl-input-form-invalid
+
+  {
+    @apply h-10 bg-red-50 border border-red-500 text-red-900 placeholder-red-700 text-sm rounded-lg outline-none dark:bg-gray-700 focus:border-red-500 block w-full p-2.5 dark:text-red-500 dark:placeholder-red-500 dark:border-red-500
+  }
+
+
+  .gl-input-form
+
+  {
+      @apply h-10 bg-gray-50  border text-gray-900 text-sm rounded-lg  outline-none	  focus:border-frontend block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white  dark:focus:border-frontenddark border-gray-200
+  }
+
+
+
+  .gl-textarea-form-invalid
+
+  {
+    @apply bg-red-50 border border-red-500 text-red-900 placeholder-red-700 text-sm outline-none rounded-lg  dark:bg-gray-700 focus:border-red-500 block w-full p-2.5 dark:text-red-500 dark:placeholder-red-500 dark:border-red-500
+  }
+
+
+  .gl-textarea-form
+
+  {
+      @apply  bg-gray-50  border text-gray-900 text-sm rounded-lg outline-none focus:border-frontend block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white  dark:focus:border-frontenddark border-gray-200
+  }
+
+  .gl-multi-dropdown
+
+  {
+      @apply min-h-10 bg-gray-50  border text-gray-900 text-sm rounded-lg outline-none focus:border-frontend  w-full p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white  dark:focus:border-frontenddark border-gray-200
+  }
+
+
+
+
+
+
+  .gl-span-form-error
+
+  {
+    @apply text-sm text-red-600 dark:text-red-500
+  }
+
+
+
+
+
+  .required::after {
+    content: " *";
+    color: red;
+}
+
+
+select:not([size]) {
+    background-image: url("data:image/svg+xml,%3csvg aria-hidden='true' xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 10 6'%3e %3cpath stroke='%236B7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m1 1 4 4 4-4'/%3e %3c/svg%3e");
+    background-position: right .75rem center;
+    background-repeat: no-repeat;
+    background-size: .75em .75em;
+    padding-right: 2.5rem;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+}
+
+
+
+
+    body {
+        /*color: #888ea8;
+        height: 100%;
+        font-size: 0.875rem;
+        background: #f1f2f3;
+        overflow-x: hidden;
+        overflow-y: auto;
+        letter-spacing: 0.0312rem;
+        */
+       /* font-family: 'Quicksand', sans-serif;*/
+        font-family: 'Open Sans', Arial, Helvetica, sans-serif;
+        font-size: 14px;
+    }
+
+
+   
