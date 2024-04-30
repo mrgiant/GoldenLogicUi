@@ -133,9 +133,9 @@
 </template>
 
 <script>
-import { defineAsyncComponent } from "vue";
 
-import TailwindPagination from "../../LaravelVuePagination/TailwindPagination.vue";
+const TailwindPagination = () => import("/src/components/LaravelVuePagination/TailwindPagination.vue");
+
 export default {
     components: { TailwindPagination },
     props: {
@@ -182,9 +182,7 @@ export default {
             //  return typeof component === 'object' ? component : DatatablePictures;
             return typeof component === "object"
                 ? component
-                : defineAsyncComponent({
-                      loader: () => import(`../${component}.vue`),
-                  });
+                : null
         },
         GetItemLists(page = 1) {
             this.page = page;
