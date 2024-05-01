@@ -1,3 +1,7 @@
+import * as bootstrap from 'bootstrap'
+
+window.bootstrap = bootstrap;
+
 import './style.css'
 
 
@@ -24,11 +28,28 @@ export { default as GlDropdown } from './components/GeneralComponents/GlDropdown
 export { default as GlTextarea } from './components/GeneralComponents/GlTextarea.vue'
 export { default as GlDataTableServerSide } from './components/GeneralComponents/DataTable/GlDataTableServerSide.vue';
 export { default as GlDataTable }  from'./components/GeneralComponents/DataTable/GlDataTable.vue';
-
+export { default as GlDeleteConfirmationModal }  from'./components/GeneralComponents/DeleteConfirmationModal.vue';
 
 
 
 export { default as store }  from './store';
+
+
+export { default as GlDatatableAction }  from'./components/GeneralComponents/DataTable/DatatableAction.vue';
+export { default as GlDatatableDeleteAction }  from'./components/GeneralComponents/DataTable/DatatableDeleteAction.vue';
+export { default as GlDatatableFileDownload }  from'./components/GeneralComponents/DataTable/DatatableFileDownload.vue';
+export { default as GlDatatableFiles }  from'./components/GeneralComponents/DataTable/DatatableFiles.vue';
+export { default as GlDatatableHtml }  from'./components/GeneralComponents/DataTable/DatatableHtml.vue';
+export { default as GlDatatableList }  from'./components/GeneralComponents/DataTable/DatatableList.vue';
+export { default as GlDatatablePicture }  from'./components/GeneralComponents/DataTable/DatatablePicture.vue';
+export { default as GlDatatableStatus }  from'./components/GeneralComponents/DataTable/DatatableStatus.vue';
+export { default as GlDatatableStatusGeneral }  from'./components/GeneralComponents/DataTable/DatatableStatusGeneral.vue';
+export { default as GlTailwindPagination }  from'./components/LaravelVuePagination/TailwindPagination.vue';
+export { default as GlConfirmationModal }  from'./components/GeneralComponents/ConfirmationModal.vue';
+
+
+
+
 
 
 

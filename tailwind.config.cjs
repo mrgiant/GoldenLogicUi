@@ -8,10 +8,6 @@ module.exports = {
  theme: {
    extend: {
 
-
-
-
-
        colors: {
            current: 'currentColor',
            transparent: 'transparent',

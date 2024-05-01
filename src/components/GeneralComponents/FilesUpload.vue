@@ -136,7 +136,7 @@
 
 <script>
 
-const DeleteConfirmationModal = () => import("/src/components/GeneralComponents/DeleteConfirmationModal.vue");
+import DeleteConfirmationModal from "/src/components/GeneralComponents/DeleteConfirmationModal.vue"
 
 import { mapState, mapActions } from "vuex";
 

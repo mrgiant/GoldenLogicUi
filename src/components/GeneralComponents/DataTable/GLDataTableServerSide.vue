@@ -134,7 +134,10 @@
 
 <script>
 
-const TailwindPagination = () => import("/src/components/LaravelVuePagination/TailwindPagination.vue");
+
+import TailwindPagination from "/src/components/LaravelVuePagination/TailwindPagination.vue"
+
+
 
 export default {
     components: { TailwindPagination },

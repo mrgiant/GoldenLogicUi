@@ -67,7 +67,7 @@
 <script setup>
 import { ref } from "vue";
 import { useStore } from "vuex"; // import useStore from Vuex
-import DeleteConfirmationModal from "@/components/GeneralComponents/DeleteConfirmationModal.vue";
+import DeleteConfirmationModal from "/src/components/GeneralComponents/DeleteConfirmationModal.vue"
 
 const store = useStore(); // use the store
 
