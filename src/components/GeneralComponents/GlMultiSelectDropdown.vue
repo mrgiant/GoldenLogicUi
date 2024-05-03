@@ -298,7 +298,9 @@ export default {
         },
     },
 
-    emits: ["update:modelValue", "selected"],
+ 
+    emits: ["update:modelValue", "selected","selectionChanged"],
+
     methods: {
         selectAll() {
             this.selected = this.convertedOptions();
@@ -462,6 +464,7 @@ export default {
             this.$emit("update:modelValue", this.selectedIds);
 
             this.$emit("selected", this.selectedIds);
+            this.$emit("selectionChanged", this.selectedIds);
         },
     },
 };

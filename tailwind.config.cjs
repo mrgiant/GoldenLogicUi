@@ -4,6 +4,7 @@ module.exports = {
    darkMode: 'class',
    content: [
        "./src/**/*.{vue,js,ts,jsx,tsx}",
+       "./node_modules/golden-logic-ui/**/*.{vue,js,ts,jsx,tsx}",
      ],
  theme: {
    extend: {

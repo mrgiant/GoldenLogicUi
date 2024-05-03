@@ -1,9 +1,9 @@
-import * as bootstrap from 'bootstrap'
+//import * as bootstrap from 'bootstrap'
 
-window.bootstrap = bootstrap;
+//window.bootstrap = bootstrap;
+
 
 import './style.css'
-
 
 
 
@@ -55,3 +55,8 @@ export { default as GlConfirmationModal }  from'./components/GeneralComponents/C
 
 
 
+//import { createApp } from 'vue'
+
+//import App from './App.vue'
+
+//createApp(App).mount('#app')

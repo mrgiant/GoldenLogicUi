@@ -38,7 +38,11 @@
                     <!-- Dropdown Input @blur="exit()" -->
 
                     <input
-                        class="!border-0 gl-input-form pl-8 pr-2 showOptions"
+                    :class="{
+                'gl-input-form': error_message == '',
+                'gl-input-form-invalid': error_message !== '',
+            }"
+                        class="!border-0  pl-8 pr-2 showOptions"
                         :ref="field_name"
                         @click="showOptions()"
                         :value="selected.name"
@@ -50,13 +54,13 @@
                     <i
                         v-show="isObjectNotEmpty(selected) && has_cancel"
                         @click.stop="ClearInput()"
-                        class="absolute text-gray-500 cursor-pointer fas fa-times right-7 hover:text-gray-700"
+                        class="absolute text-gray-500 cursor-pointer fas fa-times right-7 hover:text-gray-700 dark:hover:text-gray-800"
                         style="top: 13px"
                     ></i>
                     <i
                         @click="!optionsShown && showOptions()"
                         :class="optionsShown ? 'fa-angle-up' : 'fa-angle-down'"
-                        class="absolute text-xl text-gray-500 cursor-pointer fas right-2 hover:text-gray-700 showOptions"
+                        class="absolute text-xl text-gray-500 cursor-pointer fas right-2 hover:text-gray-700 dark:hover:text-gray-800 showOptions"
                         style="top: 11px"
                     ></i>
                 </div>
@@ -223,7 +227,7 @@ export default {
             default: "",
         },
     },
-    emits: ["update:modelValue", "selected"],
+    emits: ["update:modelValue", "selected","selectionChanged"],
     data() {
         return {
             selected: {},
@@ -430,6 +434,8 @@ export default {
             this.optionsShown = false;
 
             this.$emit("selected", this.selected);
+            this.$emit("selectionChanged", this.selected);
+            
         },
 
         showOptions() {
