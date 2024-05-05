@@ -403,7 +403,7 @@ export default {
 
 
             var option = this.default_value || this.modelValue;
-
+             console.log("default_value_options : ", this.default_value," - ",this.modelValue," - ",option);
             if(option)
             {
                 if (typeof option === "object") {

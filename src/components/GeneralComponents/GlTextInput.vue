@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref } from "vue";
+import { onMounted, ref, watch } from "vue";
 
 const props = defineProps({
     is_required: {
@@ -65,6 +65,19 @@ onMounted(() => {
         input.value.value = props.modelValue;
     }
 });
+
+
+watch(
+    () => props.modelValue,
+    (newValue, oldValue) => {
+        emit("update:modelValue", newValue);
+        input.value.value = newValue;
+    },
+    { immediate: true, deep: true }
+);
+
+
+
 
 defineExpose({ focus: () => input.value.focus() });
 </script>
