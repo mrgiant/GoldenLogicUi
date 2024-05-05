@@ -70,8 +70,13 @@ onMounted(() => {
 watch(
     () => props.modelValue,
     (newValue, oldValue) => {
-        emit("update:modelValue", newValue);
-        input.value.value = newValue;
+
+        if(newValue)
+        {
+            emit("update:modelValue", newValue);
+            input.value.value = newValue;
+        }
+       
     },
     { immediate: true, deep: true }
 );
