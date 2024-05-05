@@ -32,7 +32,11 @@ export { default as GlDeleteConfirmationModal }  from'./components/GeneralCompon
 
 
 
-export { default as store }  from './store';
+export { default as GlToastList }  from'./components/GeneralComponents/GlToastList.vue';
+
+
+
+export { default as GlToast }  from './Stores/toast.js';
 
 
 export { default as GlDatatableAction }  from'./components/GeneralComponents/DataTable/DatatableAction.vue';

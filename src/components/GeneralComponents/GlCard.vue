@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col gap-9">
+  <div class="flex flex-col gap-9" :class="cardClass">
     <div
       class="bg-white border rounded-lg border-stroke shadow-default dark:border-strokedark dark:bg-boxdark"
     >
@@ -19,10 +19,38 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: "Card",
-};
+
+
+<script setup>
+import { computed } from 'vue';
+
+
+
+const props = defineProps({
+   
+
+  class: {
+        type: String,
+        default: "",
+    },
+
+   
+});
+
+
+
+const cardClass = computed(() => {
+
+        return props.class;
+     
+    });
+
+
+
+
+
 </script>
+
+
 
 <style scoped></style>

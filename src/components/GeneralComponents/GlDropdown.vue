@@ -42,7 +42,7 @@
                 'gl-input-form': error_message == '',
                 'gl-input-form-invalid': error_message !== '',
             }"
-                        class="!border-0  pl-8 pr-2 showOptions"
+                        class="  pl-8 pr-2 showOptions"
                         :ref="field_name"
                         @click="showOptions()"
                         :value="selected.name"
