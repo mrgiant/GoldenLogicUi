@@ -298,7 +298,7 @@ function isObjectNotEmpty(obj) {
 }
 
 function clearData(e) {
-  if (e.target.id != props.fieldName + "search" + uuid.value && e.target.id != props.fieldName && !e.target.classList.contains("showOptions")) {
+  if (e.target.id != props.field_name + "search" + uuid.value && e.target.id != props.field_name && !e.target.classList.contains("showOptions")) {
     exit();
     count.value = 0;
   }
@@ -374,8 +374,8 @@ function showOptions() {
     searchFilter.value = "";
     optionsShown.value = true;
     nextTick(() => {
-      //refs[props.fieldName + "search" + uuid.value].focus();
-      var input_search = document.getElementById(`${props.fieldName}search${uuid.value}`);
+      //refs[props.field_name + "search" + uuid.value].focus();
+      var input_search = document.getElementById(`${props.field_name}search${uuid.value}`);
       if(input_search)
       {
         input_search.focus();
