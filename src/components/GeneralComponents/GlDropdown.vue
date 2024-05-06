@@ -102,7 +102,7 @@
                 :ref="input_search"
                 :id="`${field_name}search${uuid}`"
                 @keydown="handleKeyDown"
-                @blur="exit()"
+               
                 autocomplete="off"
                 class="block w-full p-2 text-sm text-gray-900 border rounded-lg outline-none border-frontend ps-10 bg-gray-50 focus:border-frontend dark:bg-gray-700 dark:border-frontenddark dark:placeholder-frontenddark dark:text-white dark:focus:border-frontenddark"
                 placeholder="Search ..."
@@ -375,7 +375,12 @@ function showOptions() {
     optionsShown.value = true;
     nextTick(() => {
       //refs[props.fieldName + "search" + uuid.value].focus();
-      document.getElementById(`${props.fieldName}search${uuid.value}`).focus();
+      var input_search = document.getElementById(`${props.fieldName}search${uuid.value}`);
+      if(input_search)
+      {
+        input_search.focus();
+      }
+     
       //input_search.value.focus();
     });
   }
