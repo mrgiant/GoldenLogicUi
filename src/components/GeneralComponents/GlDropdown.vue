@@ -45,14 +45,14 @@
             class="pl-8 pr-2 showOptions"
             :ref="field_name"
             @click="showOptions()"
-            :value="selected.name"
+            :value="selectedDefultValue.name"
             :placeholder="placeholder"
             autocomplete="off"
             readonly
           />
 
           <i
-            v-show="isObjectNotEmpty(selected) && has_cancel"
+            v-show="isObjectNotEmpty(selectedDefultValue) && has_cancel"
             @click.stop="ClearInput()"
             class="absolute text-gray-500 cursor-pointer fas fa-times right-7 hover:text-gray-700 dark:hover:text-gray-800"
             style="top: 13px"
@@ -102,7 +102,7 @@
                 :ref="input_search"
                 :id="`${field_name}search${uuid}`"
                 @keydown="handleKeyDown"
-               
+                @blur="exit()"
                 autocomplete="off"
                 class="block w-full p-2 text-sm text-gray-900 border rounded-lg outline-none border-frontend ps-10 bg-gray-50 focus:border-frontend dark:bg-gray-700 dark:border-frontenddark dark:placeholder-frontenddark dark:text-white dark:focus:border-frontenddark"
                 placeholder="Search ..."
@@ -122,7 +122,7 @@
             >
               <div class="flex items-center py-2 pl-10 pr-4">
                 <svg
-                  v-if="selected.id === option.id"
+                  v-if="selectedDefultValue.id === option.id"
                   class="absolute flex items-center flex-shrink-0 w-4 h-4 text-green-500 left-2 dark:text-green-400"
                   aria-hidden="true"
                   xmlns="http://www.w3.org/2000/svg"
@@ -233,9 +233,9 @@ onMounted(() => {
 
   uuid.value = generateUUID();
 
-  var defaultValue = convertedOptionDefault();
+  //var defaultValue = convertedOptionDefault();
 
-  selected.value = optionsValues.value.find(item => String(item.id) === String(defaultValue)) || {};
+  //selected.value = optionsValues.value.find(item => String(item.id) === String(defaultValue)) || {};
 
   if (!props.show) {
     document.body.addEventListener("click", (e) => {
@@ -252,7 +252,12 @@ onMounted(() => {
 
 
 
+
 const optionsValues = computed(() => convertedOptions());
+const selectedDefultValue = computed(() => convertedOptionDefault());
+
+
+
 
 const filteredOptions = computed(() => {
   const filtered = [];
@@ -345,16 +350,61 @@ function convertedOptions() {
 }
 
 function convertedOptionDefault() {
-  var option = props.defaultValue || props.modelValue;
+
+     if(selected.value)
+     {
+
+        if (typeof selected.value === "object") {
+            return optionsValues.value.find(item => String(item.id) === String(selected.value.id)) || {};
+
+      
+        } 
+        
+        else {
+          return optionsValues.value.find(item => String(item.id) === String(selected.value)) || {};
+     
+         }
+
+
+
+     }
+
+     else if(props.modelValue)
+     {
+
+        if (typeof props.modelValue === "object") {
+            return optionsValues.value.find(item => String(item.id) === String(props.modelValue.id)) || {};
+
+      
+        } 
+        
+        else {
+          return optionsValues.value.find(item => String(item.id) === String(sprops.modelValue)) || {};
+     
+         }
+
+
+
+     }
+
+/*
+  var option = selected.value || props.modelValue;
+  console.log(selected.value," - ",props.modelValue," - ",option);
   if (option) {
     if (typeof option === "object") {
+       return optionsValues.value.find(item => String(item.id) === String(option.id)) || {};
+
       return option.id + "";
     } else {
+        return optionsValues.value.find(item => String(item.id) === String(option)) || {};
       return option + "";
     }
-  } else {
-    return "";
-  }
+  } 
+
+  */
+
+
+
 }
 
 function updateModelValue(event) {
@@ -375,13 +425,16 @@ function showOptions() {
     optionsShown.value = true;
     nextTick(() => {
       //refs[props.field_name + "search" + uuid.value].focus();
-      var input_search = document.getElementById(`${props.field_name}search${uuid.value}`);
-      if(input_search)
-      {
-        input_search.focus();
+   var input_search_feild = document.getElementById(`${props.field_name}search${uuid.value}`);
+      if(input_search_feild)
+     {
+        input_search_feild.focus();
       }
+    // if(input_search.value)
+     //{
+     //   input_search.value.focus();
+    // }
      
-      //input_search.value.focus();
     });
   }
 }
