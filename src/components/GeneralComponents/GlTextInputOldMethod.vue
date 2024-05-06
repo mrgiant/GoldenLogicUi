@@ -93,20 +93,7 @@ watch(
 
 
 
-   const proxyValue = computed({
-
-    get()
-    {
-        return props.modelValue;
-    },
-    set(newValue)
-    {
-        emit("update:modelValue", newValue);   
-
-    }
    
-   
-    });
 
 
 
@@ -147,7 +134,8 @@ defineExpose({ focus: () => input.value.focus() });
                 'gl-input-form-invalid': error_message !== '',
             }"
             :type="type"
-             v-model="proxyValue"
+            :value="modelValue"
+            @input="$emit('update:modelValue', $event.target.value)"
             @keydown="$emit('keydown', $event)"
             ref="input"
         />
