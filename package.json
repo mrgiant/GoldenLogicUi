@@ -19,7 +19,7 @@
 
   },
   "private": false,
-  "version": "1.0.51",
+  "version": "1.0.54",
   "scripts": {
     "dev": "vite",
     "build": "vite build",

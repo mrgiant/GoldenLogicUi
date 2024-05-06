@@ -5,7 +5,7 @@
     <p class="mt-3 mb-4">
       <span
         class="bg-blue-100 text-blue-800 text-sm font-medium mb-2 mt-2 me-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300"
-        >{{ selectedValue.name }}</span
+        >{{ selectedDefultValue.name }}</span
       >
     </p>
 
@@ -17,7 +17,7 @@
       type="hidden"
       :name="field_name"
       :id="field_name"
-      :value="selected.id"
+      :value="selectedDefultValue.id"
     />
 
     <div class="dropdown" v-if="options">
@@ -157,79 +157,83 @@
 </template>
 
 <script setup>
-import { ref, watch, defineProps, defineEmits, onMounted,computed,nextTick } from 'vue';
+import {
+  ref,
+  watch,
+  defineProps,
+  defineEmits,
+  onMounted,
+  computed,
+  nextTick,
+} from "vue";
 
 const props = defineProps({
   modelValue: {
     type: [String, Number],
-    default: ""
+    default: "",
   },
   defaultValue: {
     type: [String, Number],
-    default: ""
+    default: "",
   },
   field_name: {
     type: String,
-    default: ""
+    default: "",
   },
   is_required: {
     type: Boolean,
-    default: false
+    default: false,
   },
   has_cancel: {
     type: Boolean,
-    default: true
+    default: true,
   },
   label_name: {
     type: String,
-    default: ""
+    default: "",
   },
   options: {
     type: Array,
     required: true,
     default: () => [],
-    note: "Options of dropdown. An array of options with id and name"
+    note: "Options of dropdown. An array of options with id and name",
   },
   placeholder: {
     type: String,
     required: false,
     default: "Please select an option",
-    note: "Placeholder of dropdown"
+    note: "Placeholder of dropdown",
   },
   maxItem: {
     type: Number,
     required: false,
     default: 10000,
-    note: "Max items showing"
+    note: "Max items showing",
   },
   show: {
     type: Boolean,
-    default: false
+    default: false,
   },
   error_message: {
     type: String,
-    default: ""
+    default: "",
   },
   description: {
     type: String,
-    default: ""
-  }
+    default: "",
+  },
 });
 
 const emit = defineEmits(["update:modelValue", "selected", "selectionChanged"]);
 const input_search = ref(null);
-const selected = ref({});
+const selected = ref(null);
 const count = ref(0);
 const optionsShown = ref(false);
 const searchFilter = ref("");
 const uuid = ref("");
 
-
-
-
-
 onMounted(() => {
-  emit("selected", selected.value);
+  //emit("selected", selected.value);
 
   uuid.value = generateUUID();
 
@@ -250,14 +254,8 @@ onMounted(() => {
   }
 });
 
-
-
-
 const optionsValues = computed(() => convertedOptions());
 const selectedDefultValue = computed(() => convertedOptionDefault());
-
-
-
 
 const filteredOptions = computed(() => {
   const filtered = [];
@@ -272,7 +270,13 @@ const filteredOptions = computed(() => {
 });
 
 function handleKeyDown(e) {
-  const keysOfInterest = ["ArrowLeft", "ArrowUp", "ArrowRight", "ArrowDown", "Enter"];
+  const keysOfInterest = [
+    "ArrowLeft",
+    "ArrowUp",
+    "ArrowRight",
+    "ArrowDown",
+    "Enter",
+  ];
   if (keysOfInterest.includes(e.key)) {
     if (["ArrowUp", "ArrowDown"].includes(e.key)) {
       e.preventDefault();
@@ -290,11 +294,14 @@ function handleKeyDown(e) {
 
 function generateUUID() {
   let dt = new Date().getTime();
-  const newUUID = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(c) {
-    const r = (dt + Math.random() * 16) % 16 | 0;
-    dt = Math.floor(dt / 16);
-    return (c === "x" ? r : (r & 0x3) | 0x8).toString(16);
-  });
+  const newUUID = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
+    /[xy]/g,
+    function (c) {
+      const r = (dt + Math.random() * 16) % 16 | 0;
+      dt = Math.floor(dt / 16);
+      return (c === "x" ? r : (r & 0x3) | 0x8).toString(16);
+    }
+  );
   return newUUID;
 }
 
@@ -303,7 +310,11 @@ function isObjectNotEmpty(obj) {
 }
 
 function clearData(e) {
-  if (e.target.id != props.field_name + "search" + uuid.value && e.target.id != props.field_name && !e.target.classList.contains("showOptions")) {
+  if (
+    e.target.id != props.field_name + "search" + uuid.value &&
+    e.target.id != props.field_name &&
+    !e.target.classList.contains("showOptions")
+  ) {
     exit();
     count.value = 0;
   }
@@ -350,44 +361,41 @@ function convertedOptions() {
 }
 
 function convertedOptionDefault() {
+  if (selected.value) {
 
-     if(selected.value)
-     {
+     console.log("selected.value: ",selected.value);
+    if (typeof selected.value === "object") {
+      return (
+        optionsValues.value.find(
+          (item) => String(item.id) === String(selected.value.id)
+        ) || {}
+      );
+    } else {
+      return (
+        optionsValues.value.find(
+          (item) => String(item.id) === String(selected.value)
+        ) || {}
+      );
+    }
+  } else if (props.modelValue) {
 
-        if (typeof selected.value === "object") {
-            return optionsValues.value.find(item => String(item.id) === String(selected.value.id)) || {};
+    console.log("props.modelValue :",props.modelValue);
+    if (typeof props.modelValue === "object") {
+      return (
+        optionsValues.value.find(
+          (item) => String(item.id) === String(props.modelValue.id)
+        ) || {}
+      );
+    } else {
+      return (
+        optionsValues.value.find(
+          (item) => String(item.id) === String(sprops.modelValue)
+        ) || {}
+      );
+    }
+  }
 
-      
-        } 
-        
-        else {
-          return optionsValues.value.find(item => String(item.id) === String(selected.value)) || {};
-     
-         }
-
-
-
-     }
-
-     else if(props.modelValue)
-     {
-
-        if (typeof props.modelValue === "object") {
-            return optionsValues.value.find(item => String(item.id) === String(props.modelValue.id)) || {};
-
-      
-        } 
-        
-        else {
-          return optionsValues.value.find(item => String(item.id) === String(sprops.modelValue)) || {};
-     
-         }
-
-
-
-     }
-
-/*
+  /*
   var option = selected.value || props.modelValue;
   console.log(selected.value," - ",props.modelValue," - ",option);
   if (option) {
@@ -402,9 +410,6 @@ function convertedOptionDefault() {
   } 
 
   */
-
-
-
 }
 
 function updateModelValue(event) {
@@ -425,16 +430,16 @@ function showOptions() {
     optionsShown.value = true;
     nextTick(() => {
       //refs[props.field_name + "search" + uuid.value].focus();
-   var input_search_feild = document.getElementById(`${props.field_name}search${uuid.value}`);
-      if(input_search_feild)
-     {
+      var input_search_feild = document.getElementById(
+        `${props.field_name}search${uuid.value}`
+      );
+      if (input_search_feild) {
         input_search_feild.focus();
       }
-    // if(input_search.value)
-     //{
-     //   input_search.value.focus();
-    // }
-     
+      // if(input_search.value)
+      //{
+      //   input_search.value.focus();
+      // }
     });
   }
 }
@@ -468,6 +473,5 @@ watch(selected, (value) => {
   }
 });
 </script>
-
 
 <style lang="scss" scoped></style>
