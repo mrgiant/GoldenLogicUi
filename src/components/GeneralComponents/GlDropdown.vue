@@ -157,7 +157,7 @@
 </template>
 
 <script setup>
-import { ref,refs, watch, defineProps, defineEmits, onMounted,computed,nextTick } from 'vue';
+import { ref, watch, defineProps, defineEmits, onMounted,computed,nextTick } from 'vue';
 
 const props = defineProps({
   modelValue: {
@@ -217,14 +217,14 @@ const props = defineProps({
 });
 
 const emit = defineEmits(["update:modelValue", "selected", "selectionChanged"]);
-
+const input_search = ref(null);
 const selected = ref({});
 const count = ref(0);
 const optionsShown = ref(false);
 const searchFilter = ref("");
 const uuid = ref("");
 
-const input_search = ref(null);
+
 
 
 
@@ -375,7 +375,8 @@ function showOptions() {
     optionsShown.value = true;
     nextTick(() => {
       //refs[props.fieldName + "search" + uuid.value].focus();
-      input_search.value.focus();
+      document.getElementById(`${props.fieldName}search${uuid.value}`).focus();
+      //input_search.value.focus();
     });
   }
 }
