@@ -48,8 +48,14 @@ export { default as GlDatatableList }  from'./components/GeneralComponents/DataT
 export { default as GlDatatablePicture }  from'./components/GeneralComponents/DataTable/DatatablePicture.vue';
 export { default as GlDatatableStatus }  from'./components/GeneralComponents/DataTable/DatatableStatus.vue';
 export { default as GlDatatableStatusGeneral }  from'./components/GeneralComponents/DataTable/DatatableStatusGeneral.vue';
+export { default as GlDatatableStatusSpecficColor }  from'./components/GeneralComponents/DataTable/DatatableStatusSpecficColor.vue';
+export { default as GLDatatableDateTime }  from'./components/GeneralComponents/DataTable/DatatableDateTime.vue';
+export { default as GLDatatableStatusServer }  from'./components/GeneralComponents/DataTable/DatatableStatusServer.vue';
+export { default as GLDatatableCommand }  from'./components/GeneralComponents/DataTable/DatatableCommand.vue';
+
 export { default as GlTailwindPagination }  from'./components/LaravelVuePagination/TailwindPagination.vue';
 export { default as GlConfirmationModal }  from'./components/GeneralComponents/ConfirmationModal.vue';
+export { default as GlCodeCopy }  from'./components/GeneralComponents/GlCodeCopy.vue';
 
 
 

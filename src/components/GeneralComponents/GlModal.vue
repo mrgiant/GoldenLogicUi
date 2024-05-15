@@ -16,6 +16,11 @@ const props = defineProps({
         type: String,
         default: "max-w-2xl",
     },
+
+    bodyClass: {
+        type: String,
+        default: "p-4",
+    },
 });
 
 const emit = defineEmits(["closeModal"]);
@@ -102,7 +107,7 @@ watch(
       </div>
 
       <!-- Modal body -->
-      <div class="relative p-4 overflow-y-auto">
+      <div class="relative overflow-y-auto" :class="bodyClass">
 
         <slot name="body"></slot>
 

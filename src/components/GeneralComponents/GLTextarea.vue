@@ -48,7 +48,7 @@ const props = defineProps({
     type: String,
     default: "",
   },
-  place_holder: {
+  placeholder: {
     type: String,
     default: "",
   },
@@ -64,20 +64,25 @@ onMounted(() => {
     input.value.focus();
   }
 
-  if(props.model_value)
-  {
-     emit('update:modelValue', props.model_value);
-     input.value.value=props.model_value;
+ 
 
 
-  }
-
-  if (props.modelValue!="") {
-        emit("update:modelValue", props.modelValue);
-        input.value.value = props.modelValue;
-    }
 
 
+});
+
+
+const proxyValue = computed({
+
+get()
+{
+    return props.modelValue;
+},
+set(newValue)
+{
+    emit("update:modelValue", newValue);   
+
+}
 
 
 });
@@ -124,10 +129,11 @@ defineExpose({ focus: () => input.value.focus() });
         ' gl-textarea-form-invalid   mt-4 ': error_message !== '',
       }"
       :type="type"
-      @input="$emit('update:modelValue', $event.target.value)"
+      v-model="proxyValue"
+      @keydown="$emit('keydown', $event)"
       ref="input"
       rows="4"
-      :placeholder="place_holder"
+      :placeholder="placeholder"
     ></textarea>
 
     <span class="gl-span-form-error">{{ error_message }}</span>

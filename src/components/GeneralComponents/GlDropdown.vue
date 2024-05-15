@@ -5,7 +5,7 @@
     <p class="mt-3 mb-4">
       <span
         class="bg-blue-100 text-blue-800 text-sm font-medium mb-2 mt-2 me-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300"
-        >{{ selectedDefultValue.name }}</span
+        >{{ selectedDefultValue?.name }}</span
       >
     </p>
 
@@ -17,7 +17,7 @@
       type="hidden"
       :name="field_name"
       :id="field_name"
-      :value="selectedDefultValue.id"
+      :value="selectedDefultValue?.id"
     />
 
     <div class="dropdown" v-if="options">
@@ -45,7 +45,7 @@
             class="pl-8 pr-2 showOptions"
             :ref="field_name"
             @click="showOptions()"
-            :value="selectedDefultValue.name"
+            :value="selectedDefultValue?.name"
             :placeholder="placeholder"
             autocomplete="off"
             readonly
@@ -122,7 +122,7 @@
             >
               <div class="flex items-center py-2 pl-10 pr-4">
                 <svg
-                  v-if="selectedDefultValue.id === option.id"
+                  v-if="selectedDefultValue?.id === option.id"
                   class="absolute flex items-center flex-shrink-0 w-4 h-4 text-green-500 left-2 dark:text-green-400"
                   aria-hidden="true"
                   xmlns="http://www.w3.org/2000/svg"
@@ -226,7 +226,7 @@ const props = defineProps({
 
 const emit = defineEmits(["update:modelValue", "selected", "selectionChanged"]);
 const input_search = ref(null);
-const selected = ref(null);
+const selected = ref({});
 const count = ref(0);
 const optionsShown = ref(false);
 const searchFilter = ref("");
@@ -305,9 +305,17 @@ function generateUUID() {
   return newUUID;
 }
 
+/*
 function isObjectNotEmpty(obj) {
   return Object.keys(obj).length > 0;
 }
+*/
+
+function isObjectNotEmpty(obj) {
+  return obj !== null && typeof obj === 'object' && Object.keys(obj).length > 0;
+}
+
+
 
 function clearData(e) {
   if (
@@ -361,9 +369,9 @@ function convertedOptions() {
 }
 
 function convertedOptionDefault() {
-  if (selected.value) {
+  if (isObjectNotEmpty(selected.value)) {
 
-     console.log("selected.value: ",selected.value);
+     
     if (typeof selected.value === "object") {
       return (
         optionsValues.value.find(
@@ -379,7 +387,7 @@ function convertedOptionDefault() {
     }
   } else if (props.modelValue) {
 
-    console.log("props.modelValue :",props.modelValue);
+    
     if (typeof props.modelValue === "object") {
       return (
         optionsValues.value.find(
@@ -389,7 +397,7 @@ function convertedOptionDefault() {
     } else {
       return (
         optionsValues.value.find(
-          (item) => String(item.id) === String(sprops.modelValue)
+          (item) => String(item.id) === String(props.modelValue)
         ) || {}
       );
     }
@@ -412,14 +420,12 @@ function convertedOptionDefault() {
   */
 }
 
-function updateModelValue(event) {
-  emit("update:modelValue", event.target.value);
-}
+
 
 function selectOption(option) {
   selected.value = option;
   optionsShown.value = false;
-
+  emit("update:modelValue", selected.value.id);
   emit("selected", selected.value);
   emit("selectionChanged", selected.value);
 }

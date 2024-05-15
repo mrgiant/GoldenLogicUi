@@ -44,6 +44,11 @@ const props = defineProps({
         type: String,
         default: "",
     },
+
+    placeholder: {
+        type: String,
+        default: "",
+    },
 });
 
 const emit = defineEmits(["update:modelValue", "keydown"]);
@@ -150,6 +155,7 @@ defineExpose({ focus: () => input.value.focus() });
              v-model="proxyValue"
             @keydown="$emit('keydown', $event)"
             ref="input"
+            :placeholder="placeholder"
         />
 
         <span class="gl-span-form-error">{{ error_message }}</span>

@@ -89,7 +89,7 @@ export default {
       }
     },
     mounted() {
-        console.log("row : ",this.row);
+        
     },
 
 };

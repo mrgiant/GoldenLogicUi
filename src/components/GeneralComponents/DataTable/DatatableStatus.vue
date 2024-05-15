@@ -1,5 +1,5 @@
 <template>
-    <div class="flex flex-wrap gap-2">
+    <div class="flex flex-wrap gap-2 text-nowrap">
 
         <span v-if="isActive" class="inline-flex items-center px-2 py-1 text-xs font-medium text-green-800 bg-green-100 rounded-full dark:bg-green-900 dark:text-green-300">
                 <span class="w-2 h-2 bg-green-500 rounded-full me-1"></span>

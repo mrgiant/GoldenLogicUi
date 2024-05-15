@@ -33,7 +33,7 @@
 
         <div
             v-show="open"
-            class="absolute z-10 mt-5 origin-top-right bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600"
+            class="absolute right-0 z-10 mt-5 origin-top-right bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600"
         >
             <ul
                 class="py-2 text-sm text-gray-700 dark:text-gray-200"
