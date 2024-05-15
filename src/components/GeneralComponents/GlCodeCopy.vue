@@ -28,7 +28,7 @@ const copyText = (text) => {
     .then(function () {
 
 
-        /*
+       
       successMessage.value = true;
 
 
@@ -36,7 +36,7 @@ const copyText = (text) => {
       setTimeout(() => {
         successMessage.value = false;
       }, 2000);
-      */
+      
     })
 
     .catch(function (error) {
@@ -56,7 +56,7 @@ const code_value = computed(() => {
         {{ label_name }}
       </p>
     </div>
-    <div class="relative bg-gray-50 rounded-lg dark:bg-gray-700 p-4 h-64">
+    <div class="relative bg-gray-50 rounded-lg dark:bg-gray-700 p-4 h-auto">
       <div class="overflow-scroll max-h-full">
         <pre><code  class="text-sm text-gray-500 dark:text-gray-400 whitespace-pre">
             {{ code_value }}
@@ -65,11 +65,11 @@ const code_value = computed(() => {
       <div class="absolute top-2 end-2 bg-gray-50 dark:bg-gray-700">
         <button
         @click="copyText(code_value)"
-          class="text-gray-900 dark:text-gray-400 m-0.5 hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-600 dark:hover:bg-gray-700 rounded-lg py-2 px-2.5 inline-flex items-center justify-center bg-white border-gray-200 border"
+          class="text-gray-900 dark:text-gray-400 m-1 hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-600 dark:hover:bg-gray-700 rounded-lg py-2 px-3 inline-flex items-center justify-center bg-white border-gray-200 border"
         >
           <span v-if="!successMessage" class="inline-flex items-center">
             <svg
-              class="w-3 h-3 me-1.5"
+              class="w-3 h-3 me-2"
               aria-hidden="true"
               xmlns="http://www.w3.org/2000/svg"
               fill="currentColor"
@@ -83,7 +83,7 @@ const code_value = computed(() => {
           </span>
           <span v-if="successMessage" class="hidden inline-flex items-center">
             <svg
-              class="w-3 h-3 text-blue-700 dark:text-blue-500 me-1.5"
+              class="w-3 h-3 text-blue-700 dark:text-blue-500 me-2"
               aria-hidden="true"
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
