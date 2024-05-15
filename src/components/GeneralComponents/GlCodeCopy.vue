@@ -18,7 +18,7 @@ const props = defineProps({
   },
 });
 
-const input = ref(null);
+
 
 const successMessage = ref(false);
 
@@ -26,19 +26,26 @@ const copyText = (text) => {
   navigator.clipboard
     .writeText(text)
     .then(function () {
+
+
+        /*
       successMessage.value = true;
+
+
 
       setTimeout(() => {
         successMessage.value = false;
       }, 2000);
+      */
     })
+
     .catch(function (error) {
       console.error("Error copying to clipboard: ", error);
     });
 };
 
 const code_value = computed(() => {
-  return props.code.value;
+  return props.code;
 });
 </script>
 
