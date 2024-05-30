@@ -38,17 +38,20 @@
           <!-- Dropdown Input @blur="exit()" -->
 
 
-          <div
+
+          
+
+
+          <button
           :class="{
             'gl-input-form': error_message == '',
             'gl-input-form-invalid': error_message !== '',
           }"
-          class="pl-8 pr-2 showOptions bg-white dark:bg-gray-700 border rounded-lg"
-          :ref="field_name"
+          class="pl-8 pr-2 showOptions bg-white dark:bg-gray-700 border rounded-lg relative cursor-pointer"
           @click="showOptions()"
         >
-          <span v-html="selectedDefultValue?.name || placeholder"></span>
-        </div>
+          <div v-html="selectedDefultValue?.name || placeholder" class="h-full"></div>
+        </button>
 
          
 
