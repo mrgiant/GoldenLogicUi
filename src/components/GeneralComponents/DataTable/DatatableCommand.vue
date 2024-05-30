@@ -2,7 +2,7 @@
     <div v-if="row[field]" class="text-nowrap">
 
       <pre
-        class=" w-full h-full p-3 mx-0 mt-0 overflow-auto font-mono  text-left text-white break-words rounded cursor-default whitespace-nowrap bg-zinc-700">
+        class=" w-full h-full p-3 mx-0 mt-0 overflow-auto font-mono  text-left  break-words rounded cursor-default whitespace-nowrap console_styles">
         {{ row[field] }} 
         </pre>
      

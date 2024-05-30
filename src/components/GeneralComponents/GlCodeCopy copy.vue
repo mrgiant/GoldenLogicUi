@@ -57,10 +57,10 @@ const code_value = computed(() => {
       </p>
     </div>
     <div class="relative bg-gray-50 rounded-lg dark:bg-gray-700 p-4 h-auto">
-      <div class="overflow-auto max-h-32">
-        <code  class="text-sm text-gray-500 dark:text-gray-400">
+      <div class="overflow-scroll max-h-full">
+        <pre><code  class="text-sm text-gray-500 dark:text-gray-400 whitespace-pre">
         {{ code_value }}
-        </code>
+        </code></pre>
 
       </div>
       <div class="absolute top-2 end-2 bg-gray-50 dark:bg-gray-700">

@@ -12,7 +12,7 @@
     <hr class="!opacity-100 bg-gray-200 border-0 dark:bg-gray-700" />
   </div>
 
-  <div class="mb-4" :class="field_name" v-if="!show">
+  <div  :class="field_name" v-if="!show">
     <input
       type="hidden"
       :name="field_name"
@@ -32,7 +32,7 @@
       >
 
       <div
-        class="border border-gray-200 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:border-gray-600 dark:focus:ring-blue-500 dark:focus:border-blue-500"
+        class=" focus:ring-blue-500 focus:border-blue-500 dark:border-gray-600 dark:focus:ring-blue-500 dark:focus:border-blue-500"
       >
         <div class="relative showOptions">
           <!-- Dropdown Input @blur="exit()" -->
@@ -45,7 +45,8 @@
             class="pl-8 pr-2 showOptions"
             :ref="field_name"
             @click="showOptions()"
-            :value="selectedDefultValue?.name"
+            
+            v-html="selectedDefultValue?.name"
             :placeholder="placeholder"
             autocomplete="off"
             readonly
@@ -138,7 +139,7 @@
                   />
                 </svg>
 
-                <span>{{ option.name || option.id || "-" }} </span>
+                <span v-html="option.name || option.id ||'-'"> </span>
               </div>
             </div>
           </div>

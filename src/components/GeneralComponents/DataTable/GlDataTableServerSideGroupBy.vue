@@ -152,17 +152,27 @@
             </td>
           </tr>
 
-          <tr
-            v-if="!isLoading"
-            v-for="(item, index) in itemLists.data"
-            :key="index"
+
+          <template  v-for="(items, group) in groupedItems"  v-if="!isLoading">
+
+
+            <tr class="bg-white dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 hover:dark:text-gray-200 text-gray-500"><td :colspan="columns.length" class="text-pretty before:content-[attr(data-label)] before:font-bold lg:before:content-none flex md:flex-row flex-col justify-between gap-2 lg:table-cell py-4 px-5 lg:py-3 lg:px-4 border dark:border-gray-700"> {{  group  }} </td></tr>
+
+
+
+
+
+            <tr
+           
+            v-for="(item, index) in items" :key="index"
+          
             class="bg-white dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 hover:dark:text-gray-200 text-gray-500"
           >
             <td
               v-for="(column, colIndex) in columns"
               :key="colIndex"
               :data-label="column.field_label"
-              class="text-pretty before:content-[attr(data-label)] before:font-bold lg:before:content-none flex md:flex-row flex-col justify-between gap-2 lg:table-cell py-4 px-5 lg:py-2.5 lg:px-4 border dark:border-gray-700"
+              class="text-pretty before:content-[attr(data-label)] before:font-bold lg:before:content-none flex md:flex-row flex-col justify-between gap-2 lg:table-cell py-4 px-5 lg:py-3 lg:px-4 border dark:border-gray-700"
             >
               <div class="overflow-auto max-h-40">
                 <component
@@ -182,6 +192,10 @@
               </div>
             </td>
           </tr>
+          
+          </template>
+
+         
         </tbody>
       </table>
     </div>
@@ -212,6 +226,7 @@ export default {
     get_item_url: String,
     xprops: Object,
     refreshData: Boolean,
+    groupField: String,
   },
   data() {
     return {
@@ -245,8 +260,33 @@ export default {
         );
       });
     },
+
+    groupedItems() {
+    return this.groupBy(this.groupField);
+  },
+
+ 
+
   },
   methods: {
+
+
+    groupBy(field) {
+
+    if (!this.itemLists.data) {
+      return [];
+    }
+    return this.itemLists.data.reduce((acc, item) => {
+      const key = item[field];
+      if (!acc[key]) {
+        acc[key] = [];
+      }
+      const newItem = { ...item };
+      delete newItem[field];
+      acc[key].push(newItem);
+      return acc;
+    }, {});
+  },
 
 
 

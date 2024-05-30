@@ -27,8 +27,12 @@ export { default as GlToggleBox } from './components/GeneralComponents/GlToggleB
 export { default as GlDropdown } from './components/GeneralComponents/GlDropdown.vue'
 export { default as GlTextarea } from './components/GeneralComponents/GlTextarea.vue'
 export { default as GlDataTableServerSide } from './components/GeneralComponents/DataTable/GlDataTableServerSide.vue';
+export { default as GlDataTableServerSideGroupBy } from './components/GeneralComponents/DataTable/GlDataTableServerSideGroupBy.vue';
 export { default as GlDataTable }  from'./components/GeneralComponents/DataTable/GlDataTable.vue';
 export { default as GlDeleteConfirmationModal }  from'./components/GeneralComponents/DeleteConfirmationModal.vue';
+
+export { default as GlAccordionsWrapper } from './components/GeneralComponents/GlAccordionsWrapper.vue'
+export { default as GlAccordion } from './components/GeneralComponents/GlAccordion.vue'
 
 
 
@@ -49,6 +53,8 @@ export { default as GlDatatablePicture }  from'./components/GeneralComponents/Da
 export { default as GlDatatableStatus }  from'./components/GeneralComponents/DataTable/DatatableStatus.vue';
 export { default as GlDatatableStatusGeneral }  from'./components/GeneralComponents/DataTable/DatatableStatusGeneral.vue';
 export { default as GlDatatableStatusSpecficColor }  from'./components/GeneralComponents/DataTable/DatatableStatusSpecficColor.vue';
+export { default as DatatableStatusTextLabelGeneral }  from'./components/GeneralComponents/DataTable/DatatableStatusTextLabelGeneral.vue';
+
 export { default as GLDatatableDateTime }  from'./components/GeneralComponents/DataTable/DatatableDateTime.vue';
 export { default as GLDatatableStatusServer }  from'./components/GeneralComponents/DataTable/DatatableStatusServer.vue';
 export { default as GLDatatableCommand }  from'./components/GeneralComponents/DataTable/DatatableCommand.vue';
@@ -56,6 +62,7 @@ export { default as GLDatatableCommand }  from'./components/GeneralComponents/Da
 export { default as GlTailwindPagination }  from'./components/LaravelVuePagination/TailwindPagination.vue';
 export { default as GlConfirmationModal }  from'./components/GeneralComponents/ConfirmationModal.vue';
 export { default as GlCodeCopy }  from'./components/GeneralComponents/GlCodeCopy.vue';
+export { default as GlTextCopy }  from'./components/GeneralComponents/GlTextCopy.vue';
 
 
 

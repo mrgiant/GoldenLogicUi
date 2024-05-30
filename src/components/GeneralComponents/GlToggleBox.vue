@@ -38,6 +38,12 @@ const props = defineProps({
     default: "",
   },
 
+  has_label_up: {
+    type: Boolean,
+    default: false,
+  },
+
+
   description: {
     type: String,
     default: "",
@@ -81,8 +87,8 @@ const proxyValue = computed({
 <template>
   <div :class="field_name" v-if="show">
 
-    <div class="mb-4">
-    <li class="flex justify-between px-6 py-3 -mb-px border border-gray-300 no-underlin">
+    <div>
+    <li class="flex justify-between p-2 -mb-px border border-gray-300 no-underlin">
       {{ label_name }}
 
       <label class="relative inline-flex items-center cursor-pointer">
@@ -110,8 +116,11 @@ const proxyValue = computed({
     <hr class="!opacity-100 bg-gray-200 border-0 dark:bg-gray-700">
   </div>
 
-  <div class="mb-4" :class="field_name" v-if="!show">
-    <li class="flex justify-between px-6 py-3 -mb-px border border-gray-200 rounded-lg no-underlin dark:border-gray-600 dark:focus:border-frontenddark">
+  <div  :class="field_name" v-if="!show">
+    <div class=" flex justify-between items-center" v-if="has_label_up">
+        <label  class="gl-label-form">{{ label_name }}</label>
+    </div>
+    <li class="flex justify-between p-2 -mb-px border border-gray-200 rounded-lg no-underlin dark:border-gray-600 dark:focus:border-frontenddark">
       {{ label_name }}
 
       <label class="relative inline-flex items-center cursor-pointer">

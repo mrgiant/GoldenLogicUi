@@ -102,14 +102,14 @@
   .gl-input-form-invalid
 
   {
-    @apply h-10 bg-red-50 border border-red-500 text-red-900 placeholder-red-700 text-sm rounded-lg outline-none dark:bg-gray-700 focus:border-red-500 block w-full p-2.5 dark:text-red-500 dark:placeholder-red-500 dark:border-red-500
+    @apply h-10 bg-red-50 border border-red-500 text-red-900 placeholder-red-700 text-sm rounded-lg outline-none dark:bg-gray-700 focus:border-red-500 block w-full p-3 dark:text-red-500 dark:placeholder-red-500 dark:border-red-500
   }
 
 
   .gl-input-form
 
   {
-      @apply h-10 bg-gray-50  border text-gray-900 text-sm rounded-lg  outline-none	  focus:border-frontend block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white  dark:focus:border-frontenddark border-gray-200
+      @apply h-10 bg-gray-50  border text-gray-900 text-sm rounded-lg  outline-none	  focus:border-frontend block w-full p-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white  dark:focus:border-frontenddark border-gray-200
   }
 
 
@@ -117,14 +117,14 @@
   .gl-textarea-form-invalid
 
   {
-    @apply bg-red-50 border border-red-500 text-red-900 placeholder-red-700 text-sm outline-none rounded-lg  dark:bg-gray-700 focus:border-red-500 block w-full p-2.5 dark:text-red-500 dark:placeholder-red-500 dark:border-red-500
+    @apply bg-red-50 border border-red-500 text-red-900 placeholder-red-700 text-sm outline-none rounded-lg  dark:bg-gray-700 focus:border-red-500 block w-full p-3 dark:text-red-500 dark:placeholder-red-500 dark:border-red-500
   }
 
 
   .gl-textarea-form
 
   {
-      @apply  bg-gray-50  border text-gray-900 text-sm rounded-lg outline-none focus:border-frontend block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white  dark:focus:border-frontenddark border-gray-200
+      @apply  bg-gray-50  border text-gray-900 text-sm rounded-lg outline-none focus:border-frontend block w-full p-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white  dark:focus:border-frontenddark border-gray-200
   }
 
   .gl-multi-dropdown
@@ -142,6 +142,16 @@
 
   {
     @apply text-sm text-red-600 dark:text-red-500
+  }
+
+
+
+  .console_styles{
+
+    width: 100%; border-radius: .5rem; --tw-bg-opacity: 1;background-color: rgb(17 24 39 / var(--tw-bg-opacity));font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace;--tw-text-opacity: 1;color: rgb(255 255 255 / var(--tw-text-opacity));
+
+
+
   }
 
 

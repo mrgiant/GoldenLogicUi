@@ -2,7 +2,7 @@
 
 
 
-        <div class="block" v-if="title == selectedTitle">
+        <div class="block" v-show="title == selectedTitle">
 
             <slot/>
 

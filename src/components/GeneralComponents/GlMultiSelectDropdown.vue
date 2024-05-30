@@ -1,473 +1,556 @@
 <template>
-    <div :class="field_name" v-if="show">
-        <h3 class="font-bold ptext-lg dark:text-white">{{ label_name }}</h3>
+  <div :class="field_name" v-if="show">
+    <h3 class="font-bold ptext-lg dark:text-white">{{ label_name }}</h3>
 
-        <p class="mt-3 mb-4">
+    <p class="mt-3 mb-4">
+      <span
+        v-for="(selectedValue, index) in selectedDefultValue"
+        class="bg-blue-100 text-blue-800 text-sm font-medium mb-2 mt-2 me-2 px-3 py-1 rounded dark:bg-blue-900 dark:text-blue-300"
+        >{{ selectedValue?.name }}</span
+      >
+    </p>
+
+    <hr class="!opacity-100 bg-gray-200 border-0 dark:bg-gray-700" />
+  </div>
+
+  <div  :class="field_name" v-if="!show">
+    <input
+      type="hidden"
+      :name="field_name + '[]'"
+      v-for="(value, index) in selectedIds"
+      :key="index"
+      :value="value"
+    />
+
+    <div class="dropdown" v-if="options">
+      <label
+        :class="{
+          'gl-label-form': error_message == '',
+          'gl-label-form-invalid': error_message !== '',
+          required: is_required,
+        }"
+        >{{ label_name }}</label
+      >
+
+      <div class="inline-flex ml-2 rounded-md shadow-sm" role="group">
+        <button
+          @click="selectAll"
+          type="button"
+          class="px-4 py-0 text-sm font-medium text-gray-900 bg-transparent border border-gray-900 rounded-s-md hover:bg-gray-900 hover:text-white focus:z-10 focus:bg-gray-900 focus:text-white dark:border-white dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:bg-gray-700"
+        >
+          Select all
+        </button>
+
+        <button
+          @click="deselectAll"
+          type="button"
+          class="px-4 py-0 text-sm font-medium text-gray-900 bg-transparent border border-gray-900 rounded-e-md hover:bg-gray-900 hover:text-white focus:z-10 focus:bg-gray-900 focus:text-white dark:border-white dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:bg-gray-700"
+        >
+          Deselect all
+        </button>
+      </div>
+
+      <div
+        class="border border-gray-200 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:border-gray-600 dark:focus:ring-blue-500 dark:focus:border-blue-500"
+      >
+        <div class="relative">
+          <!-- Dropdown Input @blur="exit()" -->
+
+          <div
+            class="flex flex-wrap gap-2 pl-8 pr-2 gl-multi-dropdown showOptions"
+            @click="showOptions()"
+          >
             <span
-                v-for="(selectedValue, index) in selected"
-                class="bg-blue-100 text-blue-800 text-sm font-medium mb-2 mt-2 me-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300"
-                >{{ selectedValue.name }}</span
-            >
-        </p>
+              v-for="(selectedValue, index) in selectedDefultValue"
+              :key="index"
+              class="px-2 py-1 text-xs font-medium text-blue-800 bg-blue-100 rounded pointer-events-none dark:bg-blue-900 dark:text-blue-300"
+              >{{ selectedValue?.name }}
+              <i
+                @click.stop="clearOption(selectedValue)"
+                class="cursor-pointer pointer-events-auto hover:text-red-600 dark:hover:text-red-400 fas fa-times"
+              ></i
+            ></span>
+          </div>
 
-        <hr class="!opacity-100 bg-gray-200 border-0 dark:bg-gray-700" />
-    </div>
-
-    <div class="mb-4" :class="field_name" v-if="!show">
-        <input
-            type="hidden"
-            :name="field_name + '[]'"
-            v-for="(value, index) in selectedIds"
-            :key="index"
-            :value="value"
-        />
-
-        <div class="dropdown" v-if="options">
-            <label
-                :class="{
-                    'gl-label-form': error_message == '',
-                    'gl-label-form-invalid': error_message !== '',
-                    required: is_required,
-                }"
-                >{{ label_name }}</label
-            >
-
-            <div class="inline-flex ml-2 rounded-md shadow-sm" role="group">
-                <button
-                    @click="selectAll"
-                    type="button"
-                    class="px-4 py-0 text-sm font-medium text-gray-900 bg-transparent border border-gray-900 rounded-s-md hover:bg-gray-900 hover:text-white focus:z-10 focus:bg-gray-900 focus:text-white dark:border-white dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:bg-gray-700"
-                >
-                    Select all
-                </button>
-
-                <button
-                    @click="deselectAll"
-                    type="button"
-                    class="px-4 py-0 text-sm font-medium text-gray-900 bg-transparent border border-gray-900 rounded-e-md hover:bg-gray-900 hover:text-white focus:z-10 focus:bg-gray-900 focus:text-white dark:border-white dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:bg-gray-700"
-                >
-                    Deselect all
-                </button>
-            </div>
-
-            <div
-                class="border border-gray-200 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:border-gray-600 dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            >
-                <div class="relative">
-                    <!-- Dropdown Input @blur="exit()" -->
-
-                    <div
-                        class="flex flex-wrap gap-2 pl-8 pr-2 gl-multi-dropdown showOptions"
-                        @click="showOptions()"
-                    >
-                        <span
-                            v-for="(selectedValue, index) in selected"
-                            :key="index"
-                            class="px-2 py-1 text-xs font-medium text-blue-800 bg-blue-100 rounded pointer-events-none dark:bg-blue-900 dark:text-blue-300"
-                            >{{ selectedValue.name }}
-                            <i
-                                @click.stop="clearOption(selectedValue)"
-                                class="cursor-pointer pointer-events-auto hover:text-red-600 dark:hover:text-red-400 fas fa-times"
-                            ></i
-                        ></span>
-                    </div>
-
-                    <i
-                        :class="optionsShown ? 'fa-angle-up' : 'fa-angle-down'"
-                        class="absolute text-xl text-gray-500 cursor-pointer fas right-2 hover:text-gray-700"
-                        style="top: 11px"
-                    ></i>
-                </div>
-
-                <!-- Dropdown Menu -->
-
-                <div
-                    class="text-gray-700 bg-white dark:border-strokedark dark:bg-boxdark dark:text-gray-200 !border-b !border-t-0 !border-r !border-l absolute w-full z-[999999999] showOptions"
-                    v-show="optionsShown"
-                >
-                    <div class="p-1">
-                        <label
-                            for="default-search"
-                            class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
-                            >Search</label
-                        >
-                        <div class="relative">
-                            <div
-                                class="absolute inset-y-0 flex items-center pointer-events-none start-0 ps-3"
-                            >
-                                <svg
-                                    class="w-4 h-4 text-gray-500 dark:text-gray-400"
-                                    aria-hidden="true"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    fill="none"
-                                    viewBox="0 0 20 20"
-                                >
-                                    <path
-                                        stroke="currentColor"
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        stroke-width="2"
-                                        d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
-                                    />
-                                </svg>
-                            </div>
-                            <input
-                                type="search"
-                                v-model="searchFilter"
-                                :id="field_name + 'search'"
-                                :ref="field_name + 'search'"
-                                @blur="exit()"
-                                autocomplete="off"
-                                class="block w-full p-2 text-sm text-gray-900 border border-gray-300 rounded-lg ps-10 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                placeholder="Search ..."
-                            />
-                        </div>
-                    </div>
-
-                    <div class="overflow-y-auto max-h-64">
-                        <div
-                            class="block px-2 py-2 text-xs leading-4 text-gray-700 no-underline cursor-pointer dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                            @click="selectOption(option)"
-                            @mousedown="selectOption(option)"
-                            v-for="(option, index) in filteredOptions"
-                            :class="
-                                index + 1 == count ||
-                                isOptionSelected(option.id)
-                                    ? 'bg-gray-100 dark:bg-gray-600'
-                                    : ''
-                            "
-                            :key="index"
-                            :id="index + 1"
-                        >
-                            {{ option.name || option.id || "-" }}
-                        </div>
-                    </div>
-                </div>
-            </div>
+          <i
+            :class="optionsShown ? 'fa-angle-up' : 'fa-angle-down'"
+            class="absolute text-xl text-gray-500 cursor-pointer fas right-2 hover:text-gray-700"
+            style="top: 11px"
+          ></i>
         </div>
+
+        <!-- Dropdown Menu -->
+
+        <div
+          class="text-gray-700 bg-white dark:border-strokedark dark:bg-boxdark dark:text-gray-200 !border-b !border-t-0 !border-r !border-l absolute w-full z-[999999999] showOptions"
+          v-show="optionsShown"
+        >
+          <div class="p-1">
+            <label
+              for="default-search"
+              class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
+              >Search</label
+            >
+            <div class="relative">
+              <div
+                class="absolute inset-y-0 flex items-center pointer-events-none start-0 ps-3"
+              >
+                <svg
+                  class="w-4 h-4 text-gray-500 dark:text-gray-400"
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
+                  />
+                </svg>
+              </div>
+              <input
+                type="search"
+                v-model="searchFilter"
+                :ref="input_search"
+                :id="`${field_name}search${uuid}`"
+                @keydown="handleKeyDown"
+                @blur="exit()"
+                autocomplete="off"
+                class="block w-full p-2 text-sm text-gray-900 border border-gray-300 rounded-lg ps-10 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                placeholder="Search ..."
+              />
+            </div>
+          </div>
+
+          <div class="overflow-y-auto max-h-64">
+            <div
+              class="block px-2 py-2 text-xs leading-4 text-gray-700 no-underline cursor-pointer dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+              @click="selectOption(option)"
+              @mousedown="selectOption(option)"
+              v-for="(option, index) in filteredOptions"
+              :class="
+                index + 1 == count || isOptionSelected(option.id)
+                  ? 'bg-gray-100 dark:bg-gray-600'
+                  : ''
+              "
+              :key="index"
+              :id="`${index + 1}${uuid}`"
+            >
+              {{ option.name || option.id || "-" }}
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
 </template>
 
-<script>
+<script setup>
+import {
+  ref,
+  watch,
+  defineProps,
+  defineEmits,
+  onMounted,
+  computed,
+  nextTick,
+} from "vue";
 
-
-export default {
-    name: "MultiSelectDropdown",
-    template: "MultiSelectDropdown",
-    props: {
-        modelValue: {
-        type: [String,Number],
-        default: "",
+const props = defineProps({
+  modelValue: {
+    type: [String, Number],
+    default: "",
   },
-        default_value: {
-            type: Array,
-            default: [],
-        },
-        field_name: {
-            type: String,
-            default: "",
-        },
-        is_required: {
-            type: Boolean,
-            default: false,
-        },
+  defaultValue: {
+    type: [String, Number],
+    default: "",
+  },
+  field_name: {
+    type: String,
+    default: "",
+  },
+  is_required: {
+    type: Boolean,
+    default: false,
+  },
+  has_cancel: {
+    type: Boolean,
+    default: true,
+  },
+  label_name: {
+    type: String,
+    default: "",
+  },
+  options: {
+    type: Array,
+    required: true,
+    default: () => [],
+    note: "Options of dropdown. An array of options with id and name",
+  },
+  placeholder: {
+    type: String,
+    required: false,
+    default: "Please select an option",
+    note: "Placeholder of dropdown",
+  },
+  maxItem: {
+    type: Number,
+    required: false,
+    default: 10000,
+    note: "Max items showing",
+  },
+  show: {
+    type: Boolean,
+    default: false,
+  },
+  error_message: {
+    type: String,
+    default: "",
+  },
+  description: {
+    type: String,
+    default: "",
+  },
+});
 
-        has_cancel: {
-            type: Boolean,
-            default: true,
-        },
+const emit = defineEmits(["update:modelValue", "selected", "selectionChanged"]);
+const input_search = ref(null);
+const selected = ref([]);
+const selectedIds = ref([]);
+const count = ref(0);
+const optionsShown = ref(false);
+const searchFilter = ref("");
+const uuid = ref("");
 
-        label_name: {
-            type: String,
-            default: "",
-        },
-        options: {
-            type: Array,
-            required: true,
-            default: [],
-            note: "Options of dropdown. An array of options with id and name",
-        },
-        placeholder: {
-            type: String,
-            required: false,
-            default: "Please select an option",
-            note: "Placeholder of dropdown",
-        },
+onMounted(() => {
+  //emit("selected", selected.value);
 
-        maxItem: {
-            type: Number,
-            required: false,
-            default: 100,
-            note: "Max items showing",
-        },
-        show: {
-            type: Boolean,
-            default: false,
-        },
+  uuid.value = generateUUID();
 
-        error_message: {
-            type: String,
-            default: "",
-        },
-    },
-    data() {
-        return {
-            selected: [],
-            count: 0,
-            optionsShown: false,
-           // options_values: [],
-            searchFilter: "",
-            selectedIds: [],
-        };
-    },
-    created() {
-        this.$emit("selected", this.selected);
-    },
-    mounted() {
-        self = this;
+  //var defaultValue = convertedOptionDefault();
+
+  //selected.value = optionsValues.value.find(item => String(item.id) === String(defaultValue)) || {};
+
+  if (!props.show) {
+    document.body.addEventListener("click", (e) => {
+      clearData(e);
+    });
+
+    document.addEventListener("keypress", (e) => {
+      if (e.key === "Enter" && e.target.form) {
+        e.preventDefault();
+      }
+    });
+  }
+});
+
+const optionsValues = computed(() => convertedOptions());
+const selectedDefultValue = computed(() => convertedOptionDefault());
+
+const filteredOptions = computed(() => {
+  const filtered = [];
+  const regOption = new RegExp(searchFilter.value, "ig");
+  for (const option of optionsValues.value) {
+    const nameAsString = String(option.name);
+    if (searchFilter.value.length < 1 || nameAsString.match(regOption)) {
+      if (filtered.length < props.maxItem) filtered.push(option);
+    }
+  }
+  return filtered;
+});
+
+function handleKeyDown(e) {
+  const keysOfInterest = [
+    "ArrowLeft",
+    "ArrowUp",
+    "ArrowRight",
+    "ArrowDown",
+    "Enter",
+  ];
+  if (keysOfInterest.includes(e.key)) {
+    if (["ArrowUp", "ArrowDown"].includes(e.key)) {
+      e.preventDefault();
+    }
+
+    if (e.key === "ArrowDown" && props.posts === "") {
+      return;
+    }
+
+    selectPost(e.key);
+  } else {
+    // GetSearchSections();
+  }
+}
+
+function generateUUID() {
+  let dt = new Date().getTime();
+  const newUUID = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
+    /[xy]/g,
+    function (c) {
+      const r = (dt + Math.random() * 16) % 16 | 0;
+      dt = Math.floor(dt / 16);
+      return (c === "x" ? r : (r & 0x3) | 0x8).toString(16);
+    }
+  );
+  return newUUID;
+}
+
+/*
+function isObjectNotEmpty(obj) {
+  return Object.keys(obj).length > 0;
+}
+*/
+
+function isObjectNotEmpty(obj) {
+  return obj !== null && typeof obj === "object" && Object.keys(obj).length > 0;
+}
+
+function isArrayObjectNotEmpty1(items) {
+  return items != [] && items.every((item) => typeof item === "object" && item !== null);
+}
+
+function isArrayObjectNotEmpty(items) {
+  return Array.isArray(items) && items.length > 0 && items.every(item => typeof item === "object" && item !== null);
+}
+
+function isArrayObjects(items) {
+  return items.every((item) => typeof item === "object" && item !== null);
+}
 
 
-        var  default_value = this.convertedOptionsDefault();
+function isOptionSelected(optionId) {
+    return selected.value.findIndex((o) => o.id === optionId) !== -1;
+}
 
 
-        this.selected = this.options_values.filter((option) =>
-            default_value.includes(option.id+"")
-        );
+function selectAll() {
 
-        if (!this.show) {
-            // To clear vue search widget when click on body
-            document.body.addEventListener("click", function (e) {
-                self.clearData(e);
-            });
 
-            document
-                .getElementById(this.field_name + "search")
-                .addEventListener("keydown", function (e) {
-                    // check whether arrow keys are pressed
-                    if (_.includes([37, 38, 39, 40, 13], e.keyCode)) {
-                        if (e.keyCode === 38 || e.keyCode === 40) {
-                            // To prevent cursor from moving left or right in text input
-                            e.preventDefault();
-                        }
+    selected.value = convertedOptions();
+    
+}
 
-                        if (e.keyCode === 40 && self.posts == "") {
-                            // If post list is cleared and search input is not empty
-                            // then call ajax again on down arrow key press
-                            // self.GetSearchSections();
-                            return;
-                        }
+function deselectAll() {
 
-                        self.selectItem(e.keyCode);
-                    } else {
-                        // self.GetSearchSections();
-                    }
-                });
+    selected.value = [];
+    emit("update:modelValue", []);
+  emit("selected", []);
+  emit("selectionChanged", []);
+    
+}
 
-            document.addEventListener("keypress", function (e) {
-                // Check if the pressed key is 'Enter' and if the target element is an input field within a form
-                if (e.key === "Enter" && e.target.form) {
-                    e.preventDefault();
-                    // Additional logic can be added here based on your requirements
-                }
-            });
+
+
+function clearOption(option) {
+            let index = selected.value.findIndex((o) => o.id === option.id);
+            if (index !== -1) {
+                selected.value.splice(index, 1);
+            }
+            selectedIds.value = selected.value.map((item) => item.id);
+  emit("update:modelValue", selectedIds.value);
+  emit("selected", selected.value);
+  emit("selectionChanged", selected.value);
+
         }
-    },
-    computed: {
 
 
 
-        options_values() {
-            return this.convertedOptions();
-        },
+function clearData(e) {
+  if (
+    e.target.id != props.field_name + "search" + uuid.value &&
+    e.target.id != props.field_name &&
+    !e.target.classList.contains("showOptions")
+  ) {
+    exit();
+    count.value = 0;
+  }
+}
 
+function scrollToElement(count) {
+  const elementId = `${count}${uuid.value}`;
+  const element = document.getElementById(elementId);
+  if (element) {
+    element.scrollIntoView();
+  }
+}
 
-        filteredOptions() {
-            const filtered = [];
-            const regOption = new RegExp(this.searchFilter, "ig");
-            for (const option of this.options_values) {
-                const nameAsString = String(option.name); // Convert n.name to a string explicitly.
+function clickElement(count) {
+  const elementId = `${count}${uuid.value}`;
+  const element = document.getElementById(elementId);
+  if (element) {
+    element.click();
+  }
+}
 
-                if (
-                    this.searchFilter.length < 1 ||
-                    nameAsString.match(regOption)
-                ) {
-                    if (filtered.length < this.maxItem) filtered.push(option);
-                }
-            }
-            return filtered;
-        },
-    },
+function selectPost(key) {
+  if (key === "ArrowDown" && count.value < filteredOptions.value.length) {
+    count.value++;
+    scrollToElement(count.value);
+  }
+  if (key === "ArrowUp" && count.value > 1) {
+    count.value--;
+    scrollToElement(count.value);
+  }
+  if (key === "Enter") {
+    clickElement(count.value);
+  }
+}
 
- 
-    emits: ["update:modelValue", "selected","selectionChanged"],
+function convertedOptions() {
+  return props.options.map((option, index) => {
+    if (typeof option === "object") {
+      return option;
+    } else {
+      return { id: option, name: option };
+    }
+  });
+}
 
-    methods: {
-        selectAll() {
-            this.selected = this.convertedOptions();
-        },
-        deselectAll() {
-            this.selected = [];
-        },
+function convertedOptionDefault() {
+       
 
-        isOptionSelected(optionId) {
-            return this.selected.findIndex((o) => o.id === optionId) !== -1;
-        },
-        clearData: function (e) {
-            if (
-                e.target.id != this.field_name + "search" &&
-                e.target.id != this.field_name &&
-                !e.target.classList.contains("showOptions")
-            ) {
-                this.exit();
-                this.count = 0;
-            }
-        },
+   // console.log("selected.value",selected.value);
+  //  console.log("props.modelValue",props.modelValue);
+      console.log("selected.value",selected.value);
 
-        selectItem: function (keyCode) {
-            // If down arrow key is pressed
-            if (keyCode == 40 && this.count < this.filteredOptions.length) {
-                this.count++;
-                document.getElementById(this.count).scrollIntoView();
-            }
-            // If up arrow key is pressed
-            if (keyCode == 38 && this.count > 1) {
-                this.count--;
+    console.log("isArrayObjectNotEmpty",isArrayObjectNotEmpty(selected.value));
 
-                document.getElementById(this.count).scrollIntoView();
-            }
-            // If enter key is pressed
-            if (keyCode == 13) {
-                // Go to selected post
-                document.getElementById(this.count).click();
-            }
-        },
+  if (isArrayObjectNotEmpty(selected.value)) {
+    if (isArrayObjects(selected.value)) {
+      return (
+        optionsValues.value.filter((option) =>
+          selected.value.some(
+            (selectedItem) => String(selectedItem.id) === String(option.id)
+          )
+        ) || []
+      );
+    } else {
+      return (
+        optionsValues.value.filter((option) =>
+          selected.value.some(
+            (selectedItem) => String(selectedItem) === String(option.id)
+          )
+        ) || []
+      );
+    }
+  } else if (props.modelValue) {
+    if (isArrayObjects(props.modelValue)) {
 
-       convertedOptions() {
+       
+      return   selected.value=(
+        optionsValues.value.filter((option) =>
+          props.modelValue.some(
+            (selectedItem) => String(selectedItem.id) === String(option.id)
+          )
+        ) || []
+      );
+    } else {
+      return selected.value=(
+        optionsValues.value.filter((option) =>
+          props.modelValue.some(
+            (selectedItem) => String(selectedItem) === String(option.id)
+          )
+        ) || []
+      );
+    }
+  }
 
+  /*
+  var option = selected.value || props.modelValue;
+  console.log(selected.value," - ",props.modelValue," - ",option);
+  if (option) {
+    if (typeof option === "object") {
+       return optionsValues.value.find(item => String(item.id) === String(option.id)) || {};
 
-            return this.options.map((option, index) => {
+      return option.id + "";
+    } else {
+        return optionsValues.value.find(item => String(item.id) === String(option)) || {};
+      return option + "";
+    }
+  } 
 
-                if (typeof option === "object") {
-                    return option; // If it's already an object, leave it as is
-                } else {
-                    return { id: option, name: option }; // If it's a string, convert it to an object
-                }
-            });
-        },
+  */
+}
 
+function selectOption(option) {
 
-        convertedOptionsDefault() {
+    console.log("selectOption",option);
 
-            return this.default_value.map((option, index) => {
-                if (typeof option === "object") {
-                    return option.id+""; // If it's already an object, leave it as is
-                } else {
-                    return option+""; // If it's a string, convert it to an object
-                }
-            });
-        },
-
-
-
-        clearOption(option) {
-            let index = this.selected.findIndex((o) => o.id === option.id);
+    let index = selected.value.findIndex((o) => o.id === option.id);
             if (index !== -1) {
-                this.selected.splice(index, 1);
-            }
-            this.selectedIds = this.selected.map((item) => item.id);
-            this.$emit("update:modelValue", this.selectedIds);
-
-            this.$emit("selected", this.selectedIds);
-
-        },
-        selectOption(option) {
-
-
-            let index = this.selected.findIndex((o) => o.id === option.id);
-            if (index !== -1) {
-                this.selected.splice(index, 1);
+                selected.value.splice(index, 1);
             } else {
-                this.selected.push(option);
+                selected.value.push(option);
             }
 
-            // this.optionsShown = false;
+            console.log("selectOption selected",selected.value);
 
+  //selected.value = option;
+  optionsShown.value = false;
+  selectedIds.value = selected.value.map((item) => item.id);
+  emit("update:modelValue", selectedIds.value);
+  emit("selected", selected.value);
+  emit("selectionChanged", selected.value);
+}
 
-            this.selectedIds = this.selected.map((item) => item.id);
-            this.$emit("update:modelValue", this.selectedIds);
-            this.$emit("selected", this.selectedIds);
-        },
+function showOptions() {
+  if (!props.show) {
+    searchFilter.value = "";
+    optionsShown.value = true;
+    nextTick(() => {
+      //refs[props.field_name + "search" + uuid.value].focus();
+      var input_search_feild = document.getElementById(
+        `${props.field_name}search${uuid.value}`
+      );
+      if (input_search_feild) {
+        input_search_feild.focus();
+      }
+      // if(input_search.value)
+      //{
+      //   input_search.value.focus();
+      // }
+    });
+  }
+}
 
+function ClearInput() {
+  if (!props.show) {
+    selected.value = [];
+    searchFilter.value = "";
+    emit("update:modelValue", "");
+    showOptions();
+  }
+}
 
-        showOptions() {
-            if (!this.show) {
-                this.searchFilter = "";
+function exit() {
+    /*
+  if (!selected.value.id) {
+    selected.value = [];
+    searchFilter.value = "";
+  }
+  */
+  searchFilter.value = "";
+  emit("selected", selected.value);
+  optionsShown.value = false;
+}
 
-                this.optionsShown = true;
+watch(searchFilter, () => {
+  if (filteredOptions.value.length === 0) {
+    selected.value = [];
+  }
+});
+watch(selected, (value) => {
 
+    
 
-                this.$nextTick(() => {
-                    this.$refs[this.field_name + "search"].focus();
-                });
-            }
-        },
-
-        ClearInput() {
-            if (!this.show) {
-                this.selected = [];
-                this.searchFilter = "";
-                this.showOptions();
-            }
-        },
-        exit() {
-            if (!this.selected) {
-                this.selected = [];
-                this.searchFilter = "";
-            }
-            // this.$emit("selected", this.selected);
-            this.optionsShown = false;
-        },
-        // Selecting when pressing Enter
-        keyMonitor: function (e) {
-            // check whether arrow keys are pressed
-            if (_.includes([37, 38, 39, 40, 13], e.keyCode)) {
-                if (e.keyCode === 38 || e.keyCode === 40) {
-                    // To prevent cursor from moving left or right in text input
-                    e.preventDefault();
-                }
-
-                if (e.keyCode === 40 && self.posts == "") {
-                    // If post list is cleared and search input is not empty
-                    // then call ajax again on down arrow key press
-                    // self.GetSearchSections();
-                    return;
-                }
-
-                this.selectItem(e.keyCode);
-            } else {
-                //self.GetSearchSections();
-            }
-        },
-    },
-    watch: {
-        searchFilter() {
-            if (this.filteredOptions.length === 0) {
-                // this.selected = [];
-            } else {
-                // this.selected.push(this.filteredOptions[0]);
-            }
-            //this.$emit("filter", this.searchFilter);
-        },
-
-        selected(value) {
-            this.selectedIds = value.map((item) => item.id);
-            this.$emit("update:modelValue", this.selectedIds);
-
-            this.$emit("selected", this.selectedIds);
-            this.$emit("selectionChanged", this.selectedIds);
-        },
-    },
-};
+  if (isArrayObjectNotEmpty(selected.value)) {
+    selectedIds.value = selected.value.map((item) => item.id);
+    emit("update:modelValue", selectedIds.value);
+  }
+});
 </script>
 
 <style lang="scss" scoped></style>

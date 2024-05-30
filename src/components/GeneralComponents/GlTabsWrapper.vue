@@ -39,6 +39,7 @@ export default {
     // to only get title from slots tabs
    // const tabTitles = ref(slots.default().map((tab) => tab.props.title))
     const tabs = ref(slots.default().map((tab) => tab.props))
+    console.log(slots.default());
 
 
     const selectedTitle = ref(tabs.value[0].title)
