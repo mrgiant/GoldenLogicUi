@@ -33,6 +33,7 @@ export { default as GlDeleteConfirmationModal }  from'./components/GeneralCompon
 
 export { default as GlAccordionsWrapper } from './components/GeneralComponents/GlAccordionsWrapper.vue'
 export { default as GlAccordion } from './components/GeneralComponents/GlAccordion.vue'
+//export { default as GlMonacoEditor } from './components/GeneralComponents/GlMonacoEditor.vue'
 
 
 

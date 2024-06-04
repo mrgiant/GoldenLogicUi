@@ -37,23 +37,19 @@
         <div class="relative showOptions">
           <!-- Dropdown Input @blur="exit()" -->
 
-
-
-          
-
-
-          <button
-          :class="{
-            'gl-input-form': error_message == '',
-            'gl-input-form-invalid': error_message !== '',
-          }"
-          class="pl-8 pr-2 showOptions bg-white dark:bg-gray-700 border rounded-lg relative cursor-pointer"
-          @click="showOptions()"
-        >
-          <div v-html="selectedDefultValue?.name || placeholder" class="h-full"></div>
-        </button>
-
-         
+          <input
+            :class="{
+              'gl-input-form': error_message == '',
+              'gl-input-form-invalid': error_message !== '',
+            }"
+            class="pl-8 pr-2 showOptions"
+            :ref="field_name"
+            @click="showOptions()"
+            :value="selectedDefultValue?.name"
+            :placeholder="placeholder"
+            autocomplete="off"
+            readonly
+          />
 
           <i
             v-show="isObjectNotEmpty(selectedDefultValue) && has_cancel"

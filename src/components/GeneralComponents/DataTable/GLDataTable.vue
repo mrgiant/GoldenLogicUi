@@ -64,7 +64,7 @@
               v-for="(column, index) in columns"
               :key="index"
               @click="sort(column)"
-              class="w-full px-4 py-2 lg:w-2/12"
+              class="w-full px-4 py-2 lg:w-2/12 capitalize"
             >
               {{ column }}
 

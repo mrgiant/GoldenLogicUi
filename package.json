@@ -15,11 +15,9 @@
       "require": "./dist/golden-logic-ui.umd.cjs"
     },
     "./dist/style.css": "./dist/style.css"
-    
-
   },
   "private": false,
-  "version": "1.0.152",
+  "version": "1.0.157",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
