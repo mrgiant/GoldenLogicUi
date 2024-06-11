@@ -174,6 +174,7 @@
                   :tdProps="column.tdProps"
                   @deleteAction="GetItemLists()"
                   @editAction="editAction(item)"
+                  @generalAction="generalAction(item)"
                 >
                 </component>
                 <template v-else>
@@ -234,7 +235,7 @@ export default {
       page: 1,
     };
   },
-  emits: ['editAction'],
+  emits: ['editAction','generalAction'],
   computed: {
     filteredData() {
       const searchTerm = this.search.toLowerCase();
@@ -254,6 +255,11 @@ export default {
     
       this.$emit("editAction",data);
     },
+
+    generalAction(data) {
+    
+    this.$emit("generalAction",data);
+  },
     forDynCompIs(component) {
       return typeof component === "object" ? component : null;
     },

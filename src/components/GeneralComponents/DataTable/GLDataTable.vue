@@ -63,7 +63,7 @@
             <th
               v-for="(column, index) in columns"
               :key="index"
-              @click="sort(column)"
+              v-on:click.prevent="sort(column)"
               class="w-full px-4 py-2 lg:w-2/12 capitalize"
             >
               {{ column }}
@@ -101,14 +101,15 @@
       <div class="flex justify-between flex-1 sm:hidden">
         <a
           href="#"
-          @click="previousPage"
+          
+          v-on:click.prevent="previousPage"
           :disabled="currentPage === 1"
           class="relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
           >Previous</a
         >
         <a
           href="#"
-          @click="nextPage"
+          v-on:click.prevent="nextPage"
           :disabled="currentPage === totalPages"
           class="relative inline-flex items-center px-4 py-2 ml-3 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
           >Next</a
@@ -133,7 +134,7 @@
               <li>
                 <a
                   href="#"
-                  @click="previousPage"
+                  v-on:click.prevent="previousPage"
                   :disabled="currentPage === 1"
                   class="flex items-center justify-center h-8 px-3 leading-tight text-gray-500 bg-white border border-gray-300 ms-0 border-e-0 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
                 >
@@ -163,7 +164,7 @@
                 <li>
                   <a
                     href="#"
-                    @click="goToPage(pageNumber)"
+                    v-on:click.prevent="goToPage(pageNumber)"
                     v-if="currentPage !== pageNumber"
                     class="flex items-center justify-center h-8 px-3 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
                     >{{ pageNumber }}</a
@@ -173,7 +174,7 @@
                 <li>
                   <a
                     href="#"
-                    @click="goToPage(pageNumber)"
+                    v-on:click.prevent="goToPage(pageNumber)"
                     v-if="currentPage === pageNumber"
                     aria-current="page"
                     class="z-10 flex items-center justify-center h-8 px-3 leading-tight text-blue-600 border border-blue-300 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white"
@@ -185,7 +186,7 @@
               <li>
                 <a
                   href="#"
-                  @click="nextPage"
+                  v-on:click.prevent="nextPage"
                   :disabled="currentPage === totalPages"
                   class="flex items-center justify-center h-8 px-3 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
                 >
