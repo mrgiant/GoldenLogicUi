@@ -12,7 +12,7 @@
 
 
 
-      <div v-if="$slots.body" class="p-6">
+      <div v-if="$slots.body" class="p-6" :class="bodyClass">
         <slot name="body"></slot>
       </div>
     </div>
@@ -33,6 +33,10 @@ const props = defineProps({
         type: String,
         default: "",
     },
+    body_class: {
+        type: String,
+        default: "",
+    },
 
    
 });
@@ -44,6 +48,12 @@ const cardClass = computed(() => {
         return props.class;
      
     });
+
+    const bodyClass = computed(() => {
+
+return props.body_class;
+
+});
 
 
 
