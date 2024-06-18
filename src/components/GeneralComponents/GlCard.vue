@@ -51,7 +51,7 @@ const cardClass = computed(() => {
 
     const bodyClass = computed(() => {
 
-return props.body_class;
+         return props.body_class;
 
 });
 

@@ -66,10 +66,12 @@
 
 <script setup>
 import { ref } from "vue";
-import { useStore } from "vuex"; // import useStore from Vuex
+
 import DeleteConfirmationModal from "/src/components/GeneralComponents/DeleteConfirmationModal.vue"
 
-const store = useStore(); // use the store
+import GlToast  from '/src/Stores/toast.js';
+
+
 
 const props = defineProps({
     field: {
@@ -125,7 +127,7 @@ const deleteAction = () => {
             closeDeleteModal();
             emit("deleteAction");
             // handle successful delete
-            store.commit("notification/SHOW_NOTIFICATION", {
+            GlToast.methods.add({
                 message: "Item deleted successfully.",
                 type: "success",
                 duration: 5000,

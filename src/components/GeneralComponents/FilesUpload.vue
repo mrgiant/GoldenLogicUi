@@ -138,7 +138,6 @@
 
 import DeleteConfirmationModal from "/src/components/GeneralComponents/DeleteConfirmationModal.vue"
 
-import { mapState, mapActions } from "vuex";
 
 export default {
   components: {
