@@ -2,9 +2,9 @@
 import { onMounted, ref, computed, nextTick, watch } from "vue";
 import tinymce from 'tinymce';
 import 'tinymce/icons/default/icons'
-//import 'tinymce/themes/silver/theme'
+import 'tinymce/themes/silver/theme'
 import 'tinymce/models/dom/model'
-//import 'tinymce/skins/ui/oxide/skin.css'
+import 'tinymce/skins/ui/oxide/skin.css'
 //import {contentUiCss} from 'tinymce/skins/ui/oxide/content.css';
 //TinyMCE plugins
 //https://www.tiny.cloud/docs/tinymce/6/plugins/
@@ -37,9 +37,7 @@ const initTinyMCE = async () => {
     selector: '#' + props.field_name,
     height: 500,
         plugins: [
-          "advlist autolink lists link image charmap print preview anchor",
-          "searchreplace visualblocks codesample fullscreen",
-          "insertdatetime media table paste help wordcount",
+          'link', 'lists','image', 'wordcount'
         ],
         toolbar:
           "undo redo | codesample | formatselect | bold italic backcolor | \

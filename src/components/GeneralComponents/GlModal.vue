@@ -66,7 +66,7 @@ watch(
 <div
 
   class="fixed left-0 top-13 z-[1055]  h-full w-full overflow-y-auto overflow-x-hidden outline-none inset-0 bg-black bg-opacity-80"
-  v-show="is_open"
+  v-if="is_open"
         tabindex="-1"
         aria-hidden="true"
   >
