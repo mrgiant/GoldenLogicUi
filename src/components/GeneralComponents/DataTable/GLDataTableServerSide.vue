@@ -1,12 +1,12 @@
 <template>
   <div class="p-2">
     <div
-      class="flex flex-col flex-wrap pb-4 space-y-4 xl:flex-row xl:items-center xl:justify-between flex-column sm:space-y-0"
+      class="flex flex-col flex-wrap pb-4 gap-4 xl:flex-row xl:items-center xl:justify-between flex-column "
     >
       <div class="flex items-center gap-2">
         <span class="font-medium"> Show </span>
 
-        <div style="margin-top: 9px">
+        <div style="margin-top: 3px">
           <dropdown
             :has_cancel="false"
             :options="pageOptions"
