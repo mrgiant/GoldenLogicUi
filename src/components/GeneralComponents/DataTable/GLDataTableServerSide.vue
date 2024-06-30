@@ -55,7 +55,7 @@
 
     <div class="overflow-auto rounded-lg dark:text-gray-400 dark:bg-gray-800">
       <table
-        class="w-full h-full max-w-full overflow-hidden bg-white border-separate xl:overflow-auto lg:border-collapse border-spacing-y-3 lg:border-spacing-y-0 dark:border-strokedark dark:bg-boxdark"
+        class="w-full h-full max-w-full overflow-hidden bg-white border-separate xl:overflow-auto lg:border-collapse border-spacing-y-5 lg:border-spacing-y-0 dark:border-strokedark dark:bg-boxdark"
       >
         <thead
           class="hidden text-sm font-normal text-center text-gray-500 lg:table-header-group dark:border-strokedark bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
@@ -164,7 +164,13 @@
               v-for="(column, colIndex) in columns"
               :key="colIndex"
               :data-label="column.field_label"
-              class="text-pretty before:content-[attr(data-label)] before:font-bold lg:before:content-none flex flex-col justify-between gap-2 lg:table-cell py-4 px-5 lg:py-2.5 lg:px-4 border dark:border-gray-700"
+              class="text-pretty before:content-[attr(data-label)] before:font-bold lg:before:content-none flex flex-col justify-between gap-2 lg:table-cell py-4 px-5 lg:py-3 lg:px-4 border-[0.3px] dark:border-gray-700"
+
+              :class="{
+          
+          'rounded-t-lg lg:rounded-t-none': colIndex === 0,
+          'rounded-b-lg lg:rounded-b-none': colIndex === columns.length - 1
+        }"
             >
               <div class="overflow-auto max-h-40">
                 <component

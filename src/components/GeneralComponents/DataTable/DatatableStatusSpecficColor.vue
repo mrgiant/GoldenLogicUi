@@ -1,5 +1,5 @@
 <template>
-    <div class="flex flex-wrap gap-2 text-nowrap justify-center	">
+    <div class="flex flex-wrap gap-2 text-nowrap lg:justify-center	">
 
 
 
