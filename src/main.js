@@ -64,8 +64,10 @@ export { default as GLDatatableCommand }  from'./components/GeneralComponents/Da
 
 export { default as GlTailwindPagination }  from'./components/LaravelVuePagination/TailwindPagination.vue';
 export { default as GlConfirmationModal }  from'./components/GeneralComponents/ConfirmationModal.vue';
+export { default as GlDynamicConfirmation }  from'./components/GeneralComponents/DynamicConfirmation.vue';
 export { default as GlCodeCopy }  from'./components/GeneralComponents/GlCodeCopy.vue';
 export { default as GlTextCopy }  from'./components/GeneralComponents/GlTextCopy.vue';
+export { default as GlStatusRunningSuccessFailed }  from'./components/GeneralComponents/StatusRunningSuccessFailed.vue';
 
 
 

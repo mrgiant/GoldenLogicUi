@@ -1,16 +1,19 @@
 <script setup>
-import { onMounted, ref, computed, nextTick, watch, onBeforeUnmount } from "vue";
+import { onMounted, ref, computed, nextTick, watch } from "vue";
 import tinymce from 'tinymce';
-import 'tinymce/icons/default/icons';
-import 'tinymce/themes/silver/theme';
-import 'tinymce/models/dom/model';
-import 'tinymce/skins/ui/oxide/skin.css';
-import 'tinymce/plugins/lists/plugin';
-import 'tinymce/plugins/link/plugin';
-import 'tinymce/plugins/image/plugin';
-import 'tinymce/plugins/table/plugin';
-import 'tinymce/plugins/code/plugin';
-import 'tinymce/plugins/wordcount/plugin';
+import 'tinymce/icons/default/icons'
+import 'tinymce/themes/silver/theme'
+import 'tinymce/models/dom/model'
+import 'tinymce/skins/ui/oxide/skin.css'
+//import {contentUiCss} from 'tinymce/skins/ui/oxide/content.css';
+//TinyMCE plugins
+//https://www.tiny.cloud/docs/tinymce/6/plugins/
+import 'tinymce/plugins/lists/plugin'
+import 'tinymce/plugins/link/plugin'
+import 'tinymce/plugins/image/plugin'
+import 'tinymce/plugins/table/plugin'
+import 'tinymce/plugins/code/plugin'
+import 'tinymce/plugins/wordcount/plugin'
 
 const props = defineProps({
   is_required: { type: Boolean, default: false },
@@ -30,21 +33,18 @@ let editorInstance = null;
 
 const initTinyMCE = async () => {
   await nextTick();
-
-  if (editorInstance) {
-    editorInstance.destroy();
-    editorInstance = null;
-  }
-
   tinymce.init({
     selector: '#' + props.field_name,
     height: 300,
-    plugins: [
-      'link', 'lists', 'image', 'wordcount'
-    ],
-    toolbar: "undo redo | codesample | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help",
-    skin: false, // disable import of skins
-    content_css: false, // disable import of css
+        plugins: [
+          'link', 'lists','image', 'wordcount'
+        ],
+        toolbar:
+          "undo redo | codesample | formatselect | bold italic backcolor | \
+           alignleft aligncenter alignright alignjustify | \
+           bullist numlist outdent indent | removeformat | help",
+        skin: false,          // disable import of skins
+        content_css: false,   // disable import of css
     setup(editor) {
       editorInstance = editor;
       editor.on('Change', () => {
@@ -58,13 +58,6 @@ const initTinyMCE = async () => {
 };
 
 onMounted(initTinyMCE);
-
-onBeforeUnmount(() => {
-  if (editorInstance) {
-    editorInstance.destroy();
-    editorInstance = null;
-  }
-});
 
 watch(() => props.modelValue, (newValue) => {
   if (editorInstance && editorInstance.getContent() !== newValue) {

@@ -148,7 +148,7 @@
 
   .console_styles{
 
-    width: 100%; border-radius: .5rem; --tw-bg-opacity: 1;background-color: rgb(17 24 39 / var(--tw-bg-opacity));font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace;--tw-text-opacity: 1;color: rgb(255 255 255 / var(--tw-text-opacity));
+    width: 100%; border-radius: .5rem; --tw-bg-opacity: 1;background-color: rgb(17 24 39 / var(--tw-bg-opacity));font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace;--tw-text-opacity: 1;color: rgb(255 255 255 / var(--tw-text-opacity));max-width: calc(100%);
 
 
 
