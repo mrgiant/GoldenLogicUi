@@ -52,6 +52,7 @@ export { default as GlDatatableFileDownload }  from'./components/GeneralComponen
 export { default as GlDatatableFiles }  from'./components/GeneralComponents/DataTable/DatatableFiles.vue';
 export { default as GlDatatableHtml }  from'./components/GeneralComponents/DataTable/DatatableHtml.vue';
 export { default as GlDatatableList }  from'./components/GeneralComponents/DataTable/DatatableList.vue';
+export { default as GlDatatableListNested }  from'./components/GeneralComponents/DataTable/DatatableListNested.vue';
 export { default as GlDatatablePicture }  from'./components/GeneralComponents/DataTable/DatatablePicture.vue';
 export { default as GlDatatableStatus }  from'./components/GeneralComponents/DataTable/DatatableStatus.vue';
 export { default as GlDatatableStatusGeneral }  from'./components/GeneralComponents/DataTable/DatatableStatusGeneral.vue';
