@@ -158,11 +158,13 @@
             :key="index"
             class="bg-white dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 hover:dark:text-gray-200 text-gray-500"
           >
+
+          <!-- remove  md:flex-row from  below td to be the text below lable if want in line add it -->
             <td
               v-for="(column, colIndex) in columns"
               :key="colIndex"
               :data-label="column.field_label"
-              class="text-pretty before:content-[attr(data-label)] before:font-bold lg:before:content-none flex md:flex-row flex-col justify-between gap-2 lg:table-cell py-4 px-5 lg:py-2.5 lg:px-4 border dark:border-gray-700"
+              class="text-pretty before:content-[attr(data-label)] before:font-bold lg:before:content-none flex flex-col justify-between gap-2 lg:table-cell py-4 px-5 lg:py-2.5 lg:px-4 border dark:border-gray-700"
             >
               <div class="overflow-auto max-h-40">
                 <component
