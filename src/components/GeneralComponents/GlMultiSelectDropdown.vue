@@ -72,9 +72,12 @@
             ></span>
           </div>
 
+         
+
           <i
+             @click="!optionsShown && showOptions()"
             :class="optionsShown ? 'fa-angle-up' : 'fa-angle-down'"
-            class="absolute text-xl text-gray-500 cursor-pointer fas right-2 hover:text-gray-700"
+            class="absolute text-xl text-gray-500 cursor-pointer fas right-2 hover:text-gray-700 dark:hover:text-gray-800 showOptions"
             style="top: 11px"
           ></i>
         </div>
