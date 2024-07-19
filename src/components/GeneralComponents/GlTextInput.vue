@@ -106,7 +106,8 @@ watch(
     },
     set(newValue)
     {
-        emit("update:modelValue", newValue);   
+        emit("update:modelValue", newValue);
+        console.log(newValue);
 
     }
    
@@ -123,7 +124,7 @@ defineExpose({ focus: () => input.value.focus() });
     <div :class="field_name" v-if="show">
         <h3 class="font-bold  dark:text-white">{{ label_name }}</h3>
 
-        <p class="mb-6  text-gray-900 dark:text-white">
+        <p class="mt-1  text-gray-900 dark:text-white">
             {{
                 type == "password"
                     ? modelValue.replace(/./g, "*")

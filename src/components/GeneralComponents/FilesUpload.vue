@@ -35,7 +35,7 @@
           @change="uploadFiles"
         />
 
-        <input type="hidden" :name="field_name" v-model="uploadedFileIds" />
+        <input type="hidden" :name="field_name" v-model="uploadFileListFinal" />
         <div
           class="flex flex-col items-center justify-center"
           @click="$refs['file_input' + this.field_name].click()"
@@ -62,7 +62,9 @@
           </p>
         </div>
         <div v-else>
-          <p class="text-sm text-gray-500 dark:text-gray-400">Drop files here</p>
+          <p class="text-sm text-gray-500 dark:text-gray-400">
+            Drop files here
+          </p>
         </div>
       </div>
     </div>
@@ -85,7 +87,9 @@
             <span class="text-xs text-black dark:text-white">{{
               getFileName(file.file_name)
             }}</span>
-            <span class="text-xs text-black dark:text-white">{{ file.loading }}</span>
+            <span class="text-xs text-black dark:text-white">{{
+              file.loading
+            }}</span>
           </div>
 
           <div class="w-full h-1 mb-1 bg-white rounded-full dark:bg-gray-800">
@@ -101,7 +105,7 @@
     <section class="overflow-x-scroll max-h-56">
       <li
         class="flex items-center justify-between p-2 mb-2 text-gray-900 rounded-lg bg-gray-50 hover:bg-gray-100 hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white"
-        v-for="(file, index) in uploadFileList"
+        v-for="(file, index) in uploadFileListFinal"
       >
         <div class="flex items-center">
           <i class="text-3xl fas fa-file-alt" aria-hidden="true"></i>
@@ -112,32 +116,30 @@
         </div>
 
         <div class="flex gap-2">
+          <a
+            :href="file.url"
+            target="_blank"
+            class="text-lg text-blue-600 cursor-pointer dark:text-blue-400 fas fa-download"
+          >
+          </a>
 
-           <a :href="file.url" target="_blank" class="text-lg text-blue-600 cursor-pointer dark:text-blue-400 fas fa-download">
-
-           </a>
-
-
-        <i
+          <i
             v-if="is_enable_delete"
-          @click="
-            media_id = file.id;
-            open_delete_modal = true;
-          "
-          class="text-lg text-red-600 cursor-pointer dark:text-red-400 fas fa-x"
-        ></i>
-
+            @click="
+              media_id = file.id;
+              open_delete_modal = true;
+            "
+            class="text-lg text-red-600 cursor-pointer dark:text-red-400 fas fa-x"
+          ></i>
         </div>
-
       </li>
     </section>
   </div>
 </template>
 
 <script>
-
-import DeleteConfirmationModal from "/src/components/GeneralComponents/DeleteConfirmationModal.vue"
-
+import DeleteConfirmationModal from "/src/components/GeneralComponents/DeleteConfirmationModal.vue";
+import GlToast from "/src/Stores/toast.js";
 
 export default {
   components: {
@@ -182,7 +184,7 @@ export default {
       default: "",
     },
 
-    model_value: {
+    modelValue: {
       type: Array,
       default: [],
     },
@@ -190,19 +192,15 @@ export default {
     file_config: {
       type: Object,
       default: {},
-      },
-
-      is_enable_delete: {
-        type: Boolean,
-        default: true,
-      },
-
-
     },
 
+    is_enable_delete: {
+      type: Boolean,
+      default: true,
+    },
+  },
 
-    emits: ["uploaded"],
-
+  emits: ["update:modelValue", "uploaded"],
 
   data() {
     return {
@@ -221,17 +219,28 @@ export default {
       this.open_delete_modal = false;
     },
 
+
+   
+
+
+
+
+
+
+
     deleteAction() {
       axios
         .delete(this.route_url + "/destroyMedia/" + this.media_id)
         .then((response) => {
-          let index = this.uploadFileList.findIndex((file) => file.id === this.media_id);
+          let index = this.uploadFileList.findIndex(
+            (file) => file.id === this.media_id
+          );
           if (index !== -1) {
             this.uploadFileList.splice(index, 1);
           }
           this.closeDeleteModal();
 
-          this.$store.commit("notification/SHOW_NOTIFICATION", {
+          GlToast.methods.add({
             message: "Item deleted successfully.",
             type: "success",
             duration: 5000,
@@ -281,15 +290,15 @@ export default {
     async uploadFiles(event) {
       const files = event.target.files;
 
+      const uploadPromises = Array.from(files).map((file) =>
+        this.uploadFile(file)
+      );
 
-      const uploadPromises = Array.from(files).map(file => this.uploadFile(file));
-      // Wait for all uploads to complete
-     await Promise.all(uploadPromises);
+      await Promise.all(uploadPromises);
 
-    //  Array.from(files).forEach((file) => {
-     //   this.uploadFile(file);
-     // });
-      this.$emit('uploaded');
+      this.$emit("uploaded");
+      this.$emit("update:modelValue", this.uploadFileList);
+      console.log("uploadFileList",this.uploadFileList);
     },
 
     getFirstError(errors, field) {
@@ -299,109 +308,94 @@ export default {
       return "";
     },
     async uploadFile(file) {
-
-
       return new Promise((resolve, reject) => {
         if (!file) resolve();
 
+        const formData = new FormData();
+        formData.append("file", file);
 
-      const formData = new FormData();
-      formData.append("file", file);
-
-      Object.entries(this.file_config).forEach(([key, value]) => {
-            formData.append(key, value);
-          });
-
-
-
-
-
-      this.files.push({ file_name: file.name, loading: 0 });
-
-      axios
-        .post(this.route_url + "/media", formData, {
-          onUploadProgress: (progressEvent) => {
-            this.files[this.files.length - 1].loading = Math.floor(
-              (progressEvent.loaded / progressEvent.total) * 100
-            );
-          },
-        })
-        .then((response) => {
-          let index = this.files.findIndex(
-            (file_data) => file_data.file_name === file.name
-          );
-
-          if (index !== -1) {
-            this.files.splice(index, 1);
-          }
-
-          this.uploadFileList.push({
-            file_name: response.data.file_name,
-            size: response.data.size,
-            id: response.data.id,
-            url: response.data.url,
-          });
-
-          this.error_message_data = "";
-          resolve();
-        })
-        .catch((error) => {
-          if (error.response.status === 422) {
-            this.error_message_data = this.getFirstError(
-              error.response.data.errors,
-              "file"
-            );
-          } else {
-            console.error("An error occurred:", error);
-          }
-
-          let index = this.files.findIndex(
-            (file_data) => file_data.file_name === file.name
-          );
-
-          if (index !== -1) {
-            this.files.splice(index, 1);
-          }
-          console.log(error);
-          resolve();
+        Object.entries(this.file_config).forEach(([key, value]) => {
+          formData.append(key, value);
         });
 
+        this.files.push({ file_name: file.name, loading: 0 });
+
+        axios
+          .post(this.route_url + "/media", formData, {
+            onUploadProgress: (progressEvent) => {
+              this.files[this.files.length - 1].loading = Math.floor(
+                (progressEvent.loaded / progressEvent.total) * 100
+              );
+            },
+          })
+          .then((response) => {
+            let index = this.files.findIndex(
+              (file_data) => file_data.file_name === file.name
+            );
+
+            if (index !== -1) {
+              this.files.splice(index, 1);
+            }
+
+            this.uploadFileList.push({
+              file_name: response.data.file_name,
+              size: response.data.size,
+              id: response.data.id,
+              url: response.data.url,
+            });
+
+            this.error_message_data = "";
+            resolve();
+          })
+          .catch((error) => {
+            if (error.response.status === 422) {
+              this.error_message_data = this.getFirstError(
+                error.response.data.errors,
+                "file"
+              );
+            } else {
+              console.error("An error occurred:", error);
+            }
+
+            let index = this.files.findIndex(
+              (file_data) => file_data.file_name === file.name
+            );
+
+            if (index !== -1) {
+              this.files.splice(index, 1);
+            }
+            console.log(error);
+            resolve();
+          });
       });
-
-
-
-
     },
   },
 
   computed: {
-    uploadedFileIds() {
-      if (this.has_multiple_file) {
-        return this.uploadFileList.map((file) => file.id);
+    uploadFileListFinal() {
+      if (this.uploadFileList.length > 0) {
+        if (this.has_multiple_file) {
+         // return this.uploadFileList.map((file) => file.id);
+          return this.uploadFileList;
+        } else {
+          return this.uploadFileList[0]|| null;
+        }
       } else {
-        return this.uploadFileList[0]?.id || null;
+
+       
+
+        this.uploadFileList= [...this.uploadFileList,...this.modelValue];
+        return this.uploadFileList;
+
+
+
+        
       }
     },
   },
 
   mounted() {
-     // to check if the model_value not empty
-
-
-     console.log(this.model_value);
-
-     if (this.model_value) {
-
-
-       if (!Array.isArray(this.model_value)) {
-          this.uploadFileList = [this.model_value];
-       } else {
-        this.uploadFileList = this.model_value;
-       }
-    }else
-   {
-       this.uploadFileList = [];
-   }
+    
 
     this.error_message_data = this.error_message;
   },

@@ -32,7 +32,7 @@
       >
 
       <div
-        class=" focus:ring-blue-500 focus:border-blue-500 dark:border-gray-600 dark:focus:ring-blue-500 dark:focus:border-blue-500"
+        class=" relative focus:ring-blue-500 focus:border-blue-500 dark:border-gray-600 dark:focus:ring-blue-500 dark:focus:border-blue-500"
       >
         <div class="relative showOptions">
           <!-- Dropdown Input @blur="exit()" -->

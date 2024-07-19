@@ -106,4 +106,3 @@ export default {
     methods: {},
 };
 </script>
-./GlButton.vue

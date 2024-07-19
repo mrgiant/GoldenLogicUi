@@ -19,6 +19,7 @@ export { default as GlTextareaTranslate } from './components/GeneralComponents/G
 export { default as GlTinymceTranslate } from './components/GeneralComponents/GlTinymceTranslate.vue'
 export { default as GlTextTranslate } from './components/GeneralComponents/GlTextTranslate.vue'
 export { default as GlTextInput } from './components/GeneralComponents/GlTextInput.vue'
+export { default as GlDateRangePicker } from './components/GeneralComponents/GlDateRangePicker.vue'
 export { default as GlTextInputFile } from './components/GeneralComponents/GlTextInputFile.vue'
 export { default as GlTabsWrapper } from './components/GeneralComponents/GlTabsWrapper.vue'
 export { default as GlTab } from './components/GeneralComponents/GlTab.vue'
@@ -69,6 +70,7 @@ export { default as GlDynamicConfirmation }  from'./components/GeneralComponents
 export { default as GlCodeCopy }  from'./components/GeneralComponents/GlCodeCopy.vue';
 export { default as GlTextCopy }  from'./components/GeneralComponents/GlTextCopy.vue';
 export { default as GlStatusRunningSuccessFailed }  from'./components/GeneralComponents/StatusRunningSuccessFailed.vue';
+export { default as GlStatusConnectingConnectedDisconnected }  from'./components/GeneralComponents/StatusConnectingConnectedDisconnected.vue';
 
 
 
