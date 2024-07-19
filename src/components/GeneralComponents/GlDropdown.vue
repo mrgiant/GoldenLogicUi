@@ -432,6 +432,17 @@ function selectOption(option) {
 
 function showOptions() {
   if (!props.show) {
+
+    if( optionsShown.value==true)
+     {
+
+      optionsShown.value = false;
+
+      return;
+
+     }
+
+
     searchFilter.value = "";
     optionsShown.value = true;
     nextTick(() => {
