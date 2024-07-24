@@ -58,7 +58,7 @@
             style="top: 13px"
           ></i>
           <i
-            @click="!optionsShown && showOptions()"
+            @click="showOptions()"
             :class="optionsShown ? 'fa-angle-up' : 'fa-angle-down'"
             class="absolute text-xl text-gray-500 cursor-pointer fas right-2 hover:text-gray-700 dark:hover:text-gray-800 showOptions"
             style="top: 11px"
@@ -325,6 +325,8 @@ function clearData(e) {
   ) {
     exit();
     count.value = 0;
+    optionsShown.value = false;
+
   }
 }
 
@@ -433,10 +435,12 @@ function selectOption(option) {
 function showOptions() {
   if (!props.show) {
 
-    if( optionsShown.value==true)
+
+    if(optionsShown.value)
      {
 
       optionsShown.value = false;
+     
 
       return;
 
@@ -476,7 +480,8 @@ function exit() {
     searchFilter.value = "";
   }
   emit("selected", selected.value);
-  optionsShown.value = false;
+  //optionsShown.value = false;
+  
 }
 
 watch(searchFilter, () => {

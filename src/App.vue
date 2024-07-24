@@ -1,10 +1,22 @@
 <script setup>
 
+import {
+  ref,
+  watch,
+  defineProps,
+  defineEmits,
+  onMounted,
+  computed,
+  nextTick,
+} from "vue";
+
 import GlTabsWrapper  from './components/GeneralComponents/GlTabsWrapper.vue';
 import GlTextInput   from './components/GeneralComponents/GlTextInput.vue';
-import GlDateRangePicker   from './components/GeneralComponents/GlDateRangePicker.vue';
+import GlDropdown   from './components/GeneralComponents/GlDropdown.vue';
 
 
+
+const provide=ref[""];
 
 </script>
 
@@ -12,7 +24,19 @@ import GlDateRangePicker   from './components/GeneralComponents/GlDateRangePicke
   <div>
 
 
-  <GlDateRangePicker label_name="test"></GlDateRangePicker>
+    <div class="mb-4">
+                    <GlDropdown
+                        :options="['slack', 'email', 'discord', 'whatsapp']"
+                        :is_required="true"
+                        field_name="provider"
+                        label_name="Provider"
+                        :show="false"
+                        placeholder="Please select an option"
+                        
+                        v-model="provide"
+                    >
+                    </GlDropdown>
+                </div>
 
     
 </div>

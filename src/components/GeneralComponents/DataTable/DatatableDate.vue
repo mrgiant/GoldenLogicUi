@@ -28,16 +28,10 @@
       const month = date.toLocaleString('default', { month: 'long' });
       const day = date.getDate();
       
-      // Get time components
-      let hours = date.getHours();
-      const minutes = date.getMinutes();
-      const seconds = date.getSeconds();
-      const ampm = hours >= 12 ? 'pm' : 'am';
-      hours = hours % 12;
-      hours = hours ? hours : 12; // Handle midnight
+     
       
       // Format the date and time
-      const formattedDateTime = `${month} ${day}, ${year}, ${hours}:${minutes}:${seconds} ${ampm}`;
+      const formattedDateTime = `${month} ${day}, ${year}`;
       
       return formattedDateTime;
     },

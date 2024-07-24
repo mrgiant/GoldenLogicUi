@@ -30,6 +30,7 @@ export { default as GlDropdown } from './components/GeneralComponents/GlDropdown
 export { default as GlTextarea } from './components/GeneralComponents/GlTextarea.vue'
 export { default as GlTinymce } from './components/GeneralComponents/GlTinymce.vue'
 export { default as GlDataTableServerSide } from './components/GeneralComponents/DataTable/GlDataTableServerSide.vue';
+export { default as GlDataTableComponent } from './components/GeneralComponents/DataTable/GlDataTableComponent.vue';
 export { default as GlDataTableServerSideGroupBy } from './components/GeneralComponents/DataTable/GlDataTableServerSideGroupBy.vue';
 export { default as GlDataTable }  from'./components/GeneralComponents/DataTable/GlDataTable.vue';
 export { default as GlDeleteConfirmationModal }  from'./components/GeneralComponents/DeleteConfirmationModal.vue';
@@ -61,6 +62,7 @@ export { default as GlDatatableStatusSpecficColor }  from'./components/GeneralCo
 export { default as DatatableStatusTextLabelGeneral }  from'./components/GeneralComponents/DataTable/DatatableStatusTextLabelGeneral.vue';
 
 export { default as GLDatatableDateTime }  from'./components/GeneralComponents/DataTable/DatatableDateTime.vue';
+export { default as GLDatatableDate }  from'./components/GeneralComponents/DataTable/DatatableDate.vue';
 export { default as GLDatatableStatusServer }  from'./components/GeneralComponents/DataTable/DatatableStatusServer.vue';
 export { default as GLDatatableCommand }  from'./components/GeneralComponents/DataTable/DatatableCommand.vue';
 
@@ -78,10 +80,12 @@ export { default as GlStatusConnectingConnectedDisconnected }  from'./components
 
 
 
+/*
 
+import { createApp } from 'vue'
 
-//import { createApp } from 'vue'
+import App from './App.vue'
 
-//import App from './App.vue'
+createApp(App).mount('#app')
 
-//createApp(App).mount('#app')
+*/

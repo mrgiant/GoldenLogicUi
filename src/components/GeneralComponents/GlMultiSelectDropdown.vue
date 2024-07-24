@@ -75,7 +75,7 @@
          
 
           <i
-             @click="!optionsShown && showOptions()"
+             @click="showOptions()"
             :class="optionsShown ? 'fa-angle-up' : 'fa-angle-down'"
             class="absolute text-xl text-gray-500 cursor-pointer fas right-2 hover:text-gray-700 dark:hover:text-gray-800 showOptions"
             style="top: 11px"
@@ -369,6 +369,7 @@ function clearData(e) {
   ) {
     exit();
     count.value = 0;
+    optionsShown.value = false;
   }
 }
 
@@ -415,11 +416,7 @@ function convertedOptions() {
 function convertedOptionDefault() {
        
 
-   // console.log("selected.value",selected.value);
-  //  console.log("props.modelValue",props.modelValue);
-      console.log("selected.value",selected.value);
-
-    console.log("isArrayObjectNotEmpty",isArrayObjectNotEmpty(selected.value));
+  
 
   if (isArrayObjectNotEmpty(selected.value)) {
     if (isArrayObjects(selected.value)) {
@@ -480,7 +477,7 @@ function convertedOptionDefault() {
 
 function selectOption(option) {
 
-    console.log("selectOption",option);
+    
 
     let index = selected.value.findIndex((o) => o.id === option.id);
             if (index !== -1) {
@@ -489,7 +486,7 @@ function selectOption(option) {
                 selected.value.push(option);
             }
 
-            console.log("selectOption selected",selected.value);
+            
 
   //selected.value = option;
   optionsShown.value = false;
@@ -501,6 +498,21 @@ function selectOption(option) {
 
 function showOptions() {
   if (!props.show) {
+
+
+    if(optionsShown.value)
+     {
+
+      optionsShown.value = false;
+     
+
+      return;
+
+     }
+
+
+
+
     searchFilter.value = "";
     optionsShown.value = true;
     nextTick(() => {
@@ -537,7 +549,7 @@ function exit() {
   */
   searchFilter.value = "";
   emit("selected", selected.value);
-  optionsShown.value = false;
+  // optionsShown.value = false;
 }
 
 watch(searchFilter, () => {
