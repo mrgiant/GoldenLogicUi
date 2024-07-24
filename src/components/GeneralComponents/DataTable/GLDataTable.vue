@@ -68,8 +68,10 @@
             >
               {{ column }}
 
+            
+
               <span v-if="sortKey === column" class="ml-2">
-                <i v-if="sortOrder === 'asc'" class="fa fa-arrow-up"></i>
+                <i v-if="sortOrder === 1" class="fa fa-arrow-up"></i>
                 <i v-else class="fa fa-arrow-down"></i>
               </span>
             </th>

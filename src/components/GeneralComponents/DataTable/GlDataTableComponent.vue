@@ -67,8 +67,8 @@
               class="w-full px-4 py-2 lg:w-2/12"
             >
               {{ column.field_label }}
-              <span v-if="sortField === column.field_name" class="ml-2">
-                <i v-if="sortOrder === 'asc'" class="fa fa-arrow-up"></i>
+              <span v-if="sortKey === column.field_name" class="ml-2">
+                <i v-if="sortOrder === 1" class="fa fa-arrow-up"></i>
                 <i v-else class="fa fa-arrow-down"></i>
               </span>
             </th>
@@ -153,7 +153,7 @@
 
           <tr
             v-if="!isLoading"
-            v-for="(item, index) in filteredData"
+            v-for="(item, index) in paginatedData"
             :key="index"
             class="bg-white dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 hover:dark:text-gray-200 text-gray-500"
           >
@@ -359,6 +359,7 @@ export default {
       });
     },
     totalPages() {
+      console("totalPages ","length",this.filteredData.length,"/",this.itemsPerPage)
       return Math.ceil(this.filteredData.length / this.itemsPerPage);
     },
     paginatedData() {
@@ -428,6 +429,12 @@ export default {
       }
     },
     sort(column) {
+
+
+     
+
+
+
       if (column === this.sortKey) {
         this.sortOrder *= -1;
       } else {

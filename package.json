@@ -17,7 +17,7 @@
     "./dist/style.css": "./dist/style.css"
   },
   "private": false,
-  "version": "1.0.241",
+  "version": "1.0.244",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
