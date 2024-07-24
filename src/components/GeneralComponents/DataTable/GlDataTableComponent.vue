@@ -469,7 +469,7 @@ export default {
 
     GetItemLists() {
       this.isLoading = true;
-      this.page = page;
+      
 
       
 
