@@ -6,7 +6,7 @@
         :disabled="is_disabled"
         v-bind="{ type: is_submit ? 'submit' : undefined }"
         :href="tag === 'a' ? href : undefined"
-        :class="`  ${is_disabled ? 'cursor-not-allowed opacity-50':''}  flex items-center gap-2 focus:outline-none text-sm px-5 py-2 me-2  font-medium rounded-lg  ${buttonTypeClass}`"
+        :class="`  ${is_disabled ? 'cursor-not-allowed opacity-50':''}   ${icon ? 'flex':''}    h-[2.5rem]  items-center gap-2 focus:outline-none text-sm px-3 py-2 me-2  font-medium rounded-lg  ${buttonTypeClass}`"
     >
         <i v-if="icon" :class="icon" class="text-base"></i>
         <slot></slot>
@@ -16,7 +16,7 @@
         v-else
         is="button"
         disabled
-        :class="`flex items-center gap-2 focus:outline-none text-sm px-2  py-2 me-2  font-medium rounded-lg  ${buttonTypeClass}`"
+        :class="` h-[2.5rem] flex items-center gap-2 focus:outline-none text-sm px-2  py-2 me-2  font-medium rounded-lg  ${buttonTypeClass}`"
     >
         <svg
             aria-hidden="true"

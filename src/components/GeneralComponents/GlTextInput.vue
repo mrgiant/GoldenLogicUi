@@ -137,6 +137,7 @@ defineExpose({ focus: () => input.value.focus() });
 
     <div  :class="field_name" v-if="!show">
         <label
+            v-if="label_name"
             :class="{
                 'gl-label-form': error_message == '',
                 'gl-label-form-invalid': error_message !== '',

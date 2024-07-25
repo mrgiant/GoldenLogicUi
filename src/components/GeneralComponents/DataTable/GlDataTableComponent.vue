@@ -359,7 +359,7 @@ export default {
       });
     },
     totalPages() {
-      console("totalPages ","length",this.filteredData.length,"/",this.itemsPerPage)
+     
       return Math.ceil(this.filteredData.length / this.itemsPerPage);
     },
     paginatedData() {
