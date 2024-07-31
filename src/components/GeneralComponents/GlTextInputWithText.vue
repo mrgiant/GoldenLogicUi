@@ -155,7 +155,8 @@ defineExpose({ focus: () => input.value.focus() });
       </div>
 
       <label
-        class="z-10 inline-flex items-center flex-shrink-0 px-4 py-3 text-sm font-medium text-center text-gray-500 bg-gray-100 border border-gray-300 dark:text-gray-400 rounded-e-lg focus:outline-none dark:bg-gray-700 dark:border-gray-600"
+      style="height: 2.5rem;"
+        class="z-10 inline-flex items-center flex-shrink-0 px-4  text-sm font-medium text-center text-gray-500 bg-gray-100 border border-gray-300 dark:text-gray-400 rounded-e-lg focus:outline-none dark:bg-gray-700 dark:border-gray-600"
       >
         {{ input_text }}
       </label>
