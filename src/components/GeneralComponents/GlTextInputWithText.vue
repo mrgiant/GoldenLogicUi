@@ -144,7 +144,8 @@ defineExpose({ focus: () => input.value.focus() });
             'gl-input-form': error_message == '',
             'gl-input-form-invalid': error_message !== '',
           }"
-          class="rounded-s-lg"
+          class="border-e-0 rounded-s-lg"
+          style="border-radius: 0rem;"
           :type="type"
           v-model="proxyValue"
           @keydown="$emit('keydown', $event)"
