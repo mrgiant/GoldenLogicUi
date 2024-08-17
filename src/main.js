@@ -35,6 +35,7 @@ export { default as GlDataTableServerSide } from './components/GeneralComponents
 export { default as GlDataTableComponent } from './components/GeneralComponents/DataTable/GlDataTableComponent.vue';
 export { default as GlDataTableServerSideGroupBy } from './components/GeneralComponents/DataTable/GlDataTableServerSideGroupBy.vue';
 export { default as GlDataTable }  from'./components/GeneralComponents/DataTable/GlDataTable.vue';
+export { default as GlDatatableConvertCronToHuman }  from'./components/GeneralComponents/DataTable/DatatableConvertCronToHuman.vue';
 export { default as GlDeleteConfirmationModal }  from'./components/GeneralComponents/DeleteConfirmationModal.vue';
 
 export { default as GlAccordionsWrapper } from './components/GeneralComponents/GlAccordionsWrapper.vue'
@@ -58,6 +59,7 @@ export { default as GlDatatableHtml }  from'./components/GeneralComponents/DataT
 export { default as GlDatatableList }  from'./components/GeneralComponents/DataTable/DatatableList.vue';
 export { default as GlDatatableListNested }  from'./components/GeneralComponents/DataTable/DatatableListNested.vue';
 export { default as GlDatatablePicture }  from'./components/GeneralComponents/DataTable/DatatablePicture.vue';
+export { default as GlDatatablePictures }  from'./components/GeneralComponents/DataTable/DatatablePictures.vue';
 export { default as GlDatatableStatus }  from'./components/GeneralComponents/DataTable/DatatableStatus.vue';
 export { default as GlDatatableStatusGeneral }  from'./components/GeneralComponents/DataTable/DatatableStatusGeneral.vue';
 export { default as GlDatatableStatusSpecficColor }  from'./components/GeneralComponents/DataTable/DatatableStatusSpecficColor.vue';
@@ -82,8 +84,8 @@ export { default as GlStatusConnectingConnectedDisconnected }  from'./components
 
 
 
-/*
 
+/*
 import { createApp } from 'vue'
 
 import App from './App.vue'

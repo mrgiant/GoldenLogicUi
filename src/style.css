@@ -109,7 +109,22 @@
   .gl-input-form
 
   {
-      @apply h-10 bg-gray-50  border text-gray-900 text-sm rounded-lg  outline-none	  focus:border-frontend block w-full p-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white  dark:focus:border-frontenddark border-gray-200
+      @apply   h-10 bg-gray-50  border text-gray-900 text-sm rounded-lg  outline-none	  focus:border-frontend block w-full p-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white  dark:focus:border-frontenddark border-gray-200
+  }
+
+
+
+  .gl-input-form-invalid-text
+
+  {
+    @apply h-10 bg-red-50 border border-red-500 text-red-900 placeholder-red-700 text-sm  outline-none dark:bg-gray-700 focus:border-red-500 block w-full p-3 dark:text-red-500 dark:placeholder-red-500 dark:border-red-500
+  }
+
+
+  .gl-input-form-text
+
+  {
+      @apply   h-10 bg-gray-50  border text-gray-900 text-sm   outline-none	  focus:border-frontend block w-full p-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white  dark:focus:border-frontenddark border-gray-200
   }
 
 
@@ -155,6 +170,11 @@
   }
 
 
+  input::-webkit-calendar-picker-indicator {
+    filter: invert(1) hue-rotate(180deg);
+  }
+
+
 
 
 
@@ -162,6 +182,8 @@
     content: " *";
     color: red;
 }
+
+
 
 
 select:not([size]) {

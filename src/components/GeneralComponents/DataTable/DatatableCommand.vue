@@ -1,8 +1,8 @@
 <template>
-    <div v-if="row[field]" class="text-nowrap">
+    <div v-if="row[field]" class="text-nowrap w-full">
 
       <pre
-        style="max-width: 200px;"
+        
         class=" w-full h-full p-3 mx-0 mt-0 overflow-auto font-mono  text-left  break-words rounded cursor-default whitespace-nowrap console_styles">
         {{ row[field] }} 
         </pre>

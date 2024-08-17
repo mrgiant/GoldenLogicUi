@@ -219,15 +219,6 @@ export default {
       this.open_delete_modal = false;
     },
 
-
-   
-
-
-
-
-
-
-
     deleteAction() {
       axios
         .delete(this.route_url + "/destroyMedia/" + this.media_id)
@@ -298,7 +289,7 @@ export default {
 
       this.$emit("uploaded");
       this.$emit("update:modelValue", this.uploadFileList);
-      console.log("uploadFileList",this.uploadFileList);
+      console.log("uploadFileList", this.uploadFileList);
     },
 
     getFirstError(errors, field) {
@@ -335,6 +326,12 @@ export default {
 
             if (index !== -1) {
               this.files.splice(index, 1);
+            }
+
+            if (!this.has_multiple_file) {
+
+              this.uploadFileList=[];
+
             }
 
             this.uploadFileList.push({
@@ -374,29 +371,27 @@ export default {
   computed: {
     uploadFileListFinal() {
       if (this.uploadFileList.length > 0) {
-        if (this.has_multiple_file) {
-         // return this.uploadFileList.map((file) => file.id);
-          return this.uploadFileList;
-        } else {
-          return this.uploadFileList[0]|| null;
-        }
-      } else {
 
-       
 
-        this.uploadFileList= [...this.uploadFileList,...this.modelValue];
         return this.uploadFileList;
 
-
-
-        
+        /*
+        if (this.has_multiple_file) {
+          // return this.uploadFileList.map((file) => file.id);
+          return this.uploadFileList;
+        } else {
+         // return this.uploadFileList[0] || null;
+          return this.uploadFileList.slice(-1);
+        }
+          */
+      } else {
+        this.uploadFileList = [...this.uploadFileList, ...this.modelValue];
+        return this.uploadFileList;
       }
     },
   },
 
   mounted() {
-    
-
     this.error_message_data = this.error_message;
   },
 };

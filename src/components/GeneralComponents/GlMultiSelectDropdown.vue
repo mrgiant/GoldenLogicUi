@@ -51,6 +51,7 @@
       </div>
 
       <div
+        ref="myDivDropDown"
         class="relative border border-gray-200 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:border-gray-600 dark:focus:ring-blue-500 dark:focus:border-blue-500"
       >
         <div class="relative">
@@ -80,13 +81,16 @@
             class="absolute text-xl text-gray-500 cursor-pointer fas right-2 hover:text-gray-700 dark:hover:text-gray-800 showOptions"
             style="top: 11px"
           ></i>
-        </div>
+       
 
         <!-- Dropdown Menu -->
 
         <div
-          class="text-gray-700 bg-white dark:border-strokedark dark:bg-boxdark dark:text-gray-200 !border-b !border-t-0 !border-r !border-l absolute w-full z-[999999999] showOptions"
+          class="text-gray-700 bg-white dark:border-strokedark dark:bg-boxdark dark:text-gray-200 !border-b !border-t-0 !border-r !border-l fixed w-full z-[999999999] showOptions rounded-b-lg"
           v-show="optionsShown"
+           :style="{ maxWidth: divDropDownWidth + 'px' }"
+         
+         
         >
           <div class="p-1">
             <label
@@ -147,6 +151,9 @@
           </div>
         </div>
       </div>
+
+
+      </div>
     </div>
   </div>
 </template>
@@ -160,6 +167,7 @@ import {
   onMounted,
   computed,
   nextTick,
+  onBeforeUnmount,
 } from "vue";
 
 const props = defineProps({
@@ -228,6 +236,30 @@ const optionsShown = ref(false);
 const searchFilter = ref("");
 const uuid = ref("");
 
+const myDivDropDown = ref(null);
+    const divDropDownWidth = ref(0);
+    const divDropDownTop = ref(0);
+
+    const getDivDropDownWidth = () => {
+      if (myDivDropDown.value) {
+        divDropDownWidth.value = myDivDropDown.value.offsetWidth;
+        var parentRect = myDivDropDown.value.getBoundingClientRect();
+       
+      // divDropDownTop.value = parentRect.top+41;
+       divDropDownTop.value = parentRect.top + 41 + (props.label_name ? 0 : 22) ;
+
+       
+      }
+    };
+
+
+    const preventEnterKey = (e) => {
+       if (e.key === "Enter" && e.target.form) {
+         e.preventDefault();
+     }
+   };
+
+
 onMounted(() => {
   //emit("selected", selected.value);
 
@@ -238,16 +270,20 @@ onMounted(() => {
   //selected.value = optionsValues.value.find(item => String(item.id) === String(defaultValue)) || {};
 
   if (!props.show) {
-    document.body.addEventListener("click", (e) => {
-      clearData(e);
-    });
 
-    document.addEventListener("keypress", (e) => {
-      if (e.key === "Enter" && e.target.form) {
-        e.preventDefault();
-      }
-    });
+    window.addEventListener('scroll', getDivDropDownWidth);
+
+    document.body.addEventListener('click', clearData);
+    document.addEventListener('keypress', preventEnterKey);
+    
   }
+});
+
+onBeforeUnmount(() => {
+
+window.removeEventListener('scroll', getDivDropDownWidth);
+document.body.removeEventListener('click', clearData);
+document.removeEventListener('keypress', preventEnterKey);
 });
 
 const optionsValues = computed(() => convertedOptions());
@@ -516,6 +552,7 @@ function showOptions() {
     searchFilter.value = "";
     optionsShown.value = true;
     nextTick(() => {
+      getDivDropDownWidth();
       //refs[props.field_name + "search" + uuid.value].focus();
       var input_search_feild = document.getElementById(
         `${props.field_name}search${uuid.value}`

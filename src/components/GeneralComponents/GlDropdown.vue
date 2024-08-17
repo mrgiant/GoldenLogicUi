@@ -12,7 +12,7 @@
     <hr class="!opacity-100 bg-gray-200 border-0 dark:bg-gray-700" />
   </div>
 
-  <div  :class="field_name" v-if="!show">
+  <div :class="field_name" v-if="!show">
     <input
       type="hidden"
       :name="field_name"
@@ -32,18 +32,16 @@
       >
 
       <div
-        class=" relative focus:ring-blue-500 focus:border-blue-500 dark:border-gray-600 dark:focus:ring-blue-500 dark:focus:border-blue-500"
+        ref="myDivDropDown"
+        class="relative focus:ring-blue-500 focus:border-blue-500 dark:border-gray-600 dark:focus:ring-blue-500 dark:focus:border-blue-500"
       >
         <div class="relative showOptions">
-          <!-- Dropdown Input @blur="exit()" -->
-
           <input
             :class="{
               'gl-input-form': error_message == '',
               'gl-input-form-invalid': error_message !== '',
             }"
             class="pl-8 pr-2 showOptions"
-            :ref="field_name"
             @click="showOptions()"
             :value="selectedDefultValue?.name"
             :placeholder="placeholder"
@@ -63,82 +61,87 @@
             class="absolute text-xl text-gray-500 cursor-pointer fas right-2 hover:text-gray-700 dark:hover:text-gray-800 showOptions"
             style="top: 11px"
           ></i>
-        </div>
 
-        <!-- Dropdown Menu -->
-        <div
-          class="text-gray-700 bg-white dark:border-strokedark dark:bg-boxdark dark:text-gray-200 !border-b !border-t-0 !border-r !border-l absolute w-full z-[999999999]"
-          v-show="optionsShown"
-        >
-          <div class="p-1">
-            <label
-              for="default-search"
-              class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
-              >Search</label
-            >
-            <div class="relative">
-              <div
-                class="absolute inset-y-0 flex items-center pointer-events-none start-0 ps-3"
+          <!-- Dropdown Menu -->
+          <div
+            class="text-gray-700 bg-white dark:border-strokedark dark:bg-boxdark dark:text-gray-200 !border-b !border-t-0 !border-r !border-l fixed w-full z-[999999999] rounded-b-lg"
+            v-show="optionsShown"
+            :style="{
+              maxWidth: divDropDownWidth + 'px',
+              top: divDropDownTop + 'px',
+            }"
+          >
+            <div class="p-1">
+              <label
+                for="default-search"
+                class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
+                >Search</label
               >
-                <svg
-                  class="w-4 h-4 text-gray-500 dark:text-gray-400"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 20 20"
+              <div class="relative">
+                <div
+                  class="absolute inset-y-0 flex items-center pointer-events-none start-0 ps-3"
                 >
-                  <path
-                    stroke="currentColor"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
-                  />
-                </svg>
+                  <svg
+                    class="w-4 h-4 text-gray-500 dark:text-gray-400"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
+                    />
+                  </svg>
+                </div>
+                <input
+                  type="search"
+                  v-model="searchFilter"
+                  :id="`${field_name}search${uuid}`"
+                  @keydown="handleKeyDown"
+                  @blur="exit()"
+                  autocomplete="off"
+                  class="block w-full p-2 text-sm text-gray-900 border rounded-lg outline-none border-frontend ps-10 bg-gray-50 focus:border-frontend dark:bg-gray-700 dark:border-frontenddark dark:placeholder-frontenddark dark:text-white dark:focus:border-frontenddark"
+                  placeholder="Search ..."
+                />
               </div>
-              <input
-                type="search"
-                v-model="searchFilter"
-                :ref="input_search"
-                :id="`${field_name}search${uuid}`"
-                @keydown="handleKeyDown"
-                @blur="exit()"
-                autocomplete="off"
-                class="block w-full p-2 text-sm text-gray-900 border rounded-lg outline-none border-frontend ps-10 bg-gray-50 focus:border-frontend dark:bg-gray-700 dark:border-frontenddark dark:placeholder-frontenddark dark:text-white dark:focus:border-frontenddark"
-                placeholder="Search ..."
-              />
             </div>
-          </div>
 
-          <div class="overflow-y-auto max-h-64">
-            <div
-              class="relative px-2 py-2 text-xs leading-4 text-gray-700 no-underline cursor-pointer dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-              @click="selectOption(option)"
-              @mousedown="selectOption(option)"
-              v-for="(option, index) in filteredOptions"
-              :class="index + 1 == count ? 'bg-gray-100 dark:bg-gray-600' : ''"
-              :key="index"
-              :id="`${index + 1}${uuid}`"
-            >
-              <div class="flex items-center py-2 pl-10 pr-4">
-                <svg
-                  v-if="selectedDefultValue?.id === option.id"
-                  class="absolute flex items-center flex-shrink-0 w-4 h-4 text-green-500 left-2 dark:text-green-400"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 16 12"
-                >
-                  <path
-                    stroke="currentColor"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M1 5.917 5.724 10.5 15 1.5"
-                  />
-                </svg>
+            <div class="overflow-y-auto max-h-64">
+              <div
+                class="relative px-2 py-2 text-xs leading-4 text-gray-700 no-underline cursor-pointer dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                @click="selectOption(option)"
+                @mousedown="selectOption(option)"
+                v-for="(option, index) in filteredOptions"
+                :class="
+                  index + 1 == count ? 'bg-gray-100 dark:bg-gray-600' : ''
+                "
+                :key="index"
+                :id="`${index + 1}${uuid}`"
+              >
+                <div class="flex items-center py-2 pl-10 pr-4">
+                  <svg
+                    v-if="selectedDefultValue?.id === option.id"
+                    class="absolute flex items-center flex-shrink-0 w-4 h-4 text-green-500 left-2 dark:text-green-400"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 16 12"
+                  >
+                    <path
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M1 5.917 5.724 10.5 15 1.5"
+                    />
+                  </svg>
 
-                <span v-html="option.name || option.id ||'-'"> </span>
+                  <span v-html="option.name || option.id || '-'"> </span>
+                </div>
               </div>
             </div>
           </div>
@@ -165,6 +168,7 @@ import {
   onMounted,
   computed,
   nextTick,
+  onBeforeUnmount,
 } from "vue";
 
 const props = defineProps({
@@ -232,9 +236,28 @@ const optionsShown = ref(false);
 const searchFilter = ref("");
 const uuid = ref("");
 
-onMounted(() => {
-  //emit("selected", selected.value);
+const myDivDropDown = ref(null);
+const divDropDownWidth = ref(0);
+const divDropDownTop = ref(0);
 
+const getDivDropDownWidth = () => {
+  if (myDivDropDown.value) {
+    divDropDownWidth.value = myDivDropDown.value.offsetWidth;
+    var parentRect = myDivDropDown.value.getBoundingClientRect();
+
+    divDropDownTop.value = parentRect.top + 41 + (props.label_name ? 0 : 22) ;
+
+    //label_name
+  }
+};
+
+const preventEnterKey = (e) => {
+  if (e.key === "Enter" && e.target.form) {
+    e.preventDefault();
+  }
+};
+
+onMounted(() => {
   uuid.value = generateUUID();
 
   //var defaultValue = convertedOptionDefault();
@@ -242,16 +265,17 @@ onMounted(() => {
   //selected.value = optionsValues.value.find(item => String(item.id) === String(defaultValue)) || {};
 
   if (!props.show) {
-    document.body.addEventListener("click", (e) => {
-      clearData(e);
-    });
+    window.addEventListener("scroll", getDivDropDownWidth);
 
-    document.addEventListener("keypress", (e) => {
-      if (e.key === "Enter" && e.target.form) {
-        e.preventDefault();
-      }
-    });
+    document.body.addEventListener("click", clearData);
+    document.addEventListener("keypress", preventEnterKey);
   }
+});
+
+onBeforeUnmount(() => {
+  window.removeEventListener("scroll", getDivDropDownWidth);
+  document.body.removeEventListener("click", clearData);
+  document.removeEventListener("keypress", preventEnterKey);
 });
 
 const optionsValues = computed(() => convertedOptions());
@@ -312,10 +336,8 @@ function isObjectNotEmpty(obj) {
 */
 
 function isObjectNotEmpty(obj) {
-  return obj !== null && typeof obj === 'object' && Object.keys(obj).length > 0;
+  return obj !== null && typeof obj === "object" && Object.keys(obj).length > 0;
 }
-
-
 
 function clearData(e) {
   if (
@@ -326,7 +348,6 @@ function clearData(e) {
     exit();
     count.value = 0;
     optionsShown.value = false;
-
   }
 }
 
@@ -372,8 +393,6 @@ function convertedOptions() {
 
 function convertedOptionDefault() {
   if (isObjectNotEmpty(selected.value)) {
-
-     
     if (typeof selected.value === "object") {
       return (
         optionsValues.value.find(
@@ -388,8 +407,6 @@ function convertedOptionDefault() {
       );
     }
   } else if (props.modelValue) {
-
-    
     if (typeof props.modelValue === "object") {
       return (
         optionsValues.value.find(
@@ -422,8 +439,6 @@ function convertedOptionDefault() {
   */
 }
 
-
-
 function selectOption(option) {
   selected.value = option;
   optionsShown.value = false;
@@ -434,22 +449,16 @@ function selectOption(option) {
 
 function showOptions() {
   if (!props.show) {
-
-
-    if(optionsShown.value)
-     {
-
+    if (optionsShown.value) {
       optionsShown.value = false;
-     
 
       return;
-
-     }
-
+    }
 
     searchFilter.value = "";
     optionsShown.value = true;
     nextTick(() => {
+      getDivDropDownWidth();
       //refs[props.field_name + "search" + uuid.value].focus();
       var input_search_feild = document.getElementById(
         `${props.field_name}search${uuid.value}`
@@ -481,7 +490,6 @@ function exit() {
   }
   emit("selected", selected.value);
   //optionsShown.value = false;
-  
 }
 
 watch(searchFilter, () => {

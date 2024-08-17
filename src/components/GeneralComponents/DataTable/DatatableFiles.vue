@@ -1,5 +1,5 @@
 <template>
-    <div>
+    
         <div
             v-if="isArray"
             v-for="item in row[field]"
@@ -69,7 +69,7 @@
                 Download
             </a>
         </div>
-    </div>
+    
 </template>
 
 <script>

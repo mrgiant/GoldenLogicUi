@@ -2,7 +2,10 @@
   "name": "golden-logic-ui",
   "description": "The most popular library of interactive components built with Vuejs && Tailwind CSS",
   "type": "module",
-  "repository": "https://github.com/mrgiant/GoldenLogicUi.git",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mrgiant/GoldenLogicUi.git"
+  },
   "files": [
     "dist"
   ],
@@ -17,7 +20,7 @@
     "./dist/style.css": "./dist/style.css"
   },
   "private": false,
-  "version": "1.0.254",
+  "version": "1.0.341",
   "scripts": {
     "dev": "vite",
     "build": "vite build",

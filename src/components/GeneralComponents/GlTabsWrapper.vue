@@ -32,25 +32,27 @@
 
 </template>
 
-<script>
-import { ref, provide } from "vue";
-export default {
-  setup(props, { slots }) {
-    // to only get title from slots tabs
-   // const tabTitles = ref(slots.default().map((tab) => tab.props.title))
-    const tabs = ref(slots.default().map((tab) => tab.props))
-    console.log(slots.default());
+<script setup>
+import { ref, provide, watch } from 'vue';
+import { defineProps, defineEmits, useSlots } from 'vue';
 
+const props = defineProps({});
+const emit = defineEmits(['TabChange']);
+const slots = useSlots();
 
-    const selectedTitle = ref(tabs.value[0].title)
-    provide("selectedTitle", selectedTitle)
+const tabs = ref(slots.default().map((tab) => tab.props));
+const selectedTitle = ref(tabs.value[0].title);
 
-    return {
-        tabs,
-      selectedTitle,
-    };
-  },
-}
+provide('selectedTitle', selectedTitle);
+emit('TabChange', tabs.value[0].title);
+
+const handleTabChange = (newTitle) => {
+  emit('TabChange', newTitle);
+};
+
+watch(selectedTitle, (newTitle) => {
+  handleTabChange(newTitle);
+});
 </script>
 
 <style scoped></style>

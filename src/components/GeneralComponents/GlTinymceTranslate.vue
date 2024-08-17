@@ -75,6 +75,19 @@ const emit = defineEmits(["update:modelValue","update:modelValueTranslate","keyd
 const input = ref(null);
 const input_translate = ref(null);
 
+const InputTranslateChanged = () => {
+
+
+if(input_translate.value)
+{
+
+ emit('update:modelValueTranslate', input_translate.value.value);
+
+}
+
+
+};
+
 onMounted(() => {
 
 
@@ -90,41 +103,45 @@ onMounted(() => {
 
 
 
-      console.log('tinymce ',props.model_value);
-
+     
 
 if (input.value !== null && input.value.hasAttribute('autofocus')) {
 input.value.focus();
 }
 
-if(props.model_value)
-{
- emit('update:modelValue', props.model_value);
- input.value.value=props.model_value;
+if(props.modelValue)
+  {
+     emit('update:modelValue', props.modelValue);
+     input.value.value=props.modelValue;
 
 
 
 
-}
+  }
 
-if(props.model_value_translate)
-{
-// emit('update:modelValueTranslate', props.model_value_translate);
-// input_translate.value.value=props.model_value_translate;
+  if(props.modelValueTranslate)
+  {
+    // emit('update:modelValueTranslate', props.model_value_translate);
+    // input_translate.value.value=props.model_value_translate;
 
-// console.log('model_value_translate',props.model_value_translate);
+   
+    
+     emit('update:modelValueTranslate', props.modelValueTranslate);
+     input_translate.value.value=props.modelValueTranslate;
 
 
 
-}
-if(props.translatable)
+  }
+  if(props.translatable && !props.modelValueTranslate)
 {
 axios
 
-    .post(`/admin/get_field_translations`, {
-               model: props.translatable.model,
-               row_id: props.translatable.row_id,
-               field: props.translatable.field,
+    .get(`/admin/get_field_translations`, {
+      params: {
+        model: props.translatable.model,
+        row_id: props.translatable.row_id,
+        field: props.translatable.field
+    }
 
 
 
@@ -200,7 +217,7 @@ defineExpose({ focus: () => input.value.focus() });
       data-i18n="true"
       :name="field_name + '_i18n'"
       :id="field_name + '_i18n'"
-      @input="$emit('update:modelValueTranslate', $event.target.value)"
+      @change="InputTranslateChanged"
       ref="input_translate"
     />
 

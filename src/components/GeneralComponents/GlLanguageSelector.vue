@@ -16,7 +16,7 @@
       'border-t border-b': index !== 0 && index !== locals.length - 1
         }"
 
-         class="w-full p-1 font-bold text-center text-gray-500 uppercase bg-white border-gray-200 rounded-lg cursor-pointer md:rounded-none dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700">
+         class="block w-full p-1 font-bold text-center text-gray-500 uppercase bg-white border-gray-200 rounded-lg cursor-pointer md:rounded-none dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700">
 
             {{ lang }}
 

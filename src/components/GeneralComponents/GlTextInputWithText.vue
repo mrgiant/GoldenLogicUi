@@ -105,7 +105,7 @@ const proxyValue = computed({
   },
   set(newValue) {
     emit("update:modelValue", newValue);
-    console.log(newValue);
+    
   },
 });
 
@@ -141,11 +141,11 @@ defineExpose({ focus: () => input.value.focus() });
           :name="field_name"
           :id="field_name"
           :class="{
-            'gl-input-form': error_message == '',
-            'gl-input-form-invalid': error_message !== '',
+            'gl-input-form-text': error_message == '',
+            'gl-input-form-invalid-text': error_message !== '',
           }"
-          class="border-e-0 rounded-s-lg"
-          style="border-radius: 0rem;"
+          class="!border-e-0 !rounded-s-lg"
+         
           :type="type"
           v-model="proxyValue"
           @keydown="$emit('keydown', $event)"
@@ -155,8 +155,8 @@ defineExpose({ focus: () => input.value.focus() });
       </div>
 
       <label
-      style="height: 2.5rem;"
-        class="z-10 inline-flex items-center flex-shrink-0 px-4  text-sm font-medium text-center text-gray-500 bg-gray-100 border border-gray-300 dark:text-gray-400 rounded-e-lg focus:outline-none dark:bg-gray-700 dark:border-gray-600"
+     
+        class="h-10 z-10 inline-flex items-center flex-shrink-0 px-4  text-sm font-medium text-center text-gray-500 bg-gray-100 border border-gray-300 dark:text-gray-400 rounded-e-lg focus:outline-none dark:bg-gray-700 dark:border-gray-600"
       >
         {{ input_text }}
       </label>
