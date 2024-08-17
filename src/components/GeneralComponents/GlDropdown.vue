@@ -245,7 +245,7 @@ const getDivDropDownWidth = () => {
     divDropDownWidth.value = myDivDropDown.value.offsetWidth;
     var parentRect = myDivDropDown.value.getBoundingClientRect();
 
-    divDropDownTop.value = parentRect.top + 41 + (props.label_name ? 0 : 22) ;
+    divDropDownTop.value = parentRect.top + 41 + (props.label_name ? 22 : 0) ;
 
     //label_name
   }
