@@ -53,6 +53,76 @@
       </div>
     </div>
 
+    <div class="flex flex-col gap-6 mb-4 xl:flex-row">
+
+    <div   v-for="(column, index) in columns">
+
+      <div class="w-full xl:w-1/2" v-if="column.hasOwnFilter && Object.keys(column.hasOwnFilter).length > 0">
+
+
+       
+
+
+
+         <GlDropdown
+            v-if="column.hasOwnFilter.type=='dropdown'"
+            :has_cancel="true"
+            :options="column.hasOwnFilter.options"
+             v-model="dynamicFilters[column.field_name]"
+            :is_required="false"
+            :field_name="column.field_name"
+            :label_name="column.field_label"
+            :show="false"
+            placeholder="Please select an option"
+          >
+          </GlDropdown>
+
+
+          <GlTextInput
+            v-if="column.hasOwnFilter.type=='text'"
+                                type="text"
+                                :is_required="false"
+                                :show="false"
+                                v-model="dynamicFilters[column.field_name]"
+                               :field_name="column.field_name"
+                               :label_name="column.field_label"
+                            >
+           </GlTextInput>
+
+
+           <GlTextInput
+            v-if="column.hasOwnFilter.type=='date'"
+                                type="date"
+                                :is_required="false"
+                                :show="false"
+                                v-model="dynamicFilters[column.field_name]"
+                               :field_name="column.field_name"
+                               :label_name="column.field_label"
+                            >
+           </GlTextInput>
+
+
+
+
+
+      </div>
+
+
+        
+        
+
+
+
+       
+    
+    
+    
+    </div>
+
+    </div>
+
+
+
     <div class="overflow-auto rounded-lg dark:text-gray-400 dark:bg-gray-800">
       <table
         class="w-full h-full max-w-full overflow-hidden bg-white border-separate xl:overflow-auto lg:border-collapse border-spacing-y-5 lg:border-spacing-y-0 dark:border-strokedark dark:bg-boxdark"
@@ -213,8 +283,13 @@
 <script>
 import TailwindPagination from "/src/components/LaravelVuePagination/TailwindPagination.vue";
 
+import GlTextInput from "/src/components/GeneralComponents/GlTextInput.vue";
+import GlDropdown from "/src/components/GeneralComponents/GlDropdown.vue";
+
+
+
 export default {
-  components: { TailwindPagination },
+  components: { TailwindPagination,GlTextInput,GlDropdown },
   props: {
     data: Array,
     columns: Array,
@@ -224,6 +299,7 @@ export default {
   },
   data() {
     return {
+      dynamicFilters: {},
       isLoading: false,
       isMounted: false,
       limit: 5,
@@ -235,7 +311,9 @@ export default {
       itemLists: [],
 
       tableData: [],
-      sortField: this.columns[0].field_name,
+      
+      sortField: this.xprops.defaultSortField ? this.xprops.defaultSortField : this.columns[0].field_name,
+
       sortOrder: "desc",
 
       pageOptions: [5, 10, 20, 50],
@@ -256,6 +334,9 @@ export default {
     },
   },
   methods: {
+
+
+    
 
 
 
@@ -281,6 +362,7 @@ export default {
         s: this.search,
         limit: this.perPage,
         page: this.page,
+        ...this.dynamicFilters,
       };
 
       axios
@@ -343,6 +425,16 @@ export default {
         this.GetItemLists();
       }
     },
+
+    dynamicFilters: {
+      handler(newFilters) {
+        this.GetItemLists();
+      },
+      deep: true,
+    },
+
+
+
   },
 };
 </script>
