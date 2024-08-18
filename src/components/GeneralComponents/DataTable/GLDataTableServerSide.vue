@@ -1,7 +1,7 @@
 <template>
   <div class="p-2">
     <div
-      class="flex flex-col flex-wrap pb-4 gap-4 xl:flex-row xl:items-center xl:justify-between flex-column "
+      class="flex flex-col flex-wrap pb-4 gap-4 xl:flex-row xl:items-center xl:justify-between flex-column"
     >
       <div class="flex items-center gap-2">
         <span class="font-medium"> Show </span>
@@ -53,75 +53,53 @@
       </div>
     </div>
 
-    <div class="flex flex-col gap-6 mb-4 xl:flex-row">
+   
+      <div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
+      <template v-for="(column, index) in columns" :key="index">
+        <template
+          v-if="
+            column.hasOwnFilter && Object.keys(column.hasOwnFilter).length > 0
+          "
+        >
+          
+            <GlDropdown
+              v-if="column.hasOwnFilter.type == 'dropdown'"
+              :has_cancel="true"
+              :options="column.hasOwnFilter.options"
+              v-model="dynamicFilters[column.field_name]"
+              :is_required="false"
+              :field_name="column.field_name"
+              :label_name="column.field_label"
+              :show="false"
+              placeholder="Please select an option"
+            >
+            </GlDropdown>
 
-    <div   v-for="(column, index) in columns">
+            <GlTextInput
+              v-if="column.hasOwnFilter.type == 'text'"
+              type="text"
+              :is_required="false"
+              :show="false"
+              v-model="dynamicFilters[column.field_name]"
+              :field_name="column.field_name"
+              :label_name="column.field_label"
+            >
+            </GlTextInput>
 
-      <div class="w-full xl:w-1/2" v-if="column.hasOwnFilter && Object.keys(column.hasOwnFilter).length > 0">
-
-
-       
-
-
-
-         <GlDropdown
-            v-if="column.hasOwnFilter.type=='dropdown'"
-            :has_cancel="true"
-            :options="column.hasOwnFilter.options"
-             v-model="dynamicFilters[column.field_name]"
-            :is_required="false"
-            :field_name="column.field_name"
-            :label_name="column.field_label"
-            :show="false"
-            placeholder="Please select an option"
-          >
-          </GlDropdown>
-
-
-          <GlTextInput
-            v-if="column.hasOwnFilter.type=='text'"
-                                type="text"
-                                :is_required="false"
-                                :show="false"
-                                v-model="dynamicFilters[column.field_name]"
-                               :field_name="column.field_name"
-                               :label_name="column.field_label"
-                            >
-           </GlTextInput>
-
-
-           <GlTextInput
-            v-if="column.hasOwnFilter.type=='date'"
-                                type="date"
-                                :is_required="false"
-                                :show="false"
-                                v-model="dynamicFilters[column.field_name]"
-                               :field_name="column.field_name"
-                               :label_name="column.field_label"
-                            >
-           </GlTextInput>
-
-
-
-
-
-      </div>
-
-
-        
-        
-
-
-
-       
-    
-    
-    
+            <GlTextInput
+              v-if="column.hasOwnFilter.type == 'date'"
+              type="date"
+              :is_required="false"
+              :show="false"
+              v-model="dynamicFilters[column.field_name]"
+              :field_name="column.field_name"
+              :label_name="column.field_label"
+            >
+            </GlTextInput>
+          
+        </template>
+      </template>
     </div>
-
-    </div>
-
-
 
     <div class="overflow-auto rounded-lg dark:text-gray-400 dark:bg-gray-800">
       <table
@@ -150,7 +128,7 @@
             <td :colspan="columns.length">
               <div
                 role="status"
-                class=" p-4 space-y-4 border border-gray-200 divide-y divide-gray-200 rounded shadow animate-pulse dark:divide-gray-700 md:p-6 dark:border-gray-700"
+                class="p-4 space-y-4 border border-gray-200 divide-y divide-gray-200 rounded shadow animate-pulse dark:divide-gray-700 md:p-6 dark:border-gray-700"
               >
                 <div class="flex items-center justify-between">
                   <div>
@@ -228,19 +206,17 @@
             :key="index"
             class="bg-white dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 hover:dark:text-gray-200 text-gray-500"
           >
-
-          <!-- remove  md:flex-row from  below td to be the text below lable if want in line add it -->
+            <!-- remove  md:flex-row from  below td to be the text below lable if want in line add it -->
             <td
               v-for="(column, colIndex) in columns"
               :key="colIndex"
               :data-label="column.field_label"
               class="text-pretty before:content-[attr(data-label)] before:font-bold lg:before:content-none flex flex-col justify-between gap-2 lg:table-cell py-4 px-5 lg:py-3 lg:px-4 border-[0.3px] dark:border-gray-700"
-
               :class="{
-          
-          'rounded-t-lg lg:rounded-t-none': colIndex === 0,
-          'rounded-b-lg lg:rounded-b-none': colIndex === columns.length - 1
-        }"
+                'rounded-t-lg lg:rounded-t-none': colIndex === 0,
+                'rounded-b-lg lg:rounded-b-none':
+                  colIndex === columns.length - 1,
+              }"
             >
               <div class="overflow-auto max-h-40">
                 <component
@@ -286,10 +262,8 @@ import TailwindPagination from "/src/components/LaravelVuePagination/TailwindPag
 import GlTextInput from "/src/components/GeneralComponents/GlTextInput.vue";
 import GlDropdown from "/src/components/GeneralComponents/GlDropdown.vue";
 
-
-
 export default {
-  components: { TailwindPagination,GlTextInput,GlDropdown },
+  components: { TailwindPagination, GlTextInput, GlDropdown },
   props: {
     data: Array,
     columns: Array,
@@ -311,8 +285,10 @@ export default {
       itemLists: [],
 
       tableData: [],
-      
-      sortField: this.xprops.defaultSortField ? this.xprops.defaultSortField : this.columns[0].field_name,
+
+      sortField: this.xprops.defaultSortField
+        ? this.xprops.defaultSortField
+        : this.columns[0].field_name,
 
       sortOrder: "desc",
 
@@ -321,7 +297,7 @@ export default {
       page: 1,
     };
   },
-  emits: ['editAction','generalAction'],
+  emits: ["editAction", "generalAction"],
   computed: {
     filteredData() {
       const searchTerm = this.search.toLowerCase();
@@ -334,21 +310,13 @@ export default {
     },
   },
   methods: {
-
-
-    
-
-
-
     editAction(data) {
-    
-      this.$emit("editAction",data);
+      this.$emit("editAction", data);
     },
 
     generalAction(data) {
-    
-    this.$emit("generalAction",data);
-  },
+      this.$emit("generalAction", data);
+    },
     forDynCompIs(component) {
       return typeof component === "object" ? component : null;
     },
@@ -432,9 +400,6 @@ export default {
       },
       deep: true,
     },
-
-
-
   },
 };
 </script>
