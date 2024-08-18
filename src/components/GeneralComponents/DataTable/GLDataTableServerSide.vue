@@ -54,7 +54,56 @@
     </div>
 
    
-      <div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
+      <div class="grid grid-cols-1 xl:grid-cols-2 gap-4 mb-3">
+
+
+        
+
+        <template v-for="(column, index) in customFilters" :key="index">
+ 
+             
+          <GlDropdown
+              v-if="column.type == 'dropdown'"
+              :has_cancel="true"
+              :options="column.options"
+              v-model="dynamicFilters[column.field_name]"
+              :is_required="false"
+              :field_name="column.field_name"
+              :label_name="column.field_label"
+              :show="false"
+              placeholder="Please select an option"
+            >
+            </GlDropdown>
+
+            <GlTextInput
+              v-if="column.type == 'text'"
+              type="text"
+              :is_required="false"
+              :show="false"
+              v-model="dynamicFilters[column.field_name]"
+              :field_name="column.field_name"
+              :label_name="column.field_label"
+            >
+            </GlTextInput>
+
+            <GlTextInput
+              v-if="column.type == 'date'"
+              type="date"
+              :is_required="false"
+              :show="false"
+              v-model="dynamicFilters[column.field_name]"
+              :field_name="column.field_name"
+              :label_name="column.field_label"
+            >
+            </GlTextInput>
+
+        </template>
+
+
+
+
+
+
       <template v-for="(column, index) in columns" :key="index">
         <template
           v-if="
@@ -308,6 +357,14 @@ export default {
         );
       });
     },
+
+    customFilters(){
+
+      return this.xprops.customFilters;
+
+    }
+
+
   },
   methods: {
     editAction(data) {
