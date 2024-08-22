@@ -59,8 +59,8 @@ const updateTabFromHash = () => {
     selectedTitle.value = tab.title;
   }
   else {
-    selectedTitle.value = tabs.value[0].title;
-    emit('TabChange', tabs.value[0].title);
+   // selectedTitle.value = tabs.value[0].title;
+    //emit('TabChange', tabs.value[0].title);
   }
 };
 
