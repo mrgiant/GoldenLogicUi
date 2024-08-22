@@ -47,13 +47,13 @@ provide('selectedTitle', selectedTitle);
 emit('TabChange', tabs.value[0].title);
 
 const handleTabChange = (newTitle) => {
-  window.location.hash = newTitle;
+  window.location.hash = encodeURIComponent(newTitle);
   emit('TabChange', newTitle);
 };
 
 
 const updateTabFromHash = () => {
-  const hash = window.location.hash.replace('#', '');
+  const hash = decodeURIComponent(window.location.hash.replace('#', ''));
   const tab = tabs.value.find((tab) => tab.title === hash);
   if (tab) {
     selectedTitle.value = tab.title;
