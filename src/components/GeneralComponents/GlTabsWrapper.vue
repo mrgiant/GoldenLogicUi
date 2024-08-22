@@ -34,7 +34,7 @@
 
 <script setup>
 import { ref, provide, watch } from 'vue';
-import { defineProps, defineEmits, useSlots } from 'vue';
+import { defineProps, defineEmits, useSlots,onMounted,onBeforeUnmount } from 'vue';
 
 const props = defineProps({});
 const emit = defineEmits(['TabChange']);
@@ -47,12 +47,43 @@ provide('selectedTitle', selectedTitle);
 emit('TabChange', tabs.value[0].title);
 
 const handleTabChange = (newTitle) => {
+  window.location.hash = newTitle;
   emit('TabChange', newTitle);
 };
+
+
+const updateTabFromHash = () => {
+  const hash = window.location.hash.replace('#', '');
+  const tab = tabs.value.find((tab) => tab.title === hash);
+  if (tab) {
+    selectedTitle.value = tab.title;
+  }
+};
+
+
+
+
 
 watch(selectedTitle, (newTitle) => {
   handleTabChange(newTitle);
 });
+
+
+onMounted(() => {
+  updateTabFromHash();
+  window.addEventListener('hashchange', updateTabFromHash);
+});
+
+onBeforeUnmount(() => {
+  window.removeEventListener('hashchange', updateTabFromHash);
+});
+
+
+
+
+
+
+
 </script>
 
 <style scoped></style>

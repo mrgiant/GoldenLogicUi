@@ -52,20 +52,59 @@
 export default {
   props: ["field", "row", "tdProps"],
   computed: {
+
+
+    entry() {
+      const keys = this.field.split('.');
+      const field = keys.pop();
+      return { keys, field };
+    },
+    isArray() {
+      return Array.isArray(this.getNestedValue(this.row, this.entry.keys));
+    },
+    isObject() {
+      return typeof this.getNestedValue(this.row, this.entry.keys) === 'object';
+    },
+
+
+   
+
+
     hasLabelColor(value) {
       const status = this.tdProps.status_general_labels_color.find(
-        (status) => status.text === this.row[this.field]
+        (status) => status.text === this.getValue()
       );
       return status ? status.class : ""; // Returns the class if found, else an empty string
     },
 
     getLabel() {
       const status = this.tdProps.status_general_labels_color.find(
-        (status) => status.text === this.row[this.field]
+        (status) => status.text === this.getValue()
       );
       return status ? status.label : ""; // Returns the class if found, else an empty string
     },
   },
+
+  methods: {
+     getValue() {
+
+      
+
+      if(this.isObject)
+       {
+        return this.getNestedValue(this.row, this.entry.keys)[this.entry.field]
+      }
+      else
+      {
+        return this.row[this.field];
+
+      }
+      
+      },
+    getNestedValue(obj, keys) {
+      return keys.reduce((o, k) => (o || {})[k], obj);
+    }
+  }
 };
 </script>
 
