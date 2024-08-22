@@ -41,10 +41,10 @@ const emit = defineEmits(['TabChange']);
 const slots = useSlots();
 
 const tabs = ref(slots.default().map((tab) => tab.props));
-const selectedTitle = ref(tabs.value[0].title);
+const selectedTitle = ref("");
 
 provide('selectedTitle', selectedTitle);
-emit('TabChange', tabs.value[0].title);
+
 
 const handleTabChange = (newTitle) => {
   window.location.hash = encodeURIComponent(newTitle);
@@ -57,6 +57,10 @@ const updateTabFromHash = () => {
   const tab = tabs.value.find((tab) => tab.title === hash);
   if (tab) {
     selectedTitle.value = tab.title;
+  }
+  else {
+    selectedTitle.value = tabs.value[0].title;
+    emit('TabChange', tabs.value[0].title);
   }
 };
 
