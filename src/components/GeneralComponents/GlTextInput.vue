@@ -16,10 +16,7 @@ const props = defineProps({
         type: String,
         default: "",
     },
-    model_value: {
-        type: [String, Number],
-        default: "",
-    },
+   
 
     modelValue: {
         type: [String, Number],
@@ -61,40 +58,11 @@ onMounted(() => {
         input.value.focus();
     }
 
-    /*
-
-    if (props.model_value!="") {
-        emit("update:modelValue", props.model_value);
-        input.value.value = props.model_value;
-    }
-
-    */
-
-    /*
-    if (props.modelValue!="") {
-        emit("update:modelValue", props.modelValue);
-        input.value.value = props.modelValue;
-    }
-
-    */
+   
 });
 
 
-/*
-watch(
-    () => props.modelValue,
-    (newValue, oldValue) => {
 
-        if(newValue)
-        {
-            emit("update:modelValue", newValue);
-            input.value.value = newValue;
-        }
-       
-    },
-    { immediate: true, deep: true }
-);
-*/
 
 
 

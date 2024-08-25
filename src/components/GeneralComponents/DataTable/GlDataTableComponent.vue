@@ -163,7 +163,7 @@
               v-for="(column, colIndex) in columns"
               :key="colIndex"
               :data-label="column.field_label"
-              class="text-pretty before:content-[attr(data-label)] before:font-bold lg:before:content-none flex flex-col justify-between gap-2 lg:table-cell py-4 px-5 lg:py-3 lg:px-4 border-[0.3px] dark:border-gray-700"
+              class="text-pretty before:content-[attr(data-label)] before:font-bold lg:before:content-none flex flex-col justify-between gap-2 lg:table-cell py-4 px-5 lg:py-3 lg:px-4 border-[1px] dark:border-gray-700"
 
               :class="{
           

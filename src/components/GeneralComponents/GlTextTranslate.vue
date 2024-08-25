@@ -116,6 +116,8 @@ onMounted(() => {
 
 
   }
+
+  /*
   if(props.translatable && !props.modelValueTranslate)
   {
     axios
@@ -134,7 +136,7 @@ onMounted(() => {
 
 
 
-              input_translate.value.value=JSON.stringify(response.data);
+             input_translate.value.value=JSON.stringify(response.data);
               emit('update:modelValueTranslate', JSON.stringify(response.data));
               //var event = new Event('change');
               //input_translate.dispatchEvent(event);
@@ -148,6 +150,8 @@ onMounted(() => {
             console.log(error);
         });
   }
+
+  */
 
 
 
