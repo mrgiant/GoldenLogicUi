@@ -4,7 +4,7 @@
 
     <p class="mt-3 mb-4">
       <span
-        v-for="(selectedValue, index) in selectedDefultValue"
+        v-for="(selectedValue, index) in selected"
         class="bg-blue-100 text-blue-800 text-sm font-medium mb-2 mt-2 me-2 px-3 py-1 rounded dark:bg-blue-900 dark:text-blue-300"
         >{{ selectedValue?.name }}</span
       >
@@ -13,7 +13,7 @@
     <hr class="!opacity-100 bg-gray-200 border-0 dark:bg-gray-700" />
   </div>
 
-  <div  :class="field_name" v-if="!show">
+  <div :class="field_name" v-if="!show">
     <input
       type="hidden"
       :name="field_name + '[]'"
@@ -44,7 +44,7 @@
         <button
           @click="deselectAll"
           type="button"
-          class="rounded-tr-lg px-4 py-0 text-sm font-medium text-gray-900 bg-transparent border border-gray-900  hover:bg-gray-900 hover:text-white focus:z-10 focus:bg-gray-900 focus:text-white dark:border-white dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:bg-gray-700"
+          class="rounded-tr-lg px-4 py-0 text-sm font-medium text-gray-900 bg-transparent border border-gray-900 hover:bg-gray-900 hover:text-white focus:z-10 focus:bg-gray-900 focus:text-white dark:border-white dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:bg-gray-700"
         >
           Deselect all
         </button>
@@ -62,97 +62,98 @@
             @click="showOptions()"
           >
             <span
-              v-for="(selectedValue, index) in selectedDefultValue"
+              v-for="(selectedValue, index) in selected"
               :key="index"
-              class="px-2 py-1 text-xs font-medium text-blue-800 bg-blue-100 rounded pointer-events-none dark:bg-blue-900 dark:text-blue-300"
+              class="flex gap-2 px-2 py-1 text-xs font-medium text-blue-800 bg-blue-100 rounded pointer-events-none dark:bg-blue-900 dark:text-blue-300"
               >{{ selectedValue?.name }}
               <i
                 @click.stop="clearOption(selectedValue)"
-                class="cursor-pointer pointer-events-auto hover:text-red-600 dark:hover:text-red-400 fas fa-times"
-              ></i
+                class="cursor-pointer pointer-events-auto hover:text-red-600 dark:hover:text-red-400 "
+              >
+            
+
+             <svg class="w-[9px] h-[16px]" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"></path>
+      </svg>
+
+              
+              </i
             ></span>
           </div>
 
-         
-
           <i
-             @click="showOptions()"
+            @click="showOptions()"
             :class="optionsShown ? 'fa-angle-up' : 'fa-angle-down'"
-            class="absolute text-xl text-gray-500 cursor-pointer fas right-2 hover:text-gray-700 dark:hover:text-gray-800 showOptions"
+            class="absolute text-xl text-gray-500 cursor-pointer fas ltr:right-2 rtl:left-2  hover:text-gray-700 dark:hover:text-gray-800 showOptions"
             style="top: 11px"
           ></i>
-       
 
-        <!-- Dropdown Menu -->
+          <!-- Dropdown Menu -->
 
-        <div
-          class="text-gray-700 bg-white dark:border-strokedark dark:bg-boxdark dark:text-gray-200 !border-b !border-t-0 !border-r !border-l fixed w-full z-[999999999] showOptions rounded-b-lg"
-          v-show="optionsShown"
-           :style="{ maxWidth: divDropDownWidth + 'px' }"
-         
-         
-        >
-          <div class="p-1">
-            <label
-              for="default-search"
-              class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
-              >Search</label
-            >
-            <div class="relative">
-              <div
-                class="absolute inset-y-0 flex items-center pointer-events-none start-0 ps-3"
+          <div
+            class="text-gray-700 bg-white dark:border-strokedark dark:bg-boxdark dark:text-gray-200 !border-b !border-t-0 !border-r !border-l fixed w-full z-[999999999] showOptions rounded-b-lg"
+            v-show="optionsShown"
+            :style="{ maxWidth: divDropDownWidth + 'px' }"
+          >
+            <div class="p-1">
+              <label
+                for="default-search"
+                class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
+                >Search</label
               >
-                <svg
-                  class="w-4 h-4 text-gray-500 dark:text-gray-400"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 20 20"
+              <div class="relative">
+                <div
+                  class="absolute inset-y-0 flex items-center pointer-events-none start-0 ps-3"
                 >
-                  <path
-                    stroke="currentColor"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
-                  />
-                </svg>
+                  <svg
+                    class="w-4 h-4 text-gray-500 dark:text-gray-400"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
+                    />
+                  </svg>
+                </div>
+                <input
+                  type="search"
+                  v-model="searchFilter"
+                  :ref="input_search"
+                  :id="`${field_name}search${uuid}`"
+                  @keydown="handleKeyDown"
+                  @blur="exit()"
+                  autocomplete="off"
+                  class="block w-full p-2 text-sm text-gray-900 border border-gray-300 rounded-lg ps-10 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  placeholder="Search ..."
+                />
               </div>
-              <input
-                type="search"
-                v-model="searchFilter"
-                :ref="input_search"
-                :id="`${field_name}search${uuid}`"
-                @keydown="handleKeyDown"
-                @blur="exit()"
-                autocomplete="off"
-                class="block w-full p-2 text-sm text-gray-900 border border-gray-300 rounded-lg ps-10 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                placeholder="Search ..."
-              />
             </div>
-          </div>
 
-          <div class="overflow-y-auto max-h-64">
-            <div
-              class="block px-2 py-2 text-xs leading-4 text-gray-700 no-underline cursor-pointer dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-              @click="selectOption(option)"
-              @mousedown="selectOption(option)"
-              v-for="(option, index) in filteredOptions"
-              :class="
-                index + 1 == count || isOptionSelected(option.id)
-                  ? 'bg-gray-100 dark:bg-gray-600'
-                  : ''
-              "
-              :key="index"
-              :id="`${index + 1}${uuid}`"
-            >
-              {{ option.name || option.id || "-" }}
+            <div class="overflow-y-auto max-h-64">
+              <div
+                class="block px-2 py-2 text-xs leading-4 text-gray-700 no-underline cursor-pointer dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                @click="selectOption(option)"
+                @mousedown="selectOption(option)"
+                v-for="(option, index) in filteredOptions"
+                :class="
+                  index + 1 == count || isOptionSelected(option.id)
+                    ? 'bg-gray-100 dark:bg-gray-600'
+                    : ''
+                "
+                :key="index"
+                :id="`${index + 1}${uuid}`"
+              >
+                {{ option.name || option.id || "-" }}
+              </div>
             </div>
           </div>
         </div>
-      </div>
-
-
       </div>
     </div>
   </div>
@@ -172,12 +173,12 @@ import {
 
 const props = defineProps({
   modelValue: {
-    type: [String, Number],
-    default: "",
+    type: Array,
+    default: [],
   },
   defaultValue: {
-    type: [String, Number],
-    default: "",
+    type: Array,
+    default: [],
   },
   field_name: {
     type: String,
@@ -230,6 +231,7 @@ const props = defineProps({
 const emit = defineEmits(["update:modelValue", "selected", "selectionChanged"]);
 const input_search = ref(null);
 const selected = ref([]);
+const optionsValues = ref([]);
 const selectedIds = ref([]);
 const count = ref(0);
 const optionsShown = ref(false);
@@ -237,57 +239,44 @@ const searchFilter = ref("");
 const uuid = ref("");
 
 const myDivDropDown = ref(null);
-    const divDropDownWidth = ref(0);
-    const divDropDownTop = ref(0);
+const divDropDownWidth = ref(0);
+const divDropDownTop = ref(0);
 
-    const getDivDropDownWidth = () => {
-      if (myDivDropDown.value) {
-        divDropDownWidth.value = myDivDropDown.value.offsetWidth;
-        var parentRect = myDivDropDown.value.getBoundingClientRect();
-       
-      // divDropDownTop.value = parentRect.top+41;
-       divDropDownTop.value = parentRect.top + 41 + (props.label_name ? 22 : 0) ;
+const getDivDropDownWidth = () => {
+  if (myDivDropDown.value) {
+    divDropDownWidth.value = myDivDropDown.value.offsetWidth;
+    var parentRect = myDivDropDown.value.getBoundingClientRect();
 
-       
-      }
-    };
+    // divDropDownTop.value = parentRect.top+41;
+    divDropDownTop.value = parentRect.top + 41 + (props.label_name ? 22 : 0);
+  }
+};
 
-
-    const preventEnterKey = (e) => {
-       if (e.key === "Enter" && e.target.form) {
-         e.preventDefault();
-     }
-   };
-
+const preventEnterKey = (e) => {
+  if (e.key === "Enter" && e.target.form) {
+    e.preventDefault();
+  }
+};
 
 onMounted(() => {
-  //emit("selected", selected.value);
-
   uuid.value = generateUUID();
 
-  //var defaultValue = convertedOptionDefault();
-
-  //selected.value = optionsValues.value.find(item => String(item.id) === String(defaultValue)) || {};
-
   if (!props.show) {
+    window.addEventListener("scroll", getDivDropDownWidth);
 
-    window.addEventListener('scroll', getDivDropDownWidth);
-
-    document.body.addEventListener('click', clearData);
-    document.addEventListener('keypress', preventEnterKey);
-    
+    document.body.addEventListener("click", clearData);
+    document.addEventListener("keypress", preventEnterKey);
   }
 });
 
 onBeforeUnmount(() => {
-
-window.removeEventListener('scroll', getDivDropDownWidth);
-document.body.removeEventListener('click', clearData);
-document.removeEventListener('keypress', preventEnterKey);
+  window.removeEventListener("scroll", getDivDropDownWidth);
+  document.body.removeEventListener("click", clearData);
+  document.removeEventListener("keypress", preventEnterKey);
 });
 
-const optionsValues = computed(() => convertedOptions());
-const selectedDefultValue = computed(() => convertedOptionDefault());
+//const optionsValues = computed(() => convertedOptions());
+//const selectedDefultValue = computed(() => convertedOptionDefault());
 
 const filteredOptions = computed(() => {
   const filtered = [];
@@ -337,67 +326,49 @@ function generateUUID() {
   return newUUID;
 }
 
-/*
-function isObjectNotEmpty(obj) {
-  return Object.keys(obj).length > 0;
-}
-*/
-
-function isObjectNotEmpty(obj) {
-  return obj !== null && typeof obj === "object" && Object.keys(obj).length > 0;
-}
-
-function isArrayObjectNotEmpty1(items) {
-  return items != [] && items.every((item) => typeof item === "object" && item !== null);
-}
-
 function isArrayObjectNotEmpty(items) {
-  return Array.isArray(items) && items.length > 0 && items.every(item => typeof item === "object" && item !== null);
+  return (
+    Array.isArray(items) &&
+    items.length > 0 &&
+    items.every((item) => typeof item === "object" && item !== null)
+  );
 }
 
 function isArrayObjects(items) {
   return items.every((item) => typeof item === "object" && item !== null);
 }
 
-
 function isOptionSelected(optionId) {
-    return selected.value.findIndex((o) => o.id === optionId) !== -1;
+  return selected.value.findIndex((o) => o.id === optionId) !== -1;
 }
 
-
 function selectAll() {
-
-
-    selected.value = convertedOptions();
-    
+  selected.value = convertedOptions();
 }
 
 function deselectAll() {
-
-    selected.value = [];
-    emit("update:modelValue", []);
+  selected.value = [];
+  emit("update:modelValue", []);
   emit("selected", []);
   emit("selectionChanged", []);
-    
 }
 
-
-
 function clearOption(option) {
-            let index = selected.value.findIndex((o) => o.id === option.id);
-            if (index !== -1) {
-                selected.value.splice(index, 1);
-            }
-            selectedIds.value = selected.value.map((item) => item.id);
+  let index = selected.value.findIndex((o) => o.id === option.id);
+  if (index !== -1) {
+    selected.value.splice(index, 1);
+  }
+  selectedIds.value = selected.value.map((item) => item.id);
   emit("update:modelValue", selectedIds.value);
   emit("selected", selected.value);
   emit("selectionChanged", selected.value);
-
-        }
-
-
+}
 
 function clearData(e) {
+
+
+
+
   if (
     e.target.id != props.field_name + "search" + uuid.value &&
     e.target.id != props.field_name &&
@@ -407,6 +378,11 @@ function clearData(e) {
     count.value = 0;
     optionsShown.value = false;
   }
+
+
+
+
+
 }
 
 function scrollToElement(count) {
@@ -440,6 +416,7 @@ function selectPost(key) {
 }
 
 function convertedOptions() {
+  // console.log("convertedOptions");
   return props.options.map((option, index) => {
     if (typeof option === "object") {
       return option;
@@ -450,9 +427,7 @@ function convertedOptions() {
 }
 
 function convertedOptionDefault() {
-       
-
-  
+  //console.log("selected.value",selected.value);
 
   if (isArrayObjectNotEmpty(selected.value)) {
     if (isArrayObjects(selected.value)) {
@@ -474,9 +449,7 @@ function convertedOptionDefault() {
     }
   } else if (props.modelValue) {
     if (isArrayObjects(props.modelValue)) {
-
-       
-      return   selected.value=(
+      return (
         optionsValues.value.filter((option) =>
           props.modelValue.some(
             (selectedItem) => String(selectedItem.id) === String(option.id)
@@ -484,7 +457,7 @@ function convertedOptionDefault() {
         ) || []
       );
     } else {
-      return selected.value=(
+      return (
         optionsValues.value.filter((option) =>
           props.modelValue.some(
             (selectedItem) => String(selectedItem) === String(option.id)
@@ -493,36 +466,15 @@ function convertedOptionDefault() {
       );
     }
   }
-
-  /*
-  var option = selected.value || props.modelValue;
-  console.log(selected.value," - ",props.modelValue," - ",option);
-  if (option) {
-    if (typeof option === "object") {
-       return optionsValues.value.find(item => String(item.id) === String(option.id)) || {};
-
-      return option.id + "";
-    } else {
-        return optionsValues.value.find(item => String(item.id) === String(option)) || {};
-      return option + "";
-    }
-  } 
-
-  */
 }
 
 function selectOption(option) {
-
-    
-
-    let index = selected.value.findIndex((o) => o.id === option.id);
-            if (index !== -1) {
-                selected.value.splice(index, 1);
-            } else {
-                selected.value.push(option);
-            }
-
-            
+  let index = selected.value.findIndex((o) => o.id === option.id);
+  if (index !== -1) {
+    selected.value.splice(index, 1);
+  } else {
+    selected.value.push(option);
+  }
 
   //selected.value = option;
   optionsShown.value = false;
@@ -534,20 +486,11 @@ function selectOption(option) {
 
 function showOptions() {
   if (!props.show) {
-
-
-    if(optionsShown.value)
-     {
-
+    if (optionsShown.value) {
       optionsShown.value = false;
-     
 
       return;
-
-     }
-
-
-
+    }
 
     searchFilter.value = "";
     optionsShown.value = true;
@@ -578,7 +521,7 @@ function ClearInput() {
 }
 
 function exit() {
-    /*
+  /*
   if (!selected.value.id) {
     selected.value = [];
     searchFilter.value = "";
@@ -595,14 +538,33 @@ watch(searchFilter, () => {
   }
 });
 watch(selected, (value) => {
-
-    
-
   if (isArrayObjectNotEmpty(selected.value)) {
     selectedIds.value = selected.value.map((item) => item.id);
     emit("update:modelValue", selectedIds.value);
   }
 });
+
+watch(
+  () => props.modelValue,
+  () => {
+    if (!isArrayObjectNotEmpty(selected.value)) {
+      selected.value = convertedOptionDefault();
+    }
+  },
+  { immediate: true }
+);
+
+
+watch(
+  () => props.options,
+  () => {
+
+    optionsValues.value = convertedOptions();
+    selected.value = convertedOptionDefault();
+   
+  },
+  { immediate: true }
+);
 </script>
 
 <style lang="scss" scoped></style>

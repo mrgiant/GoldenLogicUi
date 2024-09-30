@@ -26,6 +26,7 @@ export { default as GlTabsWrapper } from './components/GeneralComponents/GlTabsW
 export { default as GlTab } from './components/GeneralComponents/GlTab.vue'
 export { default as GlMultiItemSlide } from './components/GeneralComponents/GlMultiItemSlide.vue'
 export { default as GlModal } from './components/GeneralComponents/GlModal.vue'
+export { default as GlModalShow } from './components/GeneralComponents/GlModalShow.vue'
 export { default as GlToggleBox } from './components/GeneralComponents/GlToggleBox.vue'
 export { default as GlToggleBoxTrueFalse } from './components/GeneralComponents/GlToggleBoxTrueFalse.vue'
 export { default as GlDropdown } from './components/GeneralComponents/GlDropdown.vue'
@@ -81,11 +82,17 @@ export { default as GlStatusConnectingConnectedDisconnected }  from'./components
 
 
 
+export { default as ClickOutsideDirective }  from'./ClickOutsideDirective.js';
+
+
+
+
 
 
 
 
 /*
+
 import { createApp } from 'vue'
 
 import App from './App.vue'
@@ -93,3 +100,4 @@ import App from './App.vue'
 createApp(App).mount('#app')
 
 */
+

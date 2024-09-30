@@ -10,7 +10,7 @@
             class="flex-auto -mb-px text-center"
           >
             <a
-               :class="{'text-slate-600 bg-white dark:bg-meta-4': selectedTitle != tab.title, 'text-white  bg-slate-600 dark:bg-primary': selectedTitle === tab.title}"
+               :class="{'text-slate-600 bg-white dark:bg-meta': selectedTitle != tab.title, 'text-white  bg-slate-600 dark:bg-primary': selectedTitle === tab.title}"
               class="block px-5 py-3 text-xs font-bold leading-normal  rounded shadow-lg hover:text-white tex hover:bg-slate-600 dark:hover:bg-primary dark:text-white tabs_buttons"
             >
               <i :class="tab.icon" class="mr-1 text-base"></i> {{ tab.title }}

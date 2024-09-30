@@ -1,4 +1,5 @@
 <template>
+  <DynamicConfirmation ref="ConfirmationDelete"></DynamicConfirmation>
   <div class="p-2">
     <div
       class="flex flex-col flex-wrap pb-4 gap-4 xl:flex-row xl:items-center xl:justify-between flex-column"
@@ -53,56 +54,43 @@
       </div>
     </div>
 
-   
-      <div class="grid grid-cols-1 xl:grid-cols-2 gap-4 mb-3">
+    <div class="grid grid-cols-1 xl:grid-cols-2 gap-4 mb-3">
+      <template v-for="(column, index) in customFilters" :key="index">
+        <GlDropdown
+          v-if="column.type == 'dropdown'"
+          :has_cancel="true"
+          :options="column.options"
+          v-model="dynamicFilters[column.field_name]"
+          :is_required="false"
+          :field_name="column.field_name"
+          :label_name="column.field_label"
+          :show="false"
+          placeholder="Please select an option"
+        >
+        </GlDropdown>
 
+        <GlTextInput
+          v-if="column.type == 'text'"
+          type="text"
+          :is_required="false"
+          :show="false"
+          v-model="dynamicFilters[column.field_name]"
+          :field_name="column.field_name"
+          :label_name="column.field_label"
+        >
+        </GlTextInput>
 
-        
-
-        <template v-for="(column, index) in customFilters" :key="index">
- 
-             
-          <GlDropdown
-              v-if="column.type == 'dropdown'"
-              :has_cancel="true"
-              :options="column.options"
-              v-model="dynamicFilters[column.field_name]"
-              :is_required="false"
-              :field_name="column.field_name"
-              :label_name="column.field_label"
-              :show="false"
-              placeholder="Please select an option"
-            >
-            </GlDropdown>
-
-            <GlTextInput
-              v-if="column.type == 'text'"
-              type="text"
-              :is_required="false"
-              :show="false"
-              v-model="dynamicFilters[column.field_name]"
-              :field_name="column.field_name"
-              :label_name="column.field_label"
-            >
-            </GlTextInput>
-
-            <GlTextInput
-              v-if="column.type == 'date'"
-              type="date"
-              :is_required="false"
-              :show="false"
-              v-model="dynamicFilters[column.field_name]"
-              :field_name="column.field_name"
-              :label_name="column.field_label"
-            >
-            </GlTextInput>
-
-        </template>
-
-
-
-
-
+        <GlTextInput
+          v-if="column.type == 'date'"
+          type="date"
+          :is_required="false"
+          :show="false"
+          v-model="dynamicFilters[column.field_name]"
+          :field_name="column.field_name"
+          :label_name="column.field_label"
+        >
+        </GlTextInput>
+      </template>
 
       <template v-for="(column, index) in columns" :key="index">
         <template
@@ -110,44 +98,54 @@
             column.hasOwnFilter && Object.keys(column.hasOwnFilter).length > 0
           "
         >
-          
-            <GlDropdown
-              v-if="column.hasOwnFilter.type == 'dropdown'"
-              :has_cancel="true"
-              :options="column.hasOwnFilter.options"
-              v-model="dynamicFilters[column.field_name]"
-              :is_required="false"
-              :field_name="column.field_name"
-              :label_name="column.field_label"
-              :show="false"
-              placeholder="Please select an option"
-            >
-            </GlDropdown>
+          <GlDropdown
+            v-if="column.hasOwnFilter.type == 'dropdown'"
+            :has_cancel="true"
+            :options="column.hasOwnFilter.options"
+            v-model="dynamicFilters[column.field_name]"
+            :is_required="false"
+            :field_name="column.field_name"
+            :label_name="column.field_label"
+            :show="false"
+            placeholder="Please select an option"
+          >
+          </GlDropdown>
 
-            <GlTextInput
-              v-if="column.hasOwnFilter.type == 'text'"
-              type="text"
-              :is_required="false"
-              :show="false"
-              v-model="dynamicFilters[column.field_name]"
-              :field_name="column.field_name"
-              :label_name="column.field_label"
-            >
-            </GlTextInput>
+          <GlTextInput
+            v-if="column.hasOwnFilter.type == 'text'"
+            type="text"
+            :is_required="false"
+            :show="false"
+            v-model="dynamicFilters[column.field_name]"
+            :field_name="column.field_name"
+            :label_name="column.field_label"
+          >
+          </GlTextInput>
 
-            <GlTextInput
-              v-if="column.hasOwnFilter.type == 'date'"
-              type="date"
-              :is_required="false"
-              :show="false"
-              v-model="dynamicFilters[column.field_name]"
-              :field_name="column.field_name"
-              :label_name="column.field_label"
-            >
-            </GlTextInput>
-          
+          <GlTextInput
+            v-if="column.hasOwnFilter.type == 'date'"
+            type="date"
+            :is_required="false"
+            :show="false"
+            v-model="dynamicFilters[column.field_name]"
+            :field_name="column.field_name"
+            :label_name="column.field_label"
+          >
+          </GlTextInput>
         </template>
       </template>
+    </div>
+
+    <div class="flex flex-wrap  mb-3">
+      <gl-button @click="toggleSelectAll" tag="button" button_type="default" :has_border_reduced="false" classes="">
+        Select all
+      </gl-button>
+      <gl-button @click="toggleDeselectAll" tag="button" button_type="default" :has_border_reduced="false">
+        Deselect all
+      </gl-button>
+      <gl-button tag="button" @click="deleteSelected" button_type="red" :has_border_reduced="false">
+        Delete selected
+      </gl-button>
     </div>
 
     <div class="overflow-auto rounded-lg dark:text-gray-400 dark:bg-gray-800">
@@ -158,6 +156,8 @@
           class="hidden text-sm font-normal text-center text-gray-500 lg:table-header-group dark:border-strokedark bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
         >
           <tr>
+            <th class="w-full px-4 py-2 lg:w-[3%]"></th>
+
             <th
               v-for="(column, index) in columns"
               :key="index"
@@ -256,13 +256,27 @@
             class="bg-white dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 hover:dark:text-gray-200 text-gray-500"
           >
             <!-- remove  md:flex-row from  below td to be the text below lable if want in line add it -->
+
+            <td
+              class="text-center rounded-t-lg lg:rounded-t-none text-pretty before:content-[attr(data-label)] before:font-bold lg:before:content-none flex flex-col justify-between gap-2 lg:table-cell py-4 px-5 lg:py-3 lg:px-4 border-[1px] dark:border-gray-700"
+              data-label=""
+            >
+              <input
+                :checked="checkedIds.includes(item.id)"
+                @change="toggleCheck(item.id)"
+                type="checkbox"
+                value=""
+                class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+              />
+            </td>
+
             <td
               v-for="(column, colIndex) in columns"
               :key="colIndex"
               :data-label="column.field_label"
               class="text-pretty before:content-[attr(data-label)] before:font-bold lg:before:content-none flex flex-col justify-between gap-2 lg:table-cell py-4 px-5 lg:py-3 lg:px-4 border-[1px] dark:border-gray-700"
               :class="{
-                'rounded-t-lg lg:rounded-t-none': colIndex === 0,
+                /* 'rounded-t-lg lg:rounded-t-none': colIndex === 0,*/
                 'rounded-b-lg lg:rounded-b-none':
                   colIndex === columns.length - 1,
               }"
@@ -310,9 +324,19 @@ import TailwindPagination from "/src/components/LaravelVuePagination/TailwindPag
 
 import GlTextInput from "/src/components/GeneralComponents/GlTextInput.vue";
 import GlDropdown from "/src/components/GeneralComponents/GlDropdown.vue";
+import GlButton from "/src/components/GeneralComponents/GlButton.vue";
+import DynamicConfirmation from "/src/components/GeneralComponents/DynamicConfirmation.vue";
+
+import GlToast from "/src/Stores/toast.js";
 
 export default {
-  components: { TailwindPagination, GlTextInput, GlDropdown },
+  components: {
+    TailwindPagination,
+    GlTextInput,
+    GlDropdown,
+    GlButton,
+    DynamicConfirmation,
+  },
   props: {
     data: Array,
     columns: Array,
@@ -322,6 +346,7 @@ export default {
   },
   data() {
     return {
+      checkedIds: [],
       dynamicFilters: {},
       isLoading: false,
       isMounted: false,
@@ -358,15 +383,79 @@ export default {
       });
     },
 
-    customFilters(){
-
+    customFilters() {
       return this.xprops.customFilters;
-
-    }
-
-
+    },
   },
   methods: {
+    async deleteSelected() {
+      if (this.checkedIds.length <= 0) {
+        GlToast.methods.add({
+          message: "Please select at least one item to delete.",
+          type: "error",
+          duration: 5000,
+        });
+
+        return;
+      }
+
+      const ok = await this.$refs.ConfirmationDelete.show({
+        title: "Delete Confirmation",
+        message: "Are you sure you want to delete the selected items?",
+        okButton: "Yes, delete it",
+      });
+
+      if (ok) {
+        this.$refs.ConfirmationDelete.showLoading();
+
+
+        this.checkedIds.forEach(id => {
+
+          axios
+            .delete(`${this.xprops.route}/${id}`)
+            .then(() => {})
+            .catch((error) => {
+              // handle error
+              console.log(error);
+            });
+       
+      });
+
+        this.$refs.ConfirmationDelete.hideLoading();
+
+      
+
+        GlToast.methods.add({
+          message: "Selected items deleted successfully.",
+          type: "success",
+          duration: 5000,
+        });
+
+
+        this.GetItemLists();
+
+
+      } else {
+        return;
+      }
+    },
+
+    toggleSelectAll() {
+      this.checkedIds = this.itemLists.data.map((item) => item.id);
+    },
+
+    toggleDeselectAll() {
+      this.checkedIds = [];
+    },
+
+    toggleCheck(id) {
+      if (this.checkedIds.includes(id)) {
+        this.checkedIds = this.checkedIds.filter((item) => item !== id);
+      } else {
+        this.checkedIds.push(id);
+      }
+    },
+
     editAction(data) {
       this.$emit("editAction", data);
     },

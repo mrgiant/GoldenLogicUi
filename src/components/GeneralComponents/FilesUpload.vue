@@ -198,6 +198,21 @@ export default {
       type: Boolean,
       default: true,
     },
+
+    accepts_file_types: {
+      type: String,
+      default: "",
+    },
+
+    max_file_size: {
+      type: Number,
+      default: 0,
+    },
+
+
+
+
+
   },
 
   emits: ["update:modelValue", "uploaded"],
@@ -303,7 +318,10 @@ export default {
         if (!file) resolve();
 
         const formData = new FormData();
-        formData.append("file", file);
+        formData.append(this.field_name, file);
+        formData.append("accepts_file_types", this.accepts_file_types);
+        formData.append("max_file_size", this.max_file_size);
+        formData.append("field_name", this.field_name);
 
         Object.entries(this.file_config).forEach(([key, value]) => {
           formData.append(key, value);
@@ -348,7 +366,7 @@ export default {
             if (error.response.status === 422) {
               this.error_message_data = this.getFirstError(
                 error.response.data.errors,
-                "file"
+                this.field_name
               );
             } else {
               console.error("An error occurred:", error);

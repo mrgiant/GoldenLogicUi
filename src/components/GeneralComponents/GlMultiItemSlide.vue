@@ -34,11 +34,10 @@
 
 
 
+            <div class="overflow-hidden flex flex-col gap-3" :id="'sliderContainer_' + Random_string" :class="sliderContainerAction()">
 
-            <div class="overflow-hidden " :id="'sliderContainer_' + Random_string" :class="sliderContainerAction()">
 
-
-                <ul class="flex" :id="'slider_' + Random_string">
+                <ul class="flex " :id="'slider_' + Random_string" :class="elements_to_show_prop==1?'':'gap-7'">
 
                     <div class="items-center justify-center hidden arrow_button xl:flex xxl:flex md:flex sm:flex"
                         v-if=" dotsNum > 0 && !hide_arrow && slider_arrows_indicators_position == 'arrows_indicators_inside_slider'"  :class="direction_property == 'rtl' ? 'arrow_button_next':'arrow_button_prev'">

@@ -6,7 +6,7 @@
         :disabled="is_disabled"
         v-bind="{ type: is_submit ? 'submit' : undefined }"
         :href="tag === 'a' ? href : undefined"
-        :class="`  ${is_disabled ? 'cursor-not-allowed opacity-50':''}   ${icon ? 'flex':''}    h-[2.5rem]  items-center gap-2 focus:outline-none text-sm px-3 py-2 me-2  font-medium rounded-lg  ${buttonTypeClass}`"
+        :class="`  ${is_disabled ? 'cursor-not-allowed opacity-50':''}   ${icon ? 'flex':''}    h-[2.5rem]  items-center gap-2 focus:outline-none text-sm px-3 py-2   font-medium   ${has_border_reduced ? 'rounded-lg':''}  ${buttonTypeClass} ${classes}`"
     >
         <i v-if="icon" :class="icon" class="text-base"></i>
         <slot></slot>
@@ -16,7 +16,7 @@
         v-else
         is="button"
         disabled
-        :class="` h-[2.5rem] flex items-center gap-2 focus:outline-none text-sm px-2  py-2 me-2  font-medium rounded-lg  ${buttonTypeClass}`"
+        :class="` h-[2.5rem] flex items-center gap-2 focus:outline-none text-sm px-2  py-2   font-medium ${has_border_reduced ? 'rounded-lg':''}  ${buttonTypeClass} ${classes}`"
     >
         <svg
             aria-hidden="true"
@@ -41,6 +41,14 @@
 <script>
 export default {
     props: {
+
+
+        classes: {
+            type: String,
+            default: "",
+        },
+
+
         button_type: {
             type: String,
             default: "default",
@@ -64,6 +72,11 @@ export default {
         is_disabled: {
             type: Boolean,
             default: false,
+        },
+
+        has_border_reduced: {
+            type: Boolean,
+            default: true,
         },
 
 
@@ -98,6 +111,8 @@ export default {
                     return " text-white bg-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:ring-yellow-300        dark:focus:ring-yellow-900";
                 case "purple":
                     return " text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300       dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900";
+                case "primary":
+                    return " text-white btn-primary ";
                 default:
                     return "";
             }
@@ -106,3 +121,4 @@ export default {
     methods: {},
 };
 </script>
+

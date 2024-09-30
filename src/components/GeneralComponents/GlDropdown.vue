@@ -5,7 +5,7 @@
     <p class="mt-3 mb-4">
       <span
         class="bg-blue-100 text-blue-800 text-sm font-medium mb-2 mt-2 me-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300"
-        >{{ selectedDefultValue?.name }}</span
+        >{{ selected?.name }}</span
       >
     </p>
 
@@ -17,7 +17,7 @@
       type="hidden"
       :name="field_name"
       :id="field_name"
-      :value="selectedDefultValue?.id"
+      :value="selected?.id"
     />
 
     <div class="dropdown" v-if="options">
@@ -43,22 +43,24 @@
             }"
             class="pl-8 pr-2 showOptions"
             @click="showOptions()"
-            :value="selectedDefultValue?.name"
+            :value="selected?.name"
             :placeholder="placeholder"
             autocomplete="off"
             readonly
           />
 
           <i
-            v-show="isObjectNotEmpty(selectedDefultValue) && has_cancel"
+            v-show="isObjectNotEmpty(selected) && has_cancel"
             @click.stop="ClearInput()"
-            class="absolute text-gray-500 cursor-pointer fas fa-times right-7 hover:text-gray-700 dark:hover:text-gray-800"
+            class="absolute text-gray-500 cursor-pointer  ltr:right-7 rtl:left-7  pointer-events-auto hover:text-red-600 dark:hover:text-red-400"
             style="top: 13px"
-          ></i>
+          >       <svg class="w-[9px] h-[16px]" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"></path>
+      </svg>    </i>
           <i
             @click="showOptions()"
             :class="optionsShown ? 'fa-angle-up' : 'fa-angle-down'"
-            class="absolute text-xl text-gray-500 cursor-pointer fas right-2 hover:text-gray-700 dark:hover:text-gray-800 showOptions"
+            class="absolute text-xl text-gray-500 cursor-pointer fas   ltr:right-2 rtl:left-2 hover:text-gray-700 dark:hover:text-gray-800 showOptions"
             style="top: 11px"
           ></i>
 
@@ -104,7 +106,7 @@
                   @keydown="handleKeyDown"
                   @blur="exit()"
                   autocomplete="off"
-                  class="block w-full p-2 text-sm text-gray-900 border rounded-lg outline-none border-frontend ps-10 bg-gray-50 focus:border-frontend dark:bg-gray-700 dark:border-frontenddark dark:placeholder-frontenddark dark:text-white dark:focus:border-frontenddark"
+                  class="block w-full p-2 text-sm text-gray-900 border rounded-lg outline-none border-primary ps-10 bg-gray-50 focus:border-primary dark:bg-gray-700 dark:border-primaryDark dark:placeholder-primaryDark dark:text-white dark:focus:border-primaryDark"
                   placeholder="Search ..."
                 />
               </div>
@@ -124,7 +126,7 @@
               >
                 <div class="flex items-center py-2 pl-10 pr-4">
                   <svg
-                    v-if="selectedDefultValue?.id === option.id"
+                    v-if="selected?.id === option.id"
                     class="absolute flex items-center flex-shrink-0 w-4 h-4 text-green-500 left-2 dark:text-green-400"
                     aria-hidden="true"
                     xmlns="http://www.w3.org/2000/svg"
@@ -231,6 +233,7 @@ const props = defineProps({
 const emit = defineEmits(["update:modelValue", "selected", "selectionChanged"]);
 const input_search = ref(null);
 const selected = ref({});
+const optionsValues = ref([]);
 const count = ref(0);
 const optionsShown = ref(false);
 const searchFilter = ref("");
@@ -278,8 +281,8 @@ onBeforeUnmount(() => {
   document.removeEventListener("keypress", preventEnterKey);
 });
 
-const optionsValues = computed(() => convertedOptions());
-const selectedDefultValue = computed(() => convertedOptionDefault());
+//const optionsValues = computed(() => convertedOptions());
+// const selectedDefultValue = computed(() => convertedOptionDefault());
 
 const filteredOptions = computed(() => {
   const filtered = [];
@@ -340,15 +343,21 @@ function isObjectNotEmpty(obj) {
 }
 
 function clearData(e) {
+
+
+
   if (
     e.target.id != props.field_name + "search" + uuid.value &&
     e.target.id != props.field_name &&
     !e.target.classList.contains("showOptions")
-  ) {
+  ) 
+  {
     exit();
     count.value = 0;
     optionsShown.value = false;
   }
+
+
 }
 
 function scrollToElement(count) {
@@ -392,6 +401,9 @@ function convertedOptions() {
 }
 
 function convertedOptionDefault() {
+
+  //console.log("convertedOptionDefault ",props.modelValue);
+  //console.log("optionsValues.value ",optionsValues.value);
   if (isObjectNotEmpty(selected.value)) {
     if (typeof selected.value === "object") {
       return (
@@ -407,6 +419,7 @@ function convertedOptionDefault() {
       );
     }
   } else if (props.modelValue) {
+    
     if (typeof props.modelValue === "object") {
       return (
         optionsValues.value.find(
@@ -484,7 +497,7 @@ function ClearInput() {
 }
 
 function exit() {
-  if (!selected.value.id) {
+  if (!selected.value || !selected.value.id) {
     selected.value = {};
     searchFilter.value = "";
   }
@@ -502,6 +515,35 @@ watch(selected, (value) => {
     emit("update:modelValue", value.id);
   }
 });
+
+watch(
+  () => props.modelValue,
+  () => {
+    if (!isObjectNotEmpty(selected.value)) {
+      selected.value = props.modelValue;
+      selected.value = convertedOptionDefault();
+    }
+  },
+  { immediate: true }
+);
+
+
+
+watch(
+  () => props.options,
+  () => {
+
+    optionsValues.value = convertedOptions();
+    selected.value = convertedOptionDefault();
+   
+  },
+  { immediate: true }
+);
+
+
+
+
+
 </script>
 
 <style lang="scss" scoped></style>
