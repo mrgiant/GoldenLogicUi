@@ -11,7 +11,7 @@
     >
       <!-- Modal overlay -->
       <div
-        class="fixed inset-0 transition-opacity bg-gray-500 bg-opacity-75"
+        class="fixed inset-0 transition-opacity bg-gray-500 !bg-opacity-75"
         aria-hidden="true"
       ></div>
       <span

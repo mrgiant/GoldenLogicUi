@@ -3,7 +3,7 @@
     <div v-if="isOpen" class="fixed inset-0 z-50 overflow-y-auto"  role="dialog" aria-modal="true">
       <div class="flex items-end justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
         <!-- Modal overlay -->
-        <div class="fixed inset-0 transition-opacity bg-gray-500 bg-opacity-75" aria-hidden="true"></div>
+        <div class="fixed inset-0 transition-opacity bg-gray-500 !bg-opacity-75" aria-hidden="true"></div>
         <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
         <!-- Modal content -->
         <div class="inline-block overflow-hidden text-left align-bottom transition-all transform bg-white dark:bg-gray-800 rounded-lg shadow-xl sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
@@ -23,15 +23,29 @@
             </div>
           </div>
           <!-- Modal footer -->
-          <div class="border-t border-gray-200 rounded-b dark:border-gray-600 px-4 py-3  sm:px-6 sm:flex sm:flex-row-reverse">
+          <div class="border-t border-gray-200 rounded-b dark:border-gray-600 px-4 py-3  sm:px-6 sm:flex sm:flex-row-reverse gap-2">
+           
             <!-- Confirm deletion button -->
-            <button @click="confirmAction" type="button" class="inline-flex justify-center w-full px-4 py-2 text-base font-medium text-white bg-red-600 border border-transparent rounded-md shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm">
-                {{ button_text }}
-            </button>
+
+
+            <gl-button
+             @click="confirmAction"
+             tag="button"
+             button_type="red"
+             
+              >{{ button_text }}
+            </gl-button>
+
             <!-- Cancel deletion button -->
-            <button @click="cancelAction" type="button" class="inline-flex justify-center w-full px-4 py-2 mt-3 text-base font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
-              Cancel
-            </button>
+            <gl-button
+            @click="cancelAction"
+             tag="button"
+             button_type="light"
+             
+              > Cancel
+            </gl-button>
+
+         
           </div>
         </div>
       </div>
@@ -39,7 +53,13 @@
 </template>
 
   <script>
+  import GlButton from "/src/components/GeneralComponents/GlButton.vue";
+
   export default {
+
+    components: {
+    GlButton,
+  },
     props: ['isOpen','title','button_text'],
     methods: {
       confirmAction() {
