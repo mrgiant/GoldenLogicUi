@@ -306,10 +306,12 @@ export default {
 
 
                 class_string += " space-x-reverse ";
-                class_string += " slider_indicators ";
+               // class_string += " slider_indicators ";
 
             }
-            else if (this.slider_arrows_indicators_position == 'arrows_indicators_inside_slider') {
+
+
+            if (this.slider_arrows_indicators_position == 'arrows_indicators_inside_slider') {
                 class_string += " slider_indicators ";
             }
 
