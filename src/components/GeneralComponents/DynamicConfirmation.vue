@@ -40,18 +40,18 @@
         </div>
         <!-- Modal footer -->
         <div
-          class="border-t border-gray-200 rounded-b dark:border-gray-600 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse"
+          class="gap-1 border-t border-gray-200 rounded-b dark:border-gray-600 px-4 py-3 sm:px-6 flex sm:flex-row-reverse"
         >
-          <!-- Confirm deletion button -->
-          <button
+          
 
-            v-if="!isLoading"
+          <gl-button
+              v-if="!isLoading"
             @click="confirmAction"
-            type="button"
-            class="inline-flex justify-center w-full px-4 py-2 text-base font-medium text-white bg-red-600 border border-transparent rounded-md shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm"
-          >
-            {{ okButton }}
-          </button>
+             tag="button"
+             button_type="red"
+             
+              >{{ okButton }}
+            </gl-button>
 
         <component
         v-else
@@ -84,14 +84,14 @@
 
 
 
-          <!-- Cancel deletion button -->
-          <button
+          <gl-button
             @click="cancelAction"
-            type="button"
-            class="inline-flex justify-center w-full px-4 py-2 mt-3 text-base font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
-          >
-            {{ cancelButton }}
-          </button>
+             tag="button"
+             button_type="light"
+             
+              >{{ cancelButton }}
+            </gl-button>
+          
         </div>
       </div>
     </div>

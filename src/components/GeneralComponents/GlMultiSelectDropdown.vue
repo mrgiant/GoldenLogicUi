@@ -551,7 +551,7 @@ watch(
       selected.value = convertedOptionDefault();
     }
   },
-  { immediate: true }
+  { immediate: true, deep: true }
 );
 
 
@@ -563,7 +563,7 @@ watch(
     selected.value = convertedOptionDefault();
    
   },
-  { immediate: true }
+  { immediate: true, deep: true }
 );
 </script>
 

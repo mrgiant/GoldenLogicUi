@@ -8,7 +8,8 @@
     <div
         v-if="
             row &&
-            can(`edit_${xprops.permission} || delete_${xprops.permission}`)
+            (can(`delete_${xprops.permission}`) ||
+                can(`access_${xprops.permission}`))
         "
         v-click-outside="closeDropdown"
         class="flex lg:justify-center"
@@ -39,25 +40,28 @@
                 class="py-2 text-sm text-gray-700 dark:text-gray-200"
                 aria-labelledby="dropdownDividerButton"
             >
-                <li v-if="can(`edit_${xprops.permission}`)">
+                <li v-if="can(`access_${xprops.permission}`)">
                     <a
-                        :href="xprops.route + '/' + row['id'] + '/edit'"
+                        href="#"
+                        v-on:click.prevent="editAction(row)"
                         class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                     >
-                        <i class="mr-2 fa-solid fa-list-ul opacity-80"></i>
-                        Edit</a
-                    >
+                        <i
+                            class="mr-1 fa-solid fa-pen-to-square opacity-80"
+                        ></i>
+                        Edit
+                    </a>
                 </li>
 
                 <li v-if="can(`delete_${xprops.permission}`)">
                     <a
                         href="#"
                         v-on:click.prevent="openDeleteModal"
-                        class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                        class="block px-4 py-2 text-red-600 hover:text-white hover:bg-red-600 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600"
                     >
-                        <i class="mr-2 fa-solid fa-trash-can opacity-80"></i>
-                        Remove</a
-                    >
+                        <i class="mr-1 fa-solid fa-trash-can opacity-80"></i>
+                        Remove
+                    </a>
                 </li>
             </ul>
         </div>
@@ -66,49 +70,34 @@
 
 <script setup>
 import { ref } from "vue";
-
 import DeleteConfirmationModal from "/src/components/GeneralComponents/DeleteConfirmationModal.vue"
-
 import GlToast  from '/src/Stores/toast.js';
-
-
 
 const props = defineProps({
     field: {
         type: String,
         default: "",
     },
-
     route_url: {
         type: String,
         default: "",
     },
-
     row: {
         type: [Array, Object],
-        default: [],
+        default: () => ({}),
     },
     xprops: {
         type: Object,
-        default: {},
+        default: () => ({}),
     },
-
     tdProps: {
         type: Object,
-        default: {},
+        default: () => ({}),
     },
 });
 
 const open = ref(false);
 const open_delete_modal = ref(false);
-
-const closeDropdown = () => {
-    open.value = false;
-};
-
-const openDropdown = () => {
-    open.value = true;
-};
 
 const closeDeleteModal = () => {
     open_delete_modal.value = false;
@@ -118,7 +107,19 @@ const openDeleteModal = () => {
     open_delete_modal.value = true;
 };
 
-const emit = defineEmits(["deleteAction"]);
+const closeDropdown = () => {
+    open.value = false;
+};
+
+const openDropdown = () => {
+    open.value = true;
+};
+
+const emit = defineEmits(["deleteAction", "editAction"]);
+
+const editAction = (data) => {
+    emit("editAction", data);
+};
 
 const deleteAction = () => {
     axios
@@ -126,7 +127,6 @@ const deleteAction = () => {
         .then(() => {
             closeDeleteModal();
             emit("deleteAction");
-            // handle successful delete
             GlToast.methods.add({
                 message: "Item deleted successfully.",
                 type: "success",
@@ -134,10 +134,7 @@ const deleteAction = () => {
             });
         })
         .catch((error) => {
-            // handle error
             console.log(error);
         });
 };
 </script>
-
-<style scoped></style>

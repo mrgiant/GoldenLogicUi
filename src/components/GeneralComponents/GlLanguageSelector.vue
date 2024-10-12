@@ -82,7 +82,7 @@ export default {
                     this.locals = response.data.locals;
                     this.default_language = response.data.default_language;
 
-                    console.log('default_language', this.default_language);
+                   
 
 
                     // this.is_loading = false;

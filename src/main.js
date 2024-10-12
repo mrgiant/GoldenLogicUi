@@ -54,6 +54,7 @@ export { default as GlToast }  from './Stores/toast.js';
 
 export { default as GlDatatableAction }  from'./components/GeneralComponents/DataTable/DatatableAction.vue';
 export { default as GlDatatableDeleteAction }  from'./components/GeneralComponents/DataTable/DatatableDeleteAction.vue';
+export { default as GlDatatableDeleteEditAction }  from'./components/GeneralComponents/DataTable/DatatableDeleteEditAction.vue';
 export { default as GlDatatableFileDownload }  from'./components/GeneralComponents/DataTable/DatatableFileDownload.vue';
 export { default as GlDatatableFiles }  from'./components/GeneralComponents/DataTable/DatatableFiles.vue';
 export { default as GlDatatableHtml }  from'./components/GeneralComponents/DataTable/DatatableHtml.vue';
