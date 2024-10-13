@@ -110,9 +110,13 @@ if(props.modelValue)
 
 
   }
+
+
+  /*
+
   if(props.translatable && !props.modelValueTranslate)
  {
-axios
+    axios
 
     .get(`/admin/get_field_translations`, {
       params: {
@@ -140,7 +144,9 @@ axios
         // handle error
         console.log(error);
     });
-}
+   }
+
+   */
 
 
 

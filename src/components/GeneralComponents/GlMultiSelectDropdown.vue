@@ -93,7 +93,10 @@
           <div
             class="text-gray-700 bg-white dark:border-strokedark dark:bg-boxdark dark:text-gray-200 !border-b !border-t-0 !border-r !border-l fixed w-full z-[999999999] showOptions rounded-b-lg"
             v-show="optionsShown"
-            :style="{ maxWidth: divDropDownWidth + 'px' }"
+            :style="{
+              maxWidth: divDropDownWidth + 'px',
+              top: divDropDownTop + 'px',
+            }"
           >
             <div class="p-1">
               <label

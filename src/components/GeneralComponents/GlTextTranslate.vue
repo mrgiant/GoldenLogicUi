@@ -181,7 +181,7 @@ defineExpose({ focus: () => input.value.focus() });
       data-i18n="true"
       :name="field_name + '_i18n'"
       :id="field_name + '_i18n'"
-      ref="input_translate_s"
+      ref="input_translate"
       v-model="inputTranslateValue"
 
 
