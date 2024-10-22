@@ -34,7 +34,7 @@
 
 
 
-            <div class="overflow-hidden flex flex-col gap-3" :id="'sliderContainer_' + Random_string" :class="sliderContainerAction()">
+            <div ref="sliderContainer" class="overflow-hidden flex flex-col gap-3" :id="'sliderContainer_' + Random_string" :class="sliderContainerAction()">
 
 
                 <ul class="flex " :id="'slider_' + Random_string" :class="elements_to_show_prop==1?'':'gap-7'">
@@ -488,8 +488,8 @@ export default {
         initSlider() {
 
 
-
-
+            this.$nextTick(() => {
+            console.log("sliderContainer_ref",this.$refs.sliderContainer.clientWidth);
             let sliderContainer = document.getElementById("sliderContainer_" + this.Random_string);
             let mainSliderContainer = document.getElementById("mainSliderContainer_" + this.Random_string);
 
@@ -502,10 +502,21 @@ export default {
 
 
 
+             console.log("cards length :",cards.length); 
+
 
 
             let sliderContainerWidth = sliderContainer.clientWidth;
+
+            console.log("sliderContainer :",sliderContainer); 
+            console.log("sliderContainerWidth :",sliderContainer.clientWidth); 
+            console.log("elementsToShow :",this.elementsToShow); 
+
+
+
             let cardwidth = sliderContainerWidth / this.elementsToShow;
+
+            console.log("cardwidth :",cardwidth); 
 
 
 
@@ -545,7 +556,7 @@ export default {
             }
 
 
-
+           console.log("slider.style.width :",cards.length * cardwidth);
 
             slider.style.width = cards.length * cardwidth + "px";
 
@@ -557,8 +568,13 @@ export default {
                 const element = cards[index];
                 element.style.width = cardwidth + 'px';
 
+                console.log("element.style.width",cardwidth);
+
 
             }
+
+
+        });
 
 
 

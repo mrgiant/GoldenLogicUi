@@ -58,7 +58,7 @@
           <!-- Dropdown Input @blur="exit()" -->
 
           <div
-            class="flex flex-wrap gap-2 pl-8 pr-2 gl-multi-dropdown showOptions"
+            class="flex flex-wrap gap-2  pr-2 gl-multi-dropdown showOptions"
             @click="showOptions()"
           >
             <span
