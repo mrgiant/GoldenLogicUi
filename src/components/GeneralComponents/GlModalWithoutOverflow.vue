@@ -1,12 +1,7 @@
 <script setup>
-import { onMounted, ref, watch } from "vue";
+import { onMounted, ref, watch,onBeforeUnmount } from "vue";
 
 const props = defineProps({
-  language: {
-    type: Object,
-    required: false,
-    default: () => {},
-  },
   is_open: {
     type: Boolean,
     default: false,
@@ -21,6 +16,17 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+
+  has_header: {
+    type: Boolean,
+    default: true,
+  },
+
+  has_footer: {
+    type: Boolean,
+    default: true,
+  },
+
 
   title: {
     type: String,
@@ -66,6 +72,15 @@ watch(
   },
   { immediate: true, deep: true }
 );
+
+
+onBeforeUnmount(() => {
+  removeOverflowStyles();
+});
+
+
+
+
 </script>
 
 <template>
@@ -73,20 +88,21 @@ watch(
 
   <!-- Modal -->
   <div
-    class="fixed left-0 top-13 h-full w-full overflow-y-auto overflow-x-hidden outline-none inset-0 bg-black !bg-opacity-80"
+    class="fixed left-0 top-13 h-full w-full overflow-y-auto  outline-none inset-0 bg-black !bg-opacity-80"
     :class="has_large_z_index ? 'z-[9999]' : 'z-[1055]'"
-    v-show="is_open"
+    v-if="is_open"
     tabindex="-1"
-    
+    aria-hidden="true"
   >
     <div
-      class="pointer-events-none relative h-[calc(100%-1rem)] w-auto translate-y-[-50px] transition-all duration-300 ease-in-out min-[576px]:mx-auto mt-7 min-[576px]:h-[calc(100%-3.5rem)]"
+      class="pointer-events-none relative  w-auto translate-y-[-50px] transition-all duration-300 ease-in-out min-[576px]:mx-auto mt-7 "
       :class="max_width"
     >
       <div
-        class="pointer-events-auto relative flex max-h-[100%] w-full flex-col overflow-hidden text-current shadow-4 outline-none bg-white border rounded-lg border-stroke dark:border-strokedark dark:bg-boxdark"
+        class="pointer-events-auto relative flex  w-full flex-col  text-current shadow-4 outline-none bg-white border rounded-lg border-stroke dark:border-strokedark dark:bg-boxdark"
       >
         <div
+          v-if="has_header"
           class="flex items-center justify-between flex-shrink-0 pt-10 pb-3 pl-3 pr-3 border-b-2 dark:border-gray-600"
         >
           <!-- Modal title -->
@@ -119,8 +135,6 @@ watch(
             </span>
           </button>
         </div>
-
-
 
         <div
           v-if="is_loading"
@@ -180,12 +194,18 @@ watch(
         </div>
 
         <!-- Modal body -->
-        <div  v-show="!is_loading" class="relative overflow-y-auto" :class="bodyClass">
+        <div
+          v-show="!is_loading"
+          class="relative"
+          :class="bodyClass"
+        >
           <slot name="body"></slot>
         </div>
 
         <!-- Modal footer -->
-        <div v-show="!is_loading"
+        <div
+          v-if="has_footer"
+          v-show="!is_loading"
           class="flex flex-wrap items-center justify-end flex-shrink-0 p-4 border-t-2 rounded-b-md border-neutral-100 dark:border-gray-600"
         >
           <slot name="buttons"></slot>
@@ -195,7 +215,7 @@ watch(
             type="button"
             class="px-5 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-200 rounded-lg ms-3 hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-blue-300 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600"
           >
-            {{ language?.close ?? 'Close' }}
+            Close
           </button>
         </div>
       </div>

@@ -207,12 +207,13 @@ defineExpose({ focus: () => input.value.focus() });
     />
 
     <textarea
+      class="form-input-translation  mt-4"
       :required="is_required"
       :name="field_name"
       :id="field_name"
       :class="{
-        ' gl-textarea-form form-input-translation  mt-4 ': error_message == '',
-        ' gl-textarea-form-invalid form-input-translation  mt-4 ': error_message !== '',
+        ' gl-textarea-form': error_message == '',
+        ' gl-textarea-form-invalid': error_message !== '',
       }"
       :type="type"
       @input="$emit('update:modelValue', $event.target.value)"

@@ -112,7 +112,7 @@ export default {
                 case "purple":
                     return " text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300       dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900";
                 case "primary":
-                    return " text-white btn-primary ";
+                    return "text-white gl-btn-primary";
                 default:
                     return "";
             }

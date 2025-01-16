@@ -1,7 +1,7 @@
 <template>
     <div>
 
-        <div class=""
+        <div class="w-full"
             :class="!hide_arrow && slider_arrows_indicators_position == 'arrows_outside_slider' ? 'flex' : 'relative block'"
             :id="'mainSliderContainer_' + Random_string">
 
@@ -34,10 +34,10 @@
 
 
 
-            <div  ref="slotContainer" class="overflow-hidden flex flex-col gap-3" :id="'sliderContainer_' + Random_string" :class="sliderContainerAction()">
+            <div class="overflow-hidden flex flex-col gap-3 w-full w-12/12" :id="'sliderContainer_' + Random_string" :class="sliderContainerAction()">
 
 
-                <ul   class="flex " :id="'slider_' + Random_string" :class="elements_to_show_prop==1?'':'gap-7'">
+                <ul ref="slotContainer" class="flex w-full" :id="'slider_' + Random_string" :class="elements_to_show_prop==1?'':'gap-7'">
 
                     <div class="items-center justify-center hidden arrow_button xl:flex xxl:flex md:flex sm:flex"
                         v-if=" dotsNum > 0 && !hide_arrow && slider_arrows_indicators_position == 'arrows_indicators_inside_slider'"  :class="direction_property == 'rtl' ? 'arrow_button_next':'arrow_button_prev'">
@@ -64,7 +64,9 @@
                     </div>
 
 
-                    <slot />
+                   
+                          <slot></slot>
+                   
 
 
                     <div class="items-center justify-center hidden xl:flex xxl:flex md:flex sm:flex arrow_button"
@@ -94,7 +96,7 @@
                 </ul>
 
                 <div class="flex justify-center mb-1 space-x-1 " :class="sliderIndicatorsAction()"
-                    v-if="slider_arrows_indicators_position != 'arrows_indicators_below_slider'">
+                    v-if="!hide_indicators && slider_arrows_indicators_position != 'arrows_indicators_below_slider'">
 
                     <button role="button" class="gl-dot" v-for="i in dotsNum" :key="i" v-on:click="setDot(i)"
                         :class="{ 'active': currentDot == i }"><span></span></button>
@@ -103,7 +105,7 @@
 
 
                 <div class="flex justify-between pl-5 pr-5"
-                    v-if="slider_arrows_indicators_position == 'arrows_indicators_below_slider'">
+                    v-if="!hide_indicators && slider_arrows_indicators_position == 'arrows_indicators_below_slider'">
 
                     <div class="flex justify-center mb-1 space-x-1 " :class="sliderIndicatorsAction()">
 
@@ -235,28 +237,50 @@ export default {
             type: Number,
             default: 3
         },
+
+
+        element_size: {
+            type: Number,
+            default: 80
+        },
+
+
+
         hide_arrow: {
             type: Boolean,
             default: false
         },
+
+        hide_indicators: {
+            type: Boolean,
+            default: false
+        },
+
         disable_touch: {
             type: Boolean,
             default: false
         },
+
+
+
         direction_property: {
             type: String,
-            default: "ltr"
+            default: "ltr", // Default to left-to-right
         },
+
+
         slider_arrows_indicators_position: {
             type: String,
-            default: "arrows_outside_slider"
+            default: "arrows_outside_slider"  // arrows_outside_slide,arrows_indicators_inside_slider,arrows_indicators_below_slider
         }
+
+
     },
 
-    data() {
+    data: function () {
         return {
             mutationObserver: null,
-            elementsToShow: this.elements_to_show_prop,
+            elementsToShow: 3,
             dotsNum: 0,
             currentDot: 1,
             dotsNavigation: [],
@@ -264,25 +288,28 @@ export default {
             isMoving: false,
             initialX: 0,
             initialY: 0,
-            Random_string: this.generateRandomString(6)
+            slide_size: 0,
+            Random_string: this.generateRandomString(6),
+
         };
     },
-
     mounted() {
-        this.$nextTick(() => {
-            this.observeSlotChanges();
-            this.initSlider();
-            if (!this.disable_touch) {
-                this.movingActions();
-            }
-            // Attach resize event listener
-            window.addEventListener("resize", this.resizeHandler);
-        });
-    },
 
-    beforeDestroy() {
-        // Remove resize event listener
-        window.removeEventListener("resize", this.resizeHandler);
+
+        this.elementsToShow = this.elements_to_show_prop;
+        this.observeSlotChanges();
+
+
+
+        this.initSlider();
+
+        if (!this.disable_touch) {
+            this.movingActions();
+        }
+
+
+
+
     },
 
     beforeUnmount() {
@@ -291,9 +318,7 @@ export default {
             this.mutationObserver.disconnect();
         }
     },
-
     methods: {
-
 
 
         observeSlotChanges() {
@@ -319,38 +344,59 @@ export default {
 
 
 
-
-
-
-
-        resizeHandler() {
-            this.initSlider(); // Reinitialize slider on resize
-        },
-
         sliderIndicatorsAction() {
-            let class_string = "";
-            if (this.direction_property === "rtl") {
+
+
+            var class_string = "";
+
+
+            if (this.direction_property == 'rtl') {
+
+
                 class_string += " space-x-reverse ";
+               // class_string += " slider_indicators ";
+
             }
-            if (this.slider_arrows_indicators_position === "arrows_indicators_inside_slider") {
+
+
+            if (this.slider_arrows_indicators_position == 'arrows_indicators_inside_slider') {
                 class_string += " slider_indicators ";
             }
+
+
             return class_string;
+
         },
 
         sliderContainerAction() {
-            let class_string = "";
-            if (!this.hide_arrow && this.slider_arrows_indicators_position === "arrows_outside_slider") {
-                class_string += " w-12/12 xl:w-8/12 xxl:w-8/12 md:w-8/12 sm:w-8/12";
-            } else if (this.slider_arrows_indicators_position !== "arrows_outside_slider") {
-                class_string += " w-12/12 ";
+
+
+            var class_string = "";
+
+
+            if (!this.hide_arrow && this.slider_arrows_indicators_position == 'arrows_outside_slider') {
+
+
+               // class_string += " w-12/12 xl:w-8/12 xxl:w-8/12 md:w-8/12 sm:w-8/12";
+              // class_string += " w-12/12 ";
+
             }
+            else if (this.slider_arrows_indicators_position != 'arrows_outside_slider') {
+              //  class_string += " w-12/12 ";
+            }
+
+
             return class_string;
+
+
+
+
         },
 
         generateRandomString(stringLength) {
             let result = "";
-            const alphaNumericCharacters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+            const alphaNumericCharacters =
+                "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
             const alphabetsLength = alphaNumericCharacters.length;
             for (let i = 0; i < stringLength; i++) {
                 result += alphaNumericCharacters.charAt(Math.floor(Math.random() * alphabetsLength));
@@ -359,72 +405,274 @@ export default {
         },
 
         movingActions() {
-            // Your existing touch and key event handling logic here...
+
+            let main_this = this;
+            let slider = document.getElementById("slider_" + this.Random_string);
+
+
+            const handleStart = (e_main) => {
+                //e_main.preventDefault();
+
+                // Change the cursor style to "grab" when the mouse is down or touch is initiated
+                // slider.style.cursor = "grab";
+                slider.style.cursor = "grabbing";
+
+                const handleMove = (e) => {
+                    const currentX = e.clientX || (e.touches && e.touches[0] && e.touches[0].clientX);
+                    const currentY = e.clientY || (e.touches && e.touches[0] && e.touches[0].clientY);
+
+                    // Calculate the horizontal and vertical deltas
+                    const deltaX = currentX - main_this.initialX;
+                    const deltaY = currentY - main_this.initialY;
+
+                    // Check if the horizontal movement is significantly greater than the vertical movement
+                    if (Math.abs(deltaX) > Math.abs(deltaY)) {
+                        // Horizontal movement is dominant
+                         // Prevent default action only if horizontal movement is detected to be dominant
+                           e.preventDefault(); // This line was moved from handleStart
+                        if (Math.abs(deltaX) >= 70) { // You can adjust the threshold (70) as needed
+                            if (deltaX < 0) {
+                                main_this.next(); // Move to the next slide
+                            } else {
+                                main_this.prev(); // Move to the previous slide
+                            }
+                            main_this.initialX = currentX; // Update the initial X position
+                        }
+                    }
+                    else {
+
+                        slider.style.cursor = "grab";
+                        // e_main.preventDefault();
+                    }
+
+                    // Reset the cursor style when the user moves vertically
+                    if (Math.abs(deltaY) > Math.abs(deltaX)) {
+                        slider.style.cursor = "grab";
+                        // e_main.preventDefault();
+                    }
+                }
+
+                const handleEnd = () => {
+                    document.removeEventListener("mousemove", handleMove);
+                    document.removeEventListener("touchmove", handleMove);
+                    document.removeEventListener("mouseup", handleEnd);
+                    document.removeEventListener("touchend", handleEnd);
+
+
+
+                    // Reset the cursor style when the mouse is up or touch ends
+                    slider.style.cursor = "grab";
+
+                }
+
+
+
+
+                document.addEventListener("mousemove", handleMove);
+               document.addEventListener("touchmove", handleMove, { passive: false }); // Add { passive: false } to prevent scrolling
+
+                document.addEventListener("mouseup", handleEnd);
+                document.addEventListener("touchend", handleEnd);
+
+                // Store the initial X position
+                main_this.initialX = e_main.clientX || (e_main.touches && e_main.touches[0] && e_main.touches[0].clientX);
+                main_this.initialY = e_main.clientY || (e_main.touches && e_main.touches[0] && e_main.touches[0].clientY);
+            }
+
+            const handleKeyDown = (e) => {
+
+
+                if (e.key === "ArrowLeft") {
+                    main_this.prev(); // Move to the previous slide when the left arrow key is pressed
+                } else if (e.key === "ArrowRight") {
+                    main_this.next(); // Move to the next slide when the right arrow key is pressed
+                }
+            }
+
+            const handleKeyUp = () => {
+                document.removeEventListener("keydown", handleKeyDown);
+                document.removeEventListener("keyup", handleKeyUp);
+            }
+
+            slider.addEventListener("mousedown", handleStart);
+            slider.addEventListener("touchstart", handleStart);
+            document.addEventListener("keydown", handleKeyDown);
+            //  document.addEventListener("keyup", handleKeyUp);
+
+
+
         },
 
+
+
+
+
         next() {
+
+
             if (this.currentDot < this.dotsNavigation.length) {
                 this.currentDot++;
                 this.setDot(this.currentDot);
+
             }
+
+
+
+
         },
 
         prev() {
+
+
             if (this.currentDot > 1) {
+
                 this.currentDot--;
+
                 this.setDot(this.currentDot);
+
             }
+
         },
 
         initSlider() {
+
+
+            // to check if the sider li chnage run method initslider 
+
+
+            
+
+
+
+            
+
+           
+
+
             let sliderContainer = document.getElementById("sliderContainer_" + this.Random_string);
             let mainSliderContainer = document.getElementById("mainSliderContainer_" + this.Random_string);
+
             let slider = document.getElementById("slider_" + this.Random_string);
-            let cards = Array.from(slider.querySelectorAll("li")).filter(card => card.parentNode === slider);
 
+
+
+            let cards_lis = slider.querySelectorAll("li");
+
+            let cards = Array.from(cards_lis).filter((card) => card.parentNode === slider);
+
+            // get first card size
+            let firstCard = cards[0];
+          //  let cardwidth = firstCard.clientWidth+28;
+            let cardwidth = this.element_size+28;
+
+
+
+
+
+
+          
             let sliderContainerWidth = sliderContainer.clientWidth;
-            let cardwidth = sliderContainerWidth / this.elementsToShow;
+           // let cardwidth = sliderContainerWidth / this.elementsToShow;
 
-            if (this.elementsToShow > 1) {
-                if (document.body.clientWidth < 1000) {
-                    this.elementsToShow = 1;
-                    cardwidth = this.hide_arrow ? mainSliderContainer.clientWidth : sliderContainerWidth;
-                } else if (document.body.clientWidth < 1500) {
-                    this.elementsToShow = 2;
-                }
-            } else {
-                this.elementsToShow = 1;
-                cardwidth = this.hide_arrow ? mainSliderContainer.clientWidth : sliderContainerWidth;
-            }
+           
+
+            this.elementsToShow=Math.floor(this.hide_arrow ? mainSliderContainer.clientWidth / cardwidth : sliderContainerWidth / cardwidth)
+           
+          //  this.elementsToShow = this.elementsToShow > 1 ? this.elementsToShow-1 : this.elementsToShow;
+           
+            cardwidth =((this.hide_arrow ? mainSliderContainer.clientWidth  : sliderContainerWidth) / this.elementsToShow) - 28;
+           
+          
+           
+           
+            
+
+
+            
+
+
+
+
+
+
 
             if (cards.length > 1) {
-                this.dotsNum = this.elementsToShow === 1 ? cards.length : cards.length - this.elementsToShow + 1;
-                let navigation_no_between_slides = this.elementsToShow === 1
-                    ? (cardwidth * cards.length) / this.dotsNum
-                    : (cardwidth * (cards.length - this.elementsToShow)) / (this.dotsNum - 1);
-                this.dotsNavigation = Array.from({ length: this.dotsNum }, (_, i) => navigation_no_between_slides * i);
+               // this.dotsNum = this.elementsToShow == 1 ? cards.length : cards.length - this.elementsToShow + 1;
+
+                this.dotsNum = Math.ceil(cards.length / this.elementsToShow);
+
+              
+              //  let navigation_no_between_slides = this.elementsToShow == 1 ? (cardwidth * (cards.length)) / this.dotsNum : (cardwidth * (cards.length - this.elementsToShow)) / (this.dotsNum - 1);
+               // let navigation_no_between_slides = this.elementsToShow * (cardwidth -28 );
+
+                let navigation_no_between_slides = this.hide_arrow ? mainSliderContainer.clientWidth : sliderContainerWidth;
+              
+               
+                this.dotsNavigation = [];
+
+                for (let i = 0; i < this.dotsNum; i++) {
+
+
+                    this.dotsNavigation.push(navigation_no_between_slides * i); // Add numbers to the array
+                }
+
+               
+
             }
 
-            slider.style.width = `${cards.length * cardwidth}px`;
+
+
+
+           // slider.style.width = cards.length * cardwidth + "px";
+
             slider.style.transition = "margin";
             slider.style.transitionDuration = "1s";
 
-            cards.forEach(card => card.style.width = `${cardwidth}px`);
+            for (let index = 0; index < cards.length; index++) {
+
+               const element = cards[index];
+               element.style.width = cardwidth + 'px';
+               // to set as min-width
+                element.style.minWidth = cardwidth + 'px';
+
+
+            }
+
+
+
+
         },
 
+
+
+
+
+
         setDot(index) {
+
+
             let slider = document.getElementById("slider_" + this.Random_string);
-            if (this.direction_property === "rtl") {
-                slider.style.marginRight = -this.dotsNavigation[index - 1] + "px";
-            } else {
-                slider.style.marginLeft = -this.dotsNavigation[index - 1] + "px";
+
+
+            if (this.direction_property == "rtl") {
+
+                slider.style.marginRight = -this.dotsNavigation[index - 1] + 'px';
+
+
             }
+            else {
+
+                slider.style.marginLeft = -this.dotsNavigation[index - 1] + 'px';
+
+            }
+
             this.currentDot = index;
+
         }
-    }
+
+    },
 };
 </script>
-
 
 <style lang="scss" scoped>
 .gl-dot.active span,

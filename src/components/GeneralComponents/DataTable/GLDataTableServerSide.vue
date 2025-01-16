@@ -5,7 +5,7 @@
       class="flex flex-col flex-wrap pb-4 gap-4 xl:flex-row xl:items-center xl:justify-between flex-column"
     >
       <div class="flex items-center gap-2">
-        <span class="font-medium"> Show </span>
+        <span class="font-medium"> {{ language?.show ?? 'Show' }} </span>
 
         <div style="margin-top: 3px">
           <dropdown
@@ -22,7 +22,7 @@
           </dropdown>
         </div>
 
-        <span class="font-medium"> Entries </span>
+        <span class="font-medium"> {{ language?.entries ?? 'Entries' }} </span>
       </div>
 
       <label for="table-search" class="sr-only">Search</label>
@@ -49,12 +49,12 @@
           v-model="search"
           @input="handleSearch()"
           class="block w-full p-2 text-sm text-gray-900 border border-gray-300 rounded-lg ps-10 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-          placeholder="Search ..."
+          :placeholder="language?.search ? language?.search + ' ...' : 'Search ...'" 
         />
       </div>
     </div>
 
-    <div class="grid grid-cols-1 xl:grid-cols-2 gap-4 mb-3">
+    <div class="grid xs:grid-cols-1 xl:grid-cols-2 gap-4 mb-3" :class="xprops?.customFiltersMainClass">
       <template v-for="(column, index) in customFilters" :key="index">
         <GlDropdown
           v-if="column.type == 'dropdown'"
@@ -65,7 +65,7 @@
           :field_name="column.field_name"
           :label_name="column.field_label"
           :show="false"
-          placeholder="Please select an option"
+         :placeholder="language?.please_select_an_option ?? 'Please select an option'"
         >
         </GlDropdown>
 
@@ -107,7 +107,7 @@
             :field_name="column.field_name"
             :label_name="column.field_label"
             :show="false"
-            placeholder="Please select an option"
+            :placeholder="language?.please_select_an_option ?? 'Please select an option'"
           >
           </GlDropdown>
 
@@ -138,13 +138,13 @@
 
     <div class="flex flex-wrap  mb-3">
       <gl-button @click="toggleSelectAll" tag="button" button_type="default" :has_border_reduced="false" classes="">
-        Select all
+        {{ language?.select_all ?? 'Select all' }}
       </gl-button>
       <gl-button @click="toggleDeselectAll" tag="button" button_type="default" :has_border_reduced="false">
-        Deselect all
+        {{ language?.deselect_all ?? 'Deselect all' }}
       </gl-button>
       <gl-button tag="button" @click="deleteSelected" button_type="red" :has_border_reduced="false">
-        Delete selected
+        {{ language?.delete_selected ?? 'Delete selected' }}
       </gl-button>
     </div>
 
@@ -284,6 +284,7 @@
               <div class="overflow-auto max-h-40">
                 <component
                   v-if="column.tdComp"
+                  :language="language"
                   :is="forDynCompIs(column.tdComp)"
                   :row="item"
                   :field="column.field_name"
@@ -338,8 +339,21 @@ export default {
     DynamicConfirmation,
   },
   props: {
+
+    columns: {
+    type: Array,
+    required: false,
+    default: () => []
+  },
+
+
+  language: {
+    type: Object,
+    required: false,
+    default: () => {}
+  },
     data: Array,
-    columns: Array,
+   
     get_item_url: String,
     xprops: Object,
     refreshData: Boolean,
@@ -362,7 +376,7 @@ export default {
 
       sortField: this.xprops.defaultSortField
         ? this.xprops.defaultSortField
-        : this.columns[0].field_name,
+        : (this.columns && this.columns.length > 0 ? this.columns[0].field_name : ''),
 
       sortOrder: "desc",
 
@@ -373,6 +387,16 @@ export default {
   },
   emits: ["editAction", "generalAction"],
   computed: {
+
+    
+    columns1() {
+      return this.columns;
+    },
+
+
+
+
+
     filteredData() {
       const searchTerm = this.search.toLowerCase();
       const sortedData = this.sortData(this.data);
@@ -391,7 +415,7 @@ export default {
     async deleteSelected() {
       if (this.checkedIds.length <= 0) {
         GlToast.methods.add({
-          message: "Please select at least one item to delete.",
+          message: this.language?.please_select_at_least_one_item_to_delete ?? "Please select at least one item to delete",
           type: "error",
           duration: 5000,
         });
@@ -400,9 +424,10 @@ export default {
       }
 
       const ok = await this.$refs.ConfirmationDelete.show({
-        title: "Delete Confirmation",
-        message: "Are you sure you want to delete the selected items?",
-        okButton: "Yes, delete it",
+        title: this.language?.title_delete_confirmation ?? "Delete Confirmation",
+        message: this.language?.message_delete_confirmation ?? "Are you sure you want to delete the selected items?",
+        okButton: this.language?.okbutton_delete_confirmation ?? "Yes, delete it",
+        cancelButton: this.language?.cancelbutton_delete_confirmation ?? "Cancel",
       });
 
       if (ok) {
@@ -421,12 +446,14 @@ export default {
        
       });
 
+        this.checkedIds = [];
+
         this.$refs.ConfirmationDelete.hideLoading();
 
       
 
         GlToast.methods.add({
-          message: "Selected items deleted successfully.",
+          message: this.language?.selected_items_deleted_successfully ?? "Selected items deleted successfully.",
           type: "success",
           duration: 5000,
         });
@@ -505,7 +532,7 @@ export default {
       this.GetItemLists(this.page);
     },
     handleSearch() {
-      this.sortField = this.columns[0].field_name;
+      this.sortField =  (this.columns && this.columns.length > 0 ? this.columns[0].field_name : '');
       this.sortOrder = "asc";
       this.page = 1;
       this.GetItemLists(this.page);
@@ -518,6 +545,8 @@ export default {
   },
 
   watch: {
+
+   
     searchFilter() {
       if (this.filteredOptions.length === 0) {
         this.selected = {};

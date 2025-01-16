@@ -1,4 +1,7 @@
 /** @type {import('tailwindcss').Config} */
+
+const defaultTheme = require('tailwindcss/defaultTheme')
+const colors = require("tailwindcss/colors");
 module.exports = {
   // important: true,
    darkMode: 'class',
@@ -7,6 +10,11 @@ module.exports = {
        "./node_modules/golden-logic-ui/**/*.{vue,js,ts,jsx,tsx}",
      ],
  theme: {
+  screens: {
+    'xs': '0px',
+    ...defaultTheme.screens,
+  },
+
    extend: {
 
        colors: {

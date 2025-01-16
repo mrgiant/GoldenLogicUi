@@ -131,7 +131,7 @@ input::-webkit-calendar-picker-indicator {
 
 
 
-.btn-primary {
+.gl-btn-primary {
 
 
 
@@ -140,9 +140,9 @@ input::-webkit-calendar-picker-indicator {
 
 }
 
-.btn-primary:hover {
+.gl-btn-primary:hover {
 
-  @apply text-white brightness-125 transition-all duration-500 ease-in-out
+  @apply text-white brightness-110 transition-all duration-500 ease-in-out
 
 
 }
@@ -186,6 +186,14 @@ input::-webkit-calendar-picker-indicator {
   --tw-shadow: 0 0 #0000;
 }
 
+[type='checkbox'],
+[type='radio'] {
+  @apply  text-primary
+
+}
+
+
+
 [type='checkbox'] {
   border-radius: 0px;
 }
@@ -204,7 +212,7 @@ input::-webkit-calendar-picker-indicator {
     );
   --tw-ring-offset-width: 2px;
   --tw-ring-offset-color: #fff;
-  --tw-ring-color: #2563eb;
+  --tw-ring-color: var(--theme-color);
   --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
   --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);
   box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
@@ -289,4 +297,29 @@ body {
   /* font-family: 'Quicksand', sans-serif;*/
   font-family: 'Open Sans', Arial, Helvetica, sans-serif;
   font-size: 14px;
+}
+
+
+
+
+.gl-dot span {
+
+
+  @apply bg-primary dark:bg-primaryDark
+
+}
+
+
+.arrow_button_styles
+
+{
+
+@apply text-primary dark:text-white border border-primary dark:border-primaryDark
+}
+
+.arrow_button_styles:hover
+
+{
+  @apply bg-primary dark:bg-primaryDark text-white
+
 }

@@ -1,6 +1,28 @@
 
 <script setup>
-import { onMounted, ref } from "vue";
+import { onMounted, ref, computed, nextTick, watch, onBeforeUnmount } from "vue";
+import tinymce from 'tinymce';
+import 'tinymce/icons/default/icons';
+import 'tinymce/themes/silver/theme';
+import 'tinymce/models/dom/model';
+import 'tinymce/skins/ui/oxide/skin.css';
+import 'tinymce/plugins/lists/plugin';
+import 'tinymce/plugins/link/plugin';
+import 'tinymce/plugins/image/plugin';
+import 'tinymce/plugins/media/plugin';
+import 'tinymce/plugins/table/plugin';
+import 'tinymce/plugins/code/plugin';
+import 'tinymce/plugins/wordcount/plugin';
+import 'tinymce/plugins/fullscreen/plugin';
+import 'tinymce/plugins/preview/plugin';
+import 'tinymce/plugins/advlist/plugin';
+import 'tinymce/plugins/searchreplace/plugin';
+import 'tinymce/plugins/anchor/plugin';
+import 'tinymce/plugins/autolink/plugin';
+import 'tinymce/plugins/charmap/plugin';
+import 'tinymce/plugins/insertdatetime/plugin';
+import 'tinymce/plugins/visualblocks/plugin';
+
 
 const props = defineProps({
   is_required: {
@@ -74,6 +96,45 @@ const emit = defineEmits(["update:modelValue","update:modelValueTranslate","keyd
 
 const input = ref(null);
 const input_translate = ref(null);
+let editorInstance = null;
+
+
+const initTinyMCE = async () => {
+  await nextTick();
+
+  if (editorInstance) {
+    editorInstance.destroy();
+    editorInstance = null;
+  }
+
+  tinymce.init({
+    selector: '#' + props.field_name,
+    height: 300,
+    plugins: [
+    'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
+    'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+    'insertdatetime', 'media', 'table', 'wordcount'
+  ],
+  toolbar: 'undo redo | blocks | ' +
+  'bold italic backcolor | alignleft aligncenter ' +
+  'alignright alignjustify | bullist numlist outdent indent | ' +
+  'removeformat | help',
+    skin: false, // disable import of skins
+    content_css: false, // disable import of css
+    
+    images_upload_url: '/uploadImages',
+    setup(editor) {
+      editorInstance = editor;
+      editor.on('Change', () => {
+        emit("update:modelValue", editor.getContent());
+      });
+      editor.on('init', () => {
+        editor.setContent(props.modelValue);
+      });
+    },
+  });
+};
+
 
 const InputTranslateChanged = () => {
 
@@ -88,26 +149,26 @@ if(input_translate.value)
 
 };
 
+
+onMounted(initTinyMCE);
+
+onBeforeUnmount(() => {
+  if (editorInstance) {
+    editorInstance.destroy();
+    editorInstance = null;
+  }
+});
+
 onMounted(() => {
 
 
+  initTinyMCE();
 
 
-
-      tinymce.init({
-        selector: '#'+props.field_name+'',
-        width: '100%',
-        height: 300,
-
-    });
+    
 
 
-
-     
-
-if (input.value !== null && input.value.hasAttribute('autofocus')) {
-input.value.focus();
-}
+ 
 
 if(props.modelValue)
   {
@@ -121,51 +182,33 @@ if(props.modelValue)
 
   if(props.modelValueTranslate)
   {
-    // emit('update:modelValueTranslate', props.model_value_translate);
-    // input_translate.value.value=props.model_value_translate;
-
    
-    
      emit('update:modelValueTranslate', props.modelValueTranslate);
      input_translate.value.value=props.modelValueTranslate;
 
 
 
   }
-  if(props.translatable && !props.modelValueTranslate)
-{
-axios
-
-    .get(`/admin/get_field_translations`, {
-      params: {
-        model: props.translatable.model,
-        row_id: props.translatable.row_id,
-        field: props.translatable.field
-    }
-
-
-
-            })
-    .then((response) => {
-
-
-
-          input_translate.value.value=JSON.stringify(response.data);
-          emit('update:modelValueTranslate', JSON.stringify(response.data));
 
 
 
 
-    })
-    .catch((error) => {
-        // handle error
-        console.log(error);
-    });
-}
 
+});
 
+watch(() => props.modelValue, (newValue) => {
+  if (editorInstance && editorInstance.getContent() !== newValue) {
+    editorInstance.setContent(newValue);
+  }
+});
 
-
+const proxyValue = computed({
+  get() {
+    return props.modelValue;
+  },
+  set(newValue) {
+    emit("update:modelValue", newValue);
+  },
 });
 
 defineExpose({ focus: () => input.value.focus() });
@@ -225,13 +268,13 @@ defineExpose({ focus: () => input.value.focus() });
 
       :name="field_name"
       :id="field_name"
-      class="tiny"
+      class="tiny form-input-translation mt-4"
       :class="{
-        ' gl-textarea-form form-input-translation  mt-4 ': error_message == '',
-        ' gl-textarea-form-invalid form-input-translation  mt-4 ': error_message !== '',
+        ' gl-textarea-form': error_message == '',
+        ' gl-textarea-form-invalid': error_message !== '',
       }"
       :type="type"
-      @input="$emit('update:modelValue', $event.target.value)"
+      v-model="proxyValue"
       @keydown="$emit('keydown', $event)"
       ref="input"
       rows="4"

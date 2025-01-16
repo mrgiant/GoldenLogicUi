@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-wrap gap-2 text-nowrap">
+  <div class="flex flex-wrap  text-nowrap">
     <span
       v-if="status === 0"
       class="inline-flex items-center px-2 py-1 text-sm text-blue-800 bg-blue-100 rounded-full dark:bg-blue-900 dark:text-blue-300"

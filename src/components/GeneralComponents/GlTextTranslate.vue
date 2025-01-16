@@ -225,9 +225,10 @@ defineExpose({ focus: () => input.value.focus() });
       :required="is_required"
       :name="field_name"
       :id="field_name"
+      class="form-input-translation  mt-2 "
       :class="{
-        ' gl-input-form form-input-translation  mt-2 ': error_message == '',
-        ' gl-input-form-invalid form-input-translation  mt-2 ': error_message !== '',
+        ' gl-input-form': error_message == '',
+        ' gl-input-form-invalid': error_message !== '',
       }"
       :type="type"
 

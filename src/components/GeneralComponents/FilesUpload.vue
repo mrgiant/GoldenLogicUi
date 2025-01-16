@@ -412,5 +412,12 @@ export default {
   mounted() {
     this.error_message_data = this.error_message;
   },
+
+  watch: {
+    
+    error_message(newVal, oldVal) {
+      this.error_message_data = newVal;
+    },
+  },
 };
 </script>

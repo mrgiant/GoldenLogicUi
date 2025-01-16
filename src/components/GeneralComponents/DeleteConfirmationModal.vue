@@ -1,7 +1,7 @@
 <template>
     <!-- Modal for delete confirmation -->
     <div v-if="isOpen" class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-      <div class="flex items-end justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+      <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
         <!-- Modal overlay -->
         <div class="fixed inset-0 transition-opacity bg-gray-500 !bg-opacity-75" aria-hidden="true"></div>
         <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
@@ -12,11 +12,13 @@
             <div class="sm:flex sm:items-start">
               <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
                 <h3 class="text-lg font-medium leading-6 " id="modal-title">
-                  Confirm Deletion
+                  
+                  {{ language?.title_delete_confirmation ?? 'Confirm Deletion' }}
                 </h3>
                 <div class="mt-2">
                   <p class="text-sm ">
-                    Are you sure you want to delete this item? This action cannot be undone.
+                    {{ language?.message_delete_confirmation ?? 'Are you sure you want to delete this item? This action cannot be undone.' }}
+                    
                   </p>
                 </div>
               </div>
@@ -35,7 +37,8 @@
              tag="button"
              button_type="red"
              
-              >Delete
+              >
+              {{ language?.okbutton_delete_confirmation ?? 'Delete' }}
             </gl-button>
 
             <!-- Cancel deletion button -->
@@ -44,7 +47,8 @@
              tag="button"
              button_type="light"
              
-              > Cancel
+              > 
+              {{ language?.cancelbutton_delete_confirmation ?? 'Cancel' }}
             </gl-button>
            
         
@@ -61,7 +65,21 @@ import GlButton from "/src/components/GeneralComponents/GlButton.vue";
     components: {
     GlButton,
   },
-    props: ['isOpen'],
+    props: {
+      
+      isOpen: {
+        type: Boolean,
+        default: false,
+      },
+      language: {
+        type: Object,
+        default: () => {},
+      },
+
+      
+
+
+    },
     methods: {
       confirmDeletion() {
         this.$emit('confirm-delete');

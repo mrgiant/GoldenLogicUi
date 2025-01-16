@@ -46,9 +46,17 @@ const props = defineProps({
         type: String,
         default: "",
     },
+    minlength: {
+        type: String,
+        default: null,
+    },
+    maxlength: {
+        type: String,
+        default: null,
+    },
 });
 
-const emit = defineEmits(["update:modelValue", "keydown"]);
+const emit = defineEmits(["update:modelValue", "keydown", "blur"]);
 
 const input = ref(null);
 
@@ -114,6 +122,10 @@ defineExpose({ focus: () => input.value.focus() });
             :for="field_name"
             >{{ label_name }}</label
         ><input
+
+            :minlength="minlength"
+            :maxlength="maxlength"
+            class="rtl:text-right"
             :required="is_required"
             :name="field_name"
             :id="field_name"
@@ -124,6 +136,7 @@ defineExpose({ focus: () => input.value.focus() });
             :type="type"
              v-model="proxyValue"
             @keydown="$emit('keydown', $event)"
+            @blur="$emit('blur', $event)"
             ref="input"
             :placeholder="placeholder"
         />

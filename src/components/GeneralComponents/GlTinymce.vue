@@ -8,9 +8,19 @@ import 'tinymce/skins/ui/oxide/skin.css';
 import 'tinymce/plugins/lists/plugin';
 import 'tinymce/plugins/link/plugin';
 import 'tinymce/plugins/image/plugin';
+import 'tinymce/plugins/media/plugin';
 import 'tinymce/plugins/table/plugin';
 import 'tinymce/plugins/code/plugin';
 import 'tinymce/plugins/wordcount/plugin';
+import 'tinymce/plugins/fullscreen/plugin';
+import 'tinymce/plugins/preview/plugin';
+import 'tinymce/plugins/advlist/plugin';
+import 'tinymce/plugins/searchreplace/plugin';
+import 'tinymce/plugins/anchor/plugin';
+import 'tinymce/plugins/autolink/plugin';
+import 'tinymce/plugins/charmap/plugin';
+import 'tinymce/plugins/insertdatetime/plugin';
+import 'tinymce/plugins/visualblocks/plugin';
 
 const props = defineProps({
   is_required: { type: Boolean, default: false },
@@ -40,11 +50,18 @@ const initTinyMCE = async () => {
     selector: '#' + props.field_name,
     height: 300,
     plugins: [
-      'link', 'lists', 'image', 'wordcount'
-    ],
-    toolbar: "undo redo | codesample | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help",
+    'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
+    'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+    'insertdatetime', 'media', 'table', 'help', 'wordcount'
+  ],
+  toolbar: 'undo redo | blocks | ' +
+  'bold italic backcolor | alignleft aligncenter ' +
+  'alignright alignjustify | bullist numlist outdent indent | ' +
+  'removeformat | help',
     skin: false, // disable import of skins
     content_css: false, // disable import of css
+    
+    images_upload_url: '/uploadImages',
     setup(editor) {
       editorInstance = editor;
       editor.on('Change', () => {

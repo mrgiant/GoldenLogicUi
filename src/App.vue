@@ -10,7 +10,7 @@ import {
   nextTick,
 } from "vue";
 
-import GlTabsWrapper  from './components/GeneralComponents/GlTabsWrapper.vue';
+import CodeEditor  from './components/GeneralComponents/GlCodeMirror.vue';
 import GlTextInput   from './components/GeneralComponents/GlTextInput.vue';
 import GlDropdown   from './components/GeneralComponents/GlDropdown.vue';
 import GlMultiSelectDropdown   from './components/GeneralComponents/GlMultiSelectDropdown.vue';
@@ -18,6 +18,7 @@ import GlMultiSelectDropdown   from './components/GeneralComponents/GlMultiSelec
 
 
 const provide=ref("");
+const code=ref("");
 
 
 const role = ref([]);
@@ -50,7 +51,16 @@ onMounted(() => {
   }, 2000);
 
 
+
+  console.log("roles",code.value);
+
+
 });
+
+
+const onChange = (value) => {
+  console.log("roles",value);
+};
 
 
 
@@ -65,17 +75,19 @@ onMounted(() => {
 
  
     <div class="mb-4">
-                    <GlDropdown
-                        :options="roles"
-                        :is_required="true"
-                        field_name="provider"
-                        label_name="Provider"
+      <CodeEditor v-model="code" language="javascript" theme=""
+      
+                       :is_required="false"
+                        field_name="roles"
+                        label_name="Roles"
                         :show="false"
+                        error_message="njnjnn"
                         placeholder="Please select an option"
-                        
-                        v-model="provide"
-                    >
-                    </GlDropdown>
+                        @change="onChange"
+      
+      
+      
+       />
                 </div>
 
                 

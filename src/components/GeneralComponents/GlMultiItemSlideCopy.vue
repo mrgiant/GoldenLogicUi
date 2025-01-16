@@ -34,10 +34,10 @@
 
 
 
-            <div  ref="slotContainer" class="overflow-hidden flex flex-col gap-3" :id="'sliderContainer_' + Random_string" :class="sliderContainerAction()">
+            <div class="overflow-hidden flex flex-col gap-3" :id="'sliderContainer_' + Random_string" :class="sliderContainerAction()">
 
 
-                <ul   class="flex " :id="'slider_' + Random_string" :class="elements_to_show_prop==1?'':'gap-7'">
+                <ul class="flex " :id="'slider_' + Random_string" :class="elements_to_show_prop==1?'':'gap-7'">
 
                     <div class="items-center justify-center hidden arrow_button xl:flex xxl:flex md:flex sm:flex"
                         v-if=" dotsNum > 0 && !hide_arrow && slider_arrows_indicators_position == 'arrows_indicators_inside_slider'"  :class="direction_property == 'rtl' ? 'arrow_button_next':'arrow_button_prev'">
@@ -255,7 +255,6 @@ export default {
 
     data() {
         return {
-            mutationObserver: null,
             elementsToShow: this.elements_to_show_prop,
             dotsNum: 0,
             currentDot: 1,
@@ -270,7 +269,6 @@ export default {
 
     mounted() {
         this.$nextTick(() => {
-            this.observeSlotChanges();
             this.initSlider();
             if (!this.disable_touch) {
                 this.movingActions();
@@ -285,44 +283,7 @@ export default {
         window.removeEventListener("resize", this.resizeHandler);
     },
 
-    beforeUnmount() {
-        // Disconnect the observer when the component is destroyed
-        if (this.mutationObserver) {
-            this.mutationObserver.disconnect();
-        }
-    },
-
     methods: {
-
-
-
-        observeSlotChanges() {
-            const slotContent = this.$refs.slotContainer;
-
-          
-
-            if (slotContent) {
-                this.mutationObserver = new MutationObserver((mutations) => {
-                    mutations.forEach((mutation) => {
-                       
-                        this.initSlider();
-                    });
-                });
-
-                // Observe the slot for changes
-                this.mutationObserver.observe(slotContent, {
-                    childList: true,
-                    subtree: true,
-                });
-            }
-        },
-
-
-
-
-
-
-
         resizeHandler() {
             this.initSlider(); // Reinitialize slider on resize
         },

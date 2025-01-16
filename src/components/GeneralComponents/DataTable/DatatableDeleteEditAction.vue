@@ -1,5 +1,6 @@
 <template>
     <DeleteConfirmationModal
+       :language="language"
         :isOpen="open_delete_modal"
         @confirm-delete="deleteAction"
         @cancel-delete="closeDeleteModal"
@@ -49,7 +50,8 @@
                         <i
                             class="mr-1 fa-solid fa-pen-to-square opacity-80"
                         ></i>
-                        Edit
+                        
+                        {{ language?.edit ?? 'Edit' }}
                     </a>
                 </li>
 
@@ -60,7 +62,8 @@
                         class="block px-4 py-2 text-red-600 hover:text-white hover:bg-red-600 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600"
                     >
                         <i class="mr-1 fa-solid fa-trash-can opacity-80"></i>
-                        Remove
+                        
+                        {{ language?.remove ?? 'Remove' }}
                     </a>
                 </li>
             </ul>
@@ -74,6 +77,15 @@ import DeleteConfirmationModal from "/src/components/GeneralComponents/DeleteCon
 import GlToast  from '/src/Stores/toast.js';
 
 const props = defineProps({
+
+
+    language: {
+    type: Object,
+    required: false,
+    default: () => {}
+  },
+
+
     field: {
         type: String,
         default: "",
@@ -128,7 +140,7 @@ const deleteAction = () => {
             closeDeleteModal();
             emit("deleteAction");
             GlToast.methods.add({
-                message: "Item deleted successfully.",
+                message: props.language?.item_deleted_successfully ?? 'Item deleted successfully.',
                 type: "success",
                 duration: 5000,
             });

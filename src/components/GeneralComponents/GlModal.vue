@@ -1,8 +1,19 @@
 <script setup>
-import { onMounted, ref, watch } from "vue";
+import { onMounted, ref, watch,computed } from "vue";
 
 const props = defineProps({
+
+  language: {
+    type: Object,
+    required: false,
+    default: () => {},
+  },
   is_open: {
+    type: Boolean,
+    default: false,
+  },
+
+  hide_model_footer: {
     type: Boolean,
     default: false,
   },
@@ -50,6 +61,22 @@ const closeModal = () => {
   removeOverflowStyles();
 };
 
+
+
+  // please add compute for is_loading
+
+  const isLoadingComputed = computed(() => {
+  
+  return props.is_loading;
+});
+
+
+
+
+
+
+
+
 watch(
   () => props.is_open,
   (newValue, oldValue) => {
@@ -72,7 +99,6 @@ watch(
     :class="has_large_z_index ? 'z-[9999]' : 'z-[1055]'"
     v-if="is_open"
     tabindex="-1"
-    aria-hidden="true"
   >
     <div
       class="pointer-events-none relative h-[calc(100%-1rem)] w-auto translate-y-[-50px] transition-all duration-300 ease-in-out min-[576px]:mx-auto mt-7 min-[576px]:h-[calc(100%-3.5rem)]"
@@ -116,7 +142,7 @@ watch(
         </div>
 
         <div
-          v-if="is_loading"
+          v-if="isLoadingComputed"
           role="status"
           class="max-w-full p-4 border border-gray-200 rounded shadow animate-pulse md:p-6 dark:border-gray-700"
         >
@@ -174,7 +200,7 @@ watch(
 
         <!-- Modal body -->
         <div
-          v-show="!is_loading"
+          v-show="!isLoadingComputed"
           class="relative overflow-y-auto"
           :class="bodyClass"
         >
@@ -183,7 +209,8 @@ watch(
 
         <!-- Modal footer -->
         <div
-          v-show="!is_loading"
+         
+          v-show="!isLoadingComputed && !hide_model_footer"
           class="flex flex-wrap items-center justify-end flex-shrink-0 p-4 border-t-2 rounded-b-md border-neutral-100 dark:border-gray-600"
         >
           <slot name="buttons"></slot>
@@ -193,7 +220,7 @@ watch(
             type="button"
             class="px-5 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-200 rounded-lg ms-3 hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-blue-300 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600"
           >
-            Close
+            {{ language?.close ?? "Close" }}
           </button>
         </div>
       </div>

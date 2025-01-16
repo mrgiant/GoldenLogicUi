@@ -36,17 +36,17 @@
         <button
           @click="selectAll"
           type="button"
-          class="rounded-tl-lg px-4 py-0 text-sm font-medium text-gray-900 bg-transparent border border-gray-900 hover:bg-gray-900 hover:text-white focus:z-10 focus:bg-gray-900 focus:text-white dark:border-white dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:bg-gray-700"
+          class="ltr:rounded-tl-lg rtl:rounded-tr-lg px-4 py-0 text-sm font-medium text-gray-900 bg-transparent border border-gray-900 hover:bg-gray-900 hover:text-white focus:z-10 focus:bg-gray-900 focus:text-white dark:border-white dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:bg-gray-700"
         >
-          Select all
+          {{ language?.select_all ?? "Select all" }}
         </button>
 
         <button
           @click="deselectAll"
           type="button"
-          class="rounded-tr-lg px-4 py-0 text-sm font-medium text-gray-900 bg-transparent border border-gray-900 hover:bg-gray-900 hover:text-white focus:z-10 focus:bg-gray-900 focus:text-white dark:border-white dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:bg-gray-700"
+          class="ltr:rounded-tr-lg rtl:!rounded-tl-lg px-4 py-0 text-sm font-medium text-gray-900 bg-transparent border border-gray-900 hover:bg-gray-900 hover:text-white focus:z-10 focus:bg-gray-900 focus:text-white dark:border-white dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:bg-gray-700"
         >
-          Deselect all
+          {{ language?.deselect_all ?? "Deselect all" }}
         </button>
       </div>
 
@@ -175,6 +175,12 @@ import {
 } from "vue";
 
 const props = defineProps({
+
+  language: {
+    type: Object,
+    default: () => {},
+  },
+
   modelValue: {
     type: Array,
     default: [],
