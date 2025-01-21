@@ -102,7 +102,7 @@ const props = defineProps({
   },
   theme: {
     type: String,
-    default: "one-dark",
+    default: "",
   },
 
   is_required: { type: Boolean, default: false },
