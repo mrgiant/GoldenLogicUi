@@ -4,7 +4,7 @@ import tinymce from 'tinymce';
 import 'tinymce/icons/default/icons';
 import 'tinymce/themes/silver/theme';
 import 'tinymce/models/dom/model';
-
+import 'tinymce/skins/ui/oxide/skin.css';
 import 'tinymce/plugins/lists/plugin';
 import 'tinymce/plugins/link/plugin';
 import 'tinymce/plugins/image/plugin';
@@ -21,14 +21,6 @@ import 'tinymce/plugins/autolink/plugin';
 import 'tinymce/plugins/charmap/plugin';
 import 'tinymce/plugins/insertdatetime/plugin';
 import 'tinymce/plugins/visualblocks/plugin';
-
-
-import contentUiCss from 'tinymce/skins/ui/oxide/content.css';
-import contentCss from 'tinymce/skins/content/default/content.css';
-
-import contentUiCssDark from 'tinymce/skins/ui/oxide-dark/content.css';
-import contentCssDark from 'tinymce/skins/content/dark/content.css';
-
 
 const props = defineProps({
   is_required: { type: Boolean, default: false },
@@ -50,9 +42,6 @@ const darkMode = ref(false);
 const initTinyMCE = async () => {
   await nextTick();
 
-  darkMode.value = document.body.classList.contains("dark");
-
-
   if (editorInstance) {
     editorInstance.destroy();
     editorInstance = null;
@@ -70,12 +59,8 @@ const initTinyMCE = async () => {
   'bold italic backcolor | alignleft aligncenter ' +
   'alignright alignjustify | bullist numlist outdent indent | ' +
   'removeformat | help',
-   
-    skin: false,
-    content_css: false,
-    
-    content_style:  darkMode.value ? contentUiCssDark.toString() : contentUiCss.toString() + '\n' + darkMode.value ? contentCssDark.toString(): contentCss.toString(),
-
+    skin: false, // disable import of skins
+    content_css: false, // disable import of css
     
     images_upload_url: '/uploadImages',
     setup(editor) {
