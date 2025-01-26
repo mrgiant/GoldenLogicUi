@@ -3,7 +3,7 @@
   "description": "The most popular library of interactive components built with Vuejs && Tailwind CSS",
   "type": "module",
   "private": false,
-  "version": "1.0.578",
+  "version": "1.0.581",
   "repository": {
     "type": "git",
     "url": "https://github.com/mrgiant/GoldenLogicUi.git"

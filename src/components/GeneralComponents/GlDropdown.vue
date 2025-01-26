@@ -433,6 +433,9 @@ function convertedOptionDefault() {
         ) || {}
       );
     }
+  }else
+  {
+    return {};
   }
 
   /*
@@ -519,10 +522,18 @@ watch(selected, (value) => {
 watch(
   () => props.modelValue,
   () => {
+
+     
+      searchFilter.value = "";
+      selected.value = props.modelValue;
+      selected.value = convertedOptionDefault();
+
+
     if (!isObjectNotEmpty(selected.value)) {
       selected.value = props.modelValue;
       selected.value = convertedOptionDefault();
     }
+    console.log("props.modelValue "+ props.field_name,props.modelValue);
   },
   { immediate: true ,deep:true}
 );
