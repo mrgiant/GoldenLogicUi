@@ -372,7 +372,7 @@ function isObjectNotEmpty(obj) {
 */
 
 function isObjectNotEmpty(obj) {
-  return obj !== null && typeof obj === "object" && Object.keys(obj).length > 0;
+  return obj && typeof obj === "object" && Object.keys(obj).length > 0;
 }
 
 function clearData(e) {
@@ -537,17 +537,22 @@ watch(searchFilter, () => {
     selected.value = {};
   }
 });
-watch(selected, (value) => {
-  if (isObjectNotEmpty(value)) {
-    emit("update:modelValue", value.id);
+watch(selected, (newVal) => {
+  if (isObjectNotEmpty(newVal)) {
+    if (newVal && newVal.id !== props.modelValue) {
+      emit("update:modelValue", newVal.id);
+    }
+    
   }
 });
 
+
+
 watch(
   () => props.modelValue,
-  () => {
+  (newVal) => {
     searchFilter.value = "";
-    if (props.modelValue) {
+    if (newVal) {
       selected.value = props.modelValue;
       selected.value = convertedOptionDefault();
     } else {

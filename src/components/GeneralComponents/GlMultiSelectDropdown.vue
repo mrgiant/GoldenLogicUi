@@ -90,18 +90,25 @@
 
           <i
             @click="showOptions()"
-            
             class="absolute text-xl text-gray-500 cursor-pointer fas ltr:right-2 rtl:left-2 hover:text-gray-700 dark:hover:text-gray-800 showOptions"
             style="top: 13px"
           >
-
-
-          <svg   :class="optionsShown ? '' : 'rotate-180'"  class="w-4 h-4 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-           <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5 5 1 1 5"></path>
-        </svg>
-          
-          
-          
+            <svg
+              :class="optionsShown ? '' : 'rotate-180'"
+              class="w-4 h-4 shrink-0"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 10 6"
+            >
+              <path
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 5 5 1 1 5"
+              ></path>
+            </svg>
           </i>
 
           <!-- Dropdown Menu -->
@@ -560,18 +567,26 @@ watch(searchFilter, () => {
     selected.value = [];
   }
 });
-watch(selected, (value) => {
-  if (isArrayObjectNotEmpty(selected.value)) {
-    selectedIds.value = selected.value.map((item) => item.id);
-    emit("update:modelValue", selectedIds.value);
+watch(selected, (newVal) => {
+  if (isArrayObjectNotEmpty(newVal)) {
+    // if array newVal
+
+    selectedIds.value = newVal.map((item) => item.id);
+
+    const a = Array.isArray(selectedIds.value) ? selectedIds.value : [];
+    const b = Array.isArray(props.modelValue) ? props.modelValue : [];
+
+    if (JSON.stringify(a) !== JSON.stringify(b)) {
+      emit("update:modelValue", selectedIds.value);
+    }
   }
 });
 
 watch(
   () => props.modelValue,
-  () => {
+  (newVal) => {
     searchFilter.value = "";
-    if (props.modelValue) {
+    if (newVal) {
       selected.value = props.modelValue;
       selected.value = convertedOptionDefault();
     } else {
