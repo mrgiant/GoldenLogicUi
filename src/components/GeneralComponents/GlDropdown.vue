@@ -41,7 +41,7 @@
               'gl-input-form': error_message == '',
               'gl-input-form-invalid': error_message !== '',
             }"
-            class=" pr-2 showOptions"
+            class="pr-2 showOptions"
             @click="showOptions()"
             :value="selected?.name"
             :placeholder="placeholder"
@@ -52,17 +52,41 @@
           <i
             v-show="isObjectNotEmpty(selected) && has_cancel"
             @click.stop="ClearInput()"
-            class="absolute text-gray-500 cursor-pointer  ltr:right-7 rtl:left-7  pointer-events-auto hover:text-red-600 dark:hover:text-red-400"
+            class="absolute text-gray-500 cursor-pointer ltr:right-8 rtl:left-8 pointer-events-auto hover:text-red-600 dark:hover:text-red-400"
             style="top: 13px"
-          >       <svg class="w-[9px] h-[16px]" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"></path>
-      </svg>    </i>
+          >
+            <svg
+              class="w-[10px] h-[16px]"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 14 14"
+            >
+              <path
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
+              ></path>
+            </svg>
+          </i>
           <i
             @click="showOptions()"
-            :class="optionsShown ? 'fa-angle-up' : 'fa-angle-down'"
-            class="absolute text-xl text-gray-500 cursor-pointer fas   ltr:right-2 rtl:left-2 hover:text-gray-700 dark:hover:text-gray-800 showOptions"
-            style="top: 11px"
-          ></i>
+           
+            class="absolute text-xl text-gray-500 cursor-pointer  ltr:right-2 rtl:left-2 hover:text-gray-700 dark:hover:text-gray-800 showOptions"
+            style="top: 13px"
+          >
+
+
+          <svg   :class="optionsShown ? '' : 'rotate-180'"  class="w-4 h-4 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5 5 1 1 5"></path>
+      </svg>
+          
+          
+          
+          
+          </i>
 
           <!-- Dropdown Menu -->
           <div
@@ -107,7 +131,7 @@
                   @blur="exit()"
                   autocomplete="off"
                   class="block w-full p-2 text-sm text-gray-900 border rounded-lg outline-none border-primary ps-10 bg-gray-50 focus:border-primary dark:bg-gray-700 dark:border-primaryDark dark:placeholder-primaryDark dark:text-white dark:focus:border-primaryDark"
-                  placeholder="Search ..."
+                  :placeholder="search_input_placeholder"
                 />
               </div>
             </div>
@@ -210,6 +234,14 @@ const props = defineProps({
     default: "Please select an option",
     note: "Placeholder of dropdown",
   },
+
+  search_input_placeholder: {
+    type: String,
+    required: false,
+    default: "Search ...",
+    note: "Placeholder of search input",
+  },
+
   maxItem: {
     type: Number,
     required: false,
@@ -248,7 +280,7 @@ const getDivDropDownWidth = () => {
     divDropDownWidth.value = myDivDropDown.value.offsetWidth;
     var parentRect = myDivDropDown.value.getBoundingClientRect();
 
-    divDropDownTop.value = parentRect.top + 41 + (props.label_name ? 22 : 0) ;
+    divDropDownTop.value = parentRect.top + 41 + (props.label_name ? 22 : 0);
 
     //label_name
   }
@@ -286,7 +318,8 @@ onBeforeUnmount(() => {
 
 const filteredOptions = computed(() => {
   const filtered = [];
-  const regOption = new RegExp(searchFilter.value, "ig");
+  const safeSearch = searchFilter.value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const regOption = new RegExp(safeSearch, "ig");
   for (const option of optionsValues.value) {
     const nameAsString = String(option.name);
     if (searchFilter.value.length < 1 || nameAsString.match(regOption)) {
@@ -343,21 +376,15 @@ function isObjectNotEmpty(obj) {
 }
 
 function clearData(e) {
-
-
-
   if (
     e.target.id != props.field_name + "search" + uuid.value &&
     e.target.id != props.field_name &&
     !e.target.classList.contains("showOptions")
-  ) 
-  {
+  ) {
     exit();
     count.value = 0;
     optionsShown.value = false;
   }
-
-
 }
 
 function scrollToElement(count) {
@@ -401,7 +428,6 @@ function convertedOptions() {
 }
 
 function convertedOptionDefault() {
-
   //console.log("convertedOptionDefault ",props.modelValue);
   //console.log("optionsValues.value ",optionsValues.value);
   if (isObjectNotEmpty(selected.value)) {
@@ -419,7 +445,6 @@ function convertedOptionDefault() {
       );
     }
   } else if (props.modelValue) {
-    
     if (typeof props.modelValue === "object") {
       return (
         optionsValues.value.find(
@@ -433,8 +458,7 @@ function convertedOptionDefault() {
         ) || {}
       );
     }
-  }else
-  {
+  } else {
     return {};
   }
 
@@ -522,39 +546,25 @@ watch(selected, (value) => {
 watch(
   () => props.modelValue,
   () => {
-
-     
-      searchFilter.value = "";
+    searchFilter.value = "";
+    if (props.modelValue) {
       selected.value = props.modelValue;
       selected.value = convertedOptionDefault();
-
-
-    if (!isObjectNotEmpty(selected.value)) {
-      selected.value = props.modelValue;
-      selected.value = convertedOptionDefault();
+    } else {
+      selected.value = {};
     }
-    console.log("props.modelValue "+ props.field_name,props.modelValue);
-  },
-  { immediate: true ,deep:true}
-);
-
-
-
-watch(
-  () => props.options,
-  () => {
-
-    optionsValues.value = convertedOptions();
-    selected.value = convertedOptionDefault();
-   
   },
   { immediate: true, deep: true }
 );
 
-
-
-
-
+watch(
+  () => props.options,
+  () => {
+    optionsValues.value = convertedOptions();
+    selected.value = convertedOptionDefault();
+  },
+  { immediate: true, deep: true }
+);
 </script>
 
 <style lang="scss" scoped></style>

@@ -58,7 +58,7 @@
           <!-- Dropdown Input @blur="exit()" -->
 
           <div
-            class="flex flex-wrap gap-2  pr-2 gl-multi-dropdown showOptions"
+            class="flex flex-wrap gap-2 pr-2 gl-multi-dropdown showOptions"
             @click="showOptions()"
           >
             <span
@@ -68,25 +68,41 @@
               >{{ selectedValue?.name }}
               <i
                 @click.stop="clearOption(selectedValue)"
-                class="cursor-pointer pointer-events-auto hover:text-red-600 dark:hover:text-red-400 "
+                class="cursor-pointer pointer-events-auto hover:text-red-600 dark:hover:text-red-400"
               >
-            
-
-             <svg class="w-[9px] h-[16px]" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"></path>
-      </svg>
-
-              
-              </i
+                <svg
+                  class="w-[9px] h-[16px]"
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 14 14"
+                >
+                  <path
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
+                  ></path>
+                </svg> </i
             ></span>
           </div>
 
           <i
             @click="showOptions()"
-            :class="optionsShown ? 'fa-angle-up' : 'fa-angle-down'"
-            class="absolute text-xl text-gray-500 cursor-pointer fas ltr:right-2 rtl:left-2  hover:text-gray-700 dark:hover:text-gray-800 showOptions"
-            style="top: 11px"
-          ></i>
+            
+            class="absolute text-xl text-gray-500 cursor-pointer fas ltr:right-2 rtl:left-2 hover:text-gray-700 dark:hover:text-gray-800 showOptions"
+            style="top: 13px"
+          >
+
+
+          <svg   :class="optionsShown ? '' : 'rotate-180'"  class="w-4 h-4 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+           <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5 5 1 1 5"></path>
+        </svg>
+          
+          
+          
+          </i>
 
           <!-- Dropdown Menu -->
 
@@ -133,7 +149,7 @@
                   @blur="exit()"
                   autocomplete="off"
                   class="block w-full p-2 text-sm text-gray-900 border border-gray-300 rounded-lg ps-10 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  placeholder="Search ..."
+                  :placeholder="search_input_placeholder"
                 />
               </div>
             </div>
@@ -175,7 +191,6 @@ import {
 } from "vue";
 
 const props = defineProps({
-
   language: {
     type: Object,
     default: () => {},
@@ -217,6 +232,14 @@ const props = defineProps({
     default: "Please select an option",
     note: "Placeholder of dropdown",
   },
+
+  search_input_placeholder: {
+    type: String,
+    required: false,
+    default: "Search",
+    note: "Placeholder of search input",
+  },
+
   maxItem: {
     type: Number,
     required: false,
@@ -374,10 +397,6 @@ function clearOption(option) {
 }
 
 function clearData(e) {
-
-
-
-
   if (
     e.target.id != props.field_name + "search" + uuid.value &&
     e.target.id != props.field_name &&
@@ -387,11 +406,6 @@ function clearData(e) {
     count.value = 0;
     optionsShown.value = false;
   }
-
-
-
-
-
 }
 
 function scrollToElement(count) {
@@ -556,21 +570,22 @@ watch(selected, (value) => {
 watch(
   () => props.modelValue,
   () => {
-    if (!isArrayObjectNotEmpty(selected.value)) {
+    searchFilter.value = "";
+    if (props.modelValue) {
+      selected.value = props.modelValue;
       selected.value = convertedOptionDefault();
+    } else {
+      selected.value = {};
     }
   },
   { immediate: true, deep: true }
 );
 
-
 watch(
   () => props.options,
   () => {
-
     optionsValues.value = convertedOptions();
     selected.value = convertedOptionDefault();
-   
   },
   { immediate: true, deep: true }
 );
