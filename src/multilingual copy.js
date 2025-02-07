@@ -48,9 +48,6 @@
 
       this.locale = this.returnLocale();
 
-      this._languageChangeHandler = this.selectLanguage.bind(this);
-
-
       var js_language_labels =
         this.element.querySelectorAll(".js-language-label");
 
@@ -61,32 +58,8 @@
       }
 
       this.langSelectors.forEach(function (btn) {
-       // btn.addEventListener("change", _this.selectLanguage.bind(_this));
-        btn.addEventListener('change', _this._languageChangeHandler);
-
+        btn.addEventListener("change", _this.selectLanguage.bind(_this));
       });
-    },
-
-
-    destroy: function() {
-      // Remove event listeners from language selector buttons
-      if (this.langSelectors && this._languageChangeHandler) {
-        this.langSelectors.forEach(function(btn) {
-          btn.removeEventListener('change', this._languageChangeHandler);
-        }, this);
-      }
-  
-      // Clean up stored handler reference
-      this._languageChangeHandler = null;
-  
-      // Clear references to DOM elements
-      this.element = null;
-      this.container = null;
-      this.transInputs = null;
-      this.langSelectors = null;
-  
-      // Reset settings to defaults
-      this.settings = Object.assign({}, this._defaults);
     },
 
     refresh: function () {
