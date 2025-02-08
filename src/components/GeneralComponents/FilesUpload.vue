@@ -238,9 +238,20 @@ export default {
       axios
         .delete(this.route_url + "/destroyMedia/" + this.media_id)
         .then((response) => {
+
+
+          console.log(this.uploadFileList);
+          console.log(this.media_id);
+
+
+
           let index = this.uploadFileList.findIndex(
             (file) => file.id === this.media_id
           );
+
+          console.log(index);
+
+
           if (index !== -1) {
             this.uploadFileList.splice(index, 1);
           }
@@ -304,7 +315,7 @@ export default {
 
       this.$emit("uploaded");
       this.$emit("update:modelValue", this.uploadFileList);
-      console.log("uploadFileList", this.uploadFileList);
+      
     },
 
     getFirstError(errors, field) {
