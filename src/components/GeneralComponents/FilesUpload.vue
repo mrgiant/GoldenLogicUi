@@ -261,7 +261,7 @@ export default {
         .delete(this.route_url + "/destroyMedia/" + this.media_id)
         .then((response) => {
 
-          inintUploadFileList();
+          this.inintUploadFileList();
 
 
 
@@ -282,6 +282,9 @@ export default {
             type: "success",
             duration: 5000,
           });
+
+          this.$emit("uploaded");
+          this.$emit("update:modelValue", this.uploadFileList);
         })
         .catch((error) => {
           console.error(error);
@@ -326,7 +329,7 @@ export default {
 
     async uploadFiles(event) {
 
-      inintUploadFileList();
+      this.inintUploadFileList();
       const files = event.target.files;
 
       const uploadPromises = Array.from(files).map((file) =>
