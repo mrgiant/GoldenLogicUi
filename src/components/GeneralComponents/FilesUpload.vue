@@ -230,6 +230,28 @@ export default {
   },
 
   methods: {
+
+
+    inintUploadFileList()
+    {
+
+      if (this.uploadFileList.length <= 0) {
+
+
+        this.uploadFileList= [...new Set([...this.uploadFileList, ...this.modelValue])];
+
+
+
+       } 
+
+    },
+
+
+  
+
+
+
+
     closeDeleteModal() {
       this.open_delete_modal = false;
     },
@@ -239,9 +261,7 @@ export default {
         .delete(this.route_url + "/destroyMedia/" + this.media_id)
         .then((response) => {
 
-
-          console.log(this.uploadFileList);
-          console.log(this.media_id);
+          inintUploadFileList();
 
 
 
@@ -249,7 +269,7 @@ export default {
             (file) => file.id === this.media_id
           );
 
-          console.log(index);
+         
 
 
           if (index !== -1) {
@@ -305,6 +325,8 @@ export default {
     },
 
     async uploadFiles(event) {
+
+      inintUploadFileList();
       const files = event.target.files;
 
       const uploadPromises = Array.from(files).map((file) =>
@@ -399,23 +421,21 @@ export default {
 
   computed: {
     uploadFileListFinal() {
+
+       
+
+
+
+
       if (this.uploadFileList.length > 0) {
 
 
         return this.uploadFileList;
 
-        /*
-        if (this.has_multiple_file) {
-          // return this.uploadFileList.map((file) => file.id);
-          return this.uploadFileList;
-        } else {
-         // return this.uploadFileList[0] || null;
-          return this.uploadFileList.slice(-1);
-        }
-          */
+       
       } else {
-        this.uploadFileList = [...this.uploadFileList, ...this.modelValue];
-        return this.uploadFileList;
+        return [...new Set([...this.uploadFileList, ...this.modelValue])];
+       
       }
     },
   },
