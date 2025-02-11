@@ -252,6 +252,9 @@ onMounted(() => {
   }
 
 
+  editor.value.classList.add('gl-multilanguage');
+
+
 
 
 

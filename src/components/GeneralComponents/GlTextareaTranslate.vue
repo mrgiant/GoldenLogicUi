@@ -149,6 +149,9 @@ if(props.modelValue)
    */
 
 
+   input.value.classList.add('gl-multilanguage');
+
+
 
 
 });
@@ -207,7 +210,7 @@ defineExpose({ focus: () => input.value.focus() });
     />
 
     <textarea
-      class="form-input-translation  mt-4"
+      class="mt-4 form-input-translation"
       :required="is_required"
       :name="field_name"
       :id="field_name"

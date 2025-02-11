@@ -141,6 +141,8 @@ const initTinyMCE = async () => {
       });
     },
   });
+
+  input.value.classList.add('gl-multilanguage');
 };
 
 
@@ -276,7 +278,7 @@ defineExpose({ focus: () => input.value.focus() });
 
       :name="field_name"
       :id="field_name"
-      class="tiny form-input-translation mt-4"
+      class="mt-4 tiny form-input-translation"
       :class="{
         ' gl-textarea-form': error_message == '',
         ' gl-textarea-form-invalid': error_message !== '',

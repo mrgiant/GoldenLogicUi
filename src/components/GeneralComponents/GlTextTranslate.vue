@@ -117,41 +117,13 @@ onMounted(() => {
 
   }
 
-  /*
-  if(props.translatable && !props.modelValueTranslate)
-  {
-    axios
 
-        .get(`/admin/get_field_translations`, {
-          params: {
-        model: props.translatable.model,
-        row_id: props.translatable.row_id,
-        field: props.translatable.field
-    }
+
+  input.value.classList.add('gl-multilanguage');
 
 
 
-                })
-        .then((response) => {
-
-
-
-             input_translate.value.value=JSON.stringify(response.data);
-              emit('update:modelValueTranslate', JSON.stringify(response.data));
-              //var event = new Event('change');
-              //input_translate.dispatchEvent(event);
-
-
-
-
-        })
-        .catch((error) => {
-            // handle error
-            console.log(error);
-        });
-  }
-
-  */
+  
 
 
 
@@ -225,7 +197,7 @@ defineExpose({ focus: () => input.value.focus() });
       :required="is_required"
       :name="field_name"
       :id="field_name"
-      class="form-input-translation  mt-2 "
+      class="mt-2 form-input-translation "
       :class="{
         ' gl-input-form': error_message == '',
         ' gl-input-form-invalid': error_message !== '',
