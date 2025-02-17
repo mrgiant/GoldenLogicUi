@@ -5,7 +5,7 @@
     <p class="mt-3 mb-4">
       <span
         v-for="(selectedValue, index) in selected"
-        class="bg-blue-100 text-blue-800 text-sm font-medium mb-2 mt-2 me-2 px-3 py-1 rounded dark:bg-blue-900 dark:text-blue-300"
+        class="px-3 py-1 mt-2 mb-2 text-sm font-medium text-blue-800 bg-blue-100 rounded me-2 dark:bg-blue-900 dark:text-blue-300"
         >{{ selectedValue?.name }}</span
       >
     </p>
@@ -36,7 +36,7 @@
         <button
           @click="selectAll"
           type="button"
-          class="ltr:rounded-tl-lg rtl:rounded-tr-lg px-4 py-0 text-sm font-medium text-gray-900 bg-transparent border border-gray-900 hover:bg-gray-900 hover:text-white focus:z-10 focus:bg-gray-900 focus:text-white dark:border-white dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:bg-gray-700"
+          class="px-4 py-0 text-sm font-medium text-gray-900 bg-transparent border border-gray-900 ltr:rounded-tl-lg rtl:rounded-tr-lg hover:bg-gray-900 hover:text-white focus:z-10 focus:bg-gray-900 focus:text-white dark:border-white dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:bg-gray-700"
         >
           {{ language?.select_all ?? "Select all" }}
         </button>
@@ -89,7 +89,7 @@
           </div>
 
           <i
-            @click="showOptions()"
+             @click.stop="showOptions()"
             class="absolute text-xl text-gray-500 cursor-pointer fas ltr:right-2 rtl:left-2 hover:text-gray-700 dark:hover:text-gray-800 showOptions"
             style="top: 13px"
           >

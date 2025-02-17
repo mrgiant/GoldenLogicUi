@@ -1,7 +1,7 @@
 <template>
 
 
-<ul class="grid w-full gap-1 mt-5 mb-5 md:gap-0 md:grid-cols-10 language-selector">
+<ul class="grid w-full gap-1 mt-5 mb-5 md:gap-0 md:grid-cols-10 language-selector" ref="language_selector" >
 
 
     <li v-for="(lang, index) in locals" >
@@ -82,7 +82,8 @@ export default {
                     this.locals = response.data.locals;
                     this.default_language = response.data.default_language;
 
-                   
+                    
+                    this.$refs.language_selector.classList.add('gl-multilanguage');
 
 
                     // this.is_loading = false;

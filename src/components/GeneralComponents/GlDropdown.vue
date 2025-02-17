@@ -52,7 +52,7 @@
           <i
             v-show="isObjectNotEmpty(selected) && has_cancel"
             @click.stop="ClearInput()"
-            class="absolute text-gray-500 cursor-pointer ltr:right-8 rtl:left-8 pointer-events-auto hover:text-red-600 dark:hover:text-red-400"
+            class="absolute text-gray-500 cursor-pointer pointer-events-auto ltr:right-8 rtl:left-8 hover:text-red-600 dark:hover:text-red-400"
             style="top: 13px"
           >
             <svg
@@ -72,9 +72,10 @@
             </svg>
           </i>
           <i
-            @click="showOptions()"
            
-            class="absolute text-xl text-gray-500 cursor-pointer  ltr:right-2 rtl:left-2 hover:text-gray-700 dark:hover:text-gray-800 showOptions"
+             @click.stop="showOptions()"
+           
+            class="absolute text-xl text-gray-500 cursor-pointer ltr:right-2 rtl:left-2 hover:text-gray-700 dark:hover:text-gray-800 showOptions"
             style="top: 13px"
           >
 
