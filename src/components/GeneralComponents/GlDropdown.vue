@@ -289,7 +289,7 @@ const props = defineProps({
 const emit = defineEmits(["update:modelValue", "selected", "selectionChanged"]);
 const input_search = ref(null);
 const selected = ref({});
-const optionsValues = ref([]);
+
 const count = ref(0);
 const optionsShown = ref(false);
 const searchFilter = ref("");
@@ -333,15 +333,14 @@ const fetchData = async (direction = "down") => {
 
     let apiData = convertedDataOptions(data.data);
 
-
     if (direction === "down") {
-      
       filteredOptions.value.push(...apiData);
       page.value++;
       lastPage.value = data.last_page;
     } else if (direction === "up") {
       const prevHeight = dropdownRef.value?.scrollHeight || 0;
-      filteredOptions.value.unshift(...apiData);
+      //filteredOptions.value.unshift(...apiData);
+      filteredOptions.value.push(...apiData);
       page.value--;
       await nextTick();
       dropdownRef.value.scrollTop +=
@@ -375,7 +374,7 @@ const preventEnterKey = (e) => {
   }
 };
 
-const showOptions =  () => {
+const showOptions = () => {
   if (!props.show) {
     if (optionsShown.value) {
       optionsShown.value = false;
@@ -387,7 +386,7 @@ const showOptions =  () => {
     optionsShown.value = true;
     if (props.api_url) {
       if (filteredOptions.value.length === 0) {
-         fetchData("down");
+        fetchData("down");
       }
     }
 
@@ -411,10 +410,6 @@ const showOptions =  () => {
 onMounted(() => {
   uuid.value = generateUUID();
 
-  //var defaultValue = convertedOptionDefault();
-
-  //selected.value = optionsValues.value.find(item => String(item.id) === String(defaultValue)) || {};
-
   if (!props.show) {
     window.addEventListener("scroll", getDivDropDownWidth);
 
@@ -429,14 +424,11 @@ onBeforeUnmount(() => {
   document.removeEventListener("keypress", preventEnterKey);
 });
 
-//const optionsValues = computed(() => convertedOptions());
-// const selectedDefultValue = computed(() => convertedOptionDefault());
-
 function searchOptions() {
   const filtered = [];
   const safeSearch = searchFilter.value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   const regOption = new RegExp(safeSearch, "ig");
-  for (const option of optionsValues.value) {
+  for (const option of filteredOptions.value) {
     const nameAsString = String(option.name);
     if (searchFilter.value.length < 1 || nameAsString.match(regOption)) {
       if (filtered.length < props.maxItem) filtered.push(option);
@@ -554,8 +546,6 @@ function convertedOptions() {
 }
 
 function convertedOptionDefault() {
-  //console.log("convertedOptionDefault ",props.modelValue);
-  //console.log("optionsValues.value ",optionsValues.value);
   if (isObjectNotEmpty(selected.value)) {
     if (typeof selected.value === "object") {
       return (
@@ -587,27 +577,44 @@ function convertedOptionDefault() {
   } else {
     return {};
   }
-
-  /*
-  var option = selected.value || props.modelValue;
-  console.log(selected.value," - ",props.modelValue," - ",option);
-  if (option) {
-    if (typeof option === "object") {
-       return optionsValues.value.find(item => String(item.id) === String(option.id)) || {};
-
-      return option.id + "";
-    } else {
-        return optionsValues.value.find(item => String(item.id) === String(option)) || {};
-      return option + "";
-    }
-  } 
-
-  */
 }
 
-function selectOption(option) {
 
-  console.log("selectOption ",option);
+if (typeof option === "object") {
+      return option;
+    } else {
+      return { id: option, name: option };
+    }
+
+function convertedOptionDefaultApi() {
+  if (isObjectNotEmpty(selected.value)) {
+    if (typeof selected.value === "object") {
+      return (
+        selected.value || {}
+      );
+    } else {
+      return (
+        { id: selected.value, name: selected.value } || {}
+      );
+    }
+  } else if (props.modelValue) {
+    if (typeof props.modelValue === "object") {
+      return (
+        props.modelValue || {}
+      );
+    } else {
+      return (
+        { id: props.modelValue, name: props.modelValue } || {}
+        
+      );
+    }
+  } else {
+    return {};
+  }
+}
+
+
+function selectOption(option) {
   selected.value = option;
   optionsShown.value = false;
   emit("update:modelValue", selected.value.id);
@@ -661,8 +668,15 @@ watch(
   (newVal) => {
     //searchFilter.value = "";
     if (newVal) {
+
       selected.value = props.modelValue;
-      selected.value = convertedOptionDefault();
+      if(props.api_url){
+        selected.value = convertedOptionDefaultApi();
+      }else{
+
+        selected.value = convertedOptionDefault();
+      }
+      
     } else {
       selected.value = {};
     }
@@ -675,7 +689,7 @@ watch(
   () => {
     if (!props.api_url) {
       filteredOptions.value = convertedOptions();
-     // filteredOptions.value = searchOptions();
+      // filteredOptions.value = searchOptions();
     }
 
     selected.value = convertedOptionDefault();
