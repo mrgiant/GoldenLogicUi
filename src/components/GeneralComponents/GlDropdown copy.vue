@@ -93,7 +93,6 @@
           <div
             class="text-gray-700 bg-white dark:border-strokedark dark:bg-boxdark dark:text-gray-200 !border-b !border-t-0 !border-r !border-l fixed w-full z-[999999999] rounded-b-lg"
             v-show="optionsShown"
-           
             :style="{
               maxWidth: divDropDownWidth + 'px',
               top: divDropDownTop + 'px',
@@ -138,10 +137,8 @@
               </div>
             </div>
 
-            <div class="overflow-y-auto max-h-64"  @scroll="handleScroll" 
-            ref="dropdownRef">
+            <div class="overflow-y-auto max-h-64">
               <div
-                v-if="filteredOptions.length"
                 class="relative px-2 py-2 text-xs leading-4 text-gray-700 no-underline cursor-pointer dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                 @click="selectOption(option)"
                 @mousedown="selectOption(option)"
@@ -173,16 +170,6 @@
                   <span v-html="option.name || option.id || '-'"> </span>
                 </div>
               </div>
-
-              <div v-if="isLoading" class="p-2 text-center text-gray-500">
-                Loading...
-        </div>
-
-        <div v-if="!isLoading && filteredOptions.length === 0" class="p-2 text-gray-500">
-          No results found
-        </div>
-
-
             </div>
           </div>
         </div>
@@ -274,8 +261,6 @@ const props = defineProps({
     type: String,
     default: "",
   },
-
-  api_url: { type: String, default: "", required: false }
 });
 
 const emit = defineEmits(["update:modelValue", "selected", "selectionChanged"]);
@@ -287,22 +272,9 @@ const optionsShown = ref(false);
 const searchFilter = ref("");
 const uuid = ref("");
 
-const isLoading = ref(false);
-const page = ref(1);
-const lastPage = ref(null);
-const firstPage = ref(1);
-
-const filteredOptions = ref([]);
-
 const myDivDropDown = ref(null);
-const dropdownRef = ref(null);
 const divDropDownWidth = ref(0);
 const divDropDownTop = ref(0);
-
-
-
-
-
 
 const getDivDropDownWidth = () => {
   if (myDivDropDown.value) {
@@ -315,104 +287,11 @@ const getDivDropDownWidth = () => {
   }
 };
 
-
-
-
-/** Fetch Data (Handles Both Scroll Directions) */
-const fetchData = async (direction = "down") => {
-  if (isLoading.value) return;
-
-  isLoading.value = true;
-
-  try {
-    const currentPage =
-      direction === "up" ? Math.max(page.value - 1, firstPage) : page.value;
-    const { data } = await axios.get(props.api_url, {
-      params: { search: searchFilter.value, page: currentPage, per_page: 20 },
-    });
-
-    if (direction === "down") {
-      options.value.push(...data.data);
-      page.value++;
-      lastPage.value = data.last_page;
-    } else if (direction === "up") {
-      const prevHeight = dropdownRef.value?.scrollHeight || 0;
-      options.value.unshift(...data.data);
-      page.value--;
-      await nextTick();
-      dropdownRef.value.scrollTop += dropdownRef.value.scrollHeight - prevHeight;
-    }
-
-    if (!lastPage.value) lastPage.value = data.last_page;
-    if (!firstPage.value) firstPage.value = 1;
-  } catch (error) {
-    console.error("Error fetching data:", error);
-  }
-
-  isLoading.value = false;
-};
-
-
-
-/** Infinite Scroll Handling */
-const handleScroll = (event) => {
-  if (!event.target) return;
-  const scrollTop = event.target.scrollTop;
-  const bottom =
-    event.target.scrollHeight - event.target.clientHeight <= scrollTop + 10;
-  const top = scrollTop <= 10;
-
-  if (bottom && page.value <= lastPage.value) fetchData("down");
-  if (top && page.value > firstPage.value) fetchData("up");
-};
-
-
 const preventEnterKey = (e) => {
   if (e.key === "Enter" && e.target.form) {
     e.preventDefault();
   }
 };
-
-
-const showOptions= async ()=> {
-  if (!props.show) {
-    if (optionsShown.value) {
-      optionsShown.value = false;
-
-      return;
-    }
-
-    searchFilter.value = "";
-    optionsShown.value = true;
-    if(props.api_url)
-    {
-      if (optionsShown.value && options.length === 0) {
-           await fetchData("down");
-      }
-    }
-    
-    nextTick(() => {
-      getDivDropDownWidth();
-      //refs[props.field_name + "search" + uuid.value].focus();
-      var input_search_feild = document.getElementById(
-        `${props.field_name}search${uuid.value}`
-      );
-      if (input_search_feild) {
-        input_search_feild.focus();
-      }
-      // if(input_search.value)
-      //{
-      //   input_search.value.focus();
-      // }
-    });
-  }
-};
-
-
-
-
-
-
 
 onMounted(() => {
   uuid.value = generateUUID();
@@ -438,7 +317,7 @@ onBeforeUnmount(() => {
 //const optionsValues = computed(() => convertedOptions());
 // const selectedDefultValue = computed(() => convertedOptionDefault());
 
-function searchOptions() {
+const filteredOptions = computed(() => {
   const filtered = [];
   const safeSearch = searchFilter.value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   const regOption = new RegExp(safeSearch, "ig");
@@ -449,7 +328,7 @@ function searchOptions() {
     }
   }
   return filtered;
-};
+});
 
 function handleKeyDown(e) {
   const keysOfInterest = [
@@ -609,7 +488,32 @@ function selectOption(option) {
   emit("selectionChanged", selected.value);
 }
 
+function showOptions() {
+  if (!props.show) {
+    if (optionsShown.value) {
+      optionsShown.value = false;
 
+      return;
+    }
+
+    searchFilter.value = "";
+    optionsShown.value = true;
+    nextTick(() => {
+      getDivDropDownWidth();
+      //refs[props.field_name + "search" + uuid.value].focus();
+      var input_search_feild = document.getElementById(
+        `${props.field_name}search${uuid.value}`
+      );
+      if (input_search_feild) {
+        input_search_feild.focus();
+      }
+      // if(input_search.value)
+      //{
+      //   input_search.value.focus();
+      // }
+    });
+  }
+}
 
 function ClearInput() {
   if (!props.show) {
@@ -629,23 +533,7 @@ function exit() {
   //optionsShown.value = false;
 }
 
-watch(searchFilter, (newVal) => {
-
-  if(!props.api_url)
-  {
-   filteredOptions.value = searchOptions();
-  }else
-  {
-    page.value = 1;
-  lastPage.value = null;
-  firstPage.value = 1;
-  options.value = [];
-  fetchData("down");
-  }
-
-  
-
-
+watch(searchFilter, () => {
   if (filteredOptions.value.length === 0) {
     selected.value = {};
   }
@@ -678,13 +566,7 @@ watch(
 watch(
   () => props.options,
   () => {
-    if(!props.api_url)
-    {
-      optionsValues.value = convertedOptions();
-      filteredOptions.value = searchOptions();
-    }
-   
-   
+    optionsValues.value = convertedOptions();
     selected.value = convertedOptionDefault();
   },
   { immediate: true, deep: true }
