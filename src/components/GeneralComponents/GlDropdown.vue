@@ -331,9 +331,11 @@ const fetchData = async (direction = "down") => {
       params: { search: searchFilter.value, page: currentPage, per_page: 20 },
     });
 
-    if (direction === "down") {
-      let apiData = convertedDataOptions(data.data);
+    let apiData = convertedDataOptions(data.data);
 
+
+    if (direction === "down") {
+      
       filteredOptions.value.push(...apiData);
       page.value++;
       lastPage.value = data.last_page;
@@ -373,7 +375,7 @@ const preventEnterKey = (e) => {
   }
 };
 
-const showOptions = async () => {
+const showOptions =  () => {
   if (!props.show) {
     if (optionsShown.value) {
       optionsShown.value = false;
@@ -385,7 +387,7 @@ const showOptions = async () => {
     optionsShown.value = true;
     if (props.api_url) {
       if (filteredOptions.value.length === 0) {
-        await fetchData("down");
+         fetchData("down");
       }
     }
 
@@ -557,13 +559,13 @@ function convertedOptionDefault() {
   if (isObjectNotEmpty(selected.value)) {
     if (typeof selected.value === "object") {
       return (
-        optionsValues.value.find(
+        filteredOptions.value.find(
           (item) => String(item.id) === String(selected.value.id)
         ) || {}
       );
     } else {
       return (
-        optionsValues.value.find(
+        filteredOptions.value.find(
           (item) => String(item.id) === String(selected.value)
         ) || {}
       );
@@ -571,13 +573,13 @@ function convertedOptionDefault() {
   } else if (props.modelValue) {
     if (typeof props.modelValue === "object") {
       return (
-        optionsValues.value.find(
+        filteredOptions.value.find(
           (item) => String(item.id) === String(props.modelValue.id)
         ) || {}
       );
     } else {
       return (
-        optionsValues.value.find(
+        filteredOptions.value.find(
           (item) => String(item.id) === String(props.modelValue)
         ) || {}
       );
@@ -604,6 +606,8 @@ function convertedOptionDefault() {
 }
 
 function selectOption(option) {
+
+  console.log("selectOption ",option);
   selected.value = option;
   optionsShown.value = false;
   emit("update:modelValue", selected.value.id);
@@ -655,7 +659,7 @@ watch(selected, (newVal) => {
 watch(
   () => props.modelValue,
   (newVal) => {
-    searchFilter.value = "";
+    //searchFilter.value = "";
     if (newVal) {
       selected.value = props.modelValue;
       selected.value = convertedOptionDefault();
@@ -670,8 +674,8 @@ watch(
   () => props.options,
   () => {
     if (!props.api_url) {
-      optionsValues.value = convertedOptions();
-      filteredOptions.value = searchOptions();
+      filteredOptions.value = convertedOptions();
+     // filteredOptions.value = searchOptions();
     }
 
     selected.value = convertedOptionDefault();
