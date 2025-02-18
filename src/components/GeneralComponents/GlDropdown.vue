@@ -72,28 +72,32 @@
             </svg>
           </i>
           <i
-           
-             @click.stop="showOptions()"
-           
+            @click.stop="showOptions()"
             class="absolute text-xl text-gray-500 cursor-pointer ltr:right-2 rtl:left-2 hover:text-gray-700 dark:hover:text-gray-800 showOptions"
             style="top: 13px"
           >
-
-
-          <svg   :class="optionsShown ? '' : 'rotate-180'"  class="w-4 h-4 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5 5 1 1 5"></path>
-      </svg>
-          
-          
-          
-          
+            <svg
+              :class="optionsShown ? '' : 'rotate-180'"
+              class="w-4 h-4 shrink-0"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 10 6"
+            >
+              <path
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 5 5 1 1 5"
+              ></path>
+            </svg>
           </i>
 
           <!-- Dropdown Menu -->
           <div
             class="text-gray-700 bg-white dark:border-strokedark dark:bg-boxdark dark:text-gray-200 !border-b !border-t-0 !border-r !border-l fixed w-full z-[999999999] rounded-b-lg"
             v-show="optionsShown"
-           
             :style="{
               maxWidth: divDropDownWidth + 'px',
               top: divDropDownTop + 'px',
@@ -138,8 +142,11 @@
               </div>
             </div>
 
-            <div class="overflow-y-auto max-h-64"  @scroll="handleScroll" 
-            ref="dropdownRef">
+            <div
+              class="overflow-y-auto max-h-64"
+              @scroll="handleScroll"
+              ref="dropdownRef"
+            >
               <div
                 v-if="filteredOptions.length"
                 class="relative px-2 py-2 text-xs leading-4 text-gray-700 no-underline cursor-pointer dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
@@ -176,13 +183,14 @@
 
               <div v-if="isLoading" class="p-2 text-center text-gray-500">
                 Loading...
-        </div>
+              </div>
 
-        <div v-if="!isLoading && filteredOptions.length === 0" class="p-2 text-gray-500">
-          No results found
-        </div>
-
-
+              <div
+                v-if="!isLoading && filteredOptions.length === 0"
+                class="p-2 text-gray-500"
+              >
+                No results found
+              </div>
             </div>
           </div>
         </div>
@@ -275,7 +283,7 @@ const props = defineProps({
     default: "",
   },
 
-  api_url: { type: String, default: "", required: false }
+  api_url: { type: String, default: "", required: false },
 });
 
 const emit = defineEmits(["update:modelValue", "selected", "selectionChanged"]);
@@ -299,11 +307,6 @@ const dropdownRef = ref(null);
 const divDropDownWidth = ref(0);
 const divDropDownTop = ref(0);
 
-
-
-
-
-
 const getDivDropDownWidth = () => {
   if (myDivDropDown.value) {
     divDropDownWidth.value = myDivDropDown.value.offsetWidth;
@@ -314,9 +317,6 @@ const getDivDropDownWidth = () => {
     //label_name
   }
 };
-
-
-
 
 /** Fetch Data (Handles Both Scroll Directions) */
 const fetchData = async (direction = "down") => {
@@ -332,8 +332,6 @@ const fetchData = async (direction = "down") => {
     });
 
     if (direction === "down") {
-
-     
       let apiData = convertedDataOptions(data.data);
 
       filteredOptions.value.push(...apiData);
@@ -344,7 +342,8 @@ const fetchData = async (direction = "down") => {
       filteredOptions.value.unshift(...apiData);
       page.value--;
       await nextTick();
-      dropdownRef.value.scrollTop += dropdownRef.value.scrollHeight - prevHeight;
+      dropdownRef.value.scrollTop +=
+        dropdownRef.value.scrollHeight - prevHeight;
     }
 
     if (!lastPage.value) lastPage.value = data.last_page;
@@ -355,8 +354,6 @@ const fetchData = async (direction = "down") => {
 
   isLoading.value = false;
 };
-
-
 
 /** Infinite Scroll Handling */
 const handleScroll = (event) => {
@@ -370,15 +367,13 @@ const handleScroll = (event) => {
   if (top && page.value > firstPage.value) fetchData("up");
 };
 
-
 const preventEnterKey = (e) => {
   if (e.key === "Enter" && e.target.form) {
     e.preventDefault();
   }
 };
 
-
-const showOptions= async ()=> {
+const showOptions = async () => {
   if (!props.show) {
     if (optionsShown.value) {
       optionsShown.value = false;
@@ -388,13 +383,12 @@ const showOptions= async ()=> {
 
     searchFilter.value = "";
     optionsShown.value = true;
-    if(props.api_url)
-    {
-      if (optionsShown.value && filteredOptions.length === 0) {
-           await fetchData("down");
+    if (props.api_url) {
+      if (filteredOptions.value.length === 0) {
+        await fetchData("down");
       }
     }
-    
+
     nextTick(() => {
       getDivDropDownWidth();
       //refs[props.field_name + "search" + uuid.value].focus();
@@ -411,12 +405,6 @@ const showOptions= async ()=> {
     });
   }
 };
-
-
-
-
-
-
 
 onMounted(() => {
   uuid.value = generateUUID();
@@ -453,7 +441,7 @@ function searchOptions() {
     }
   }
   return filtered;
-};
+}
 
 function handleKeyDown(e) {
   const keysOfInterest = [
@@ -553,7 +541,6 @@ function convertedDataOptions(options) {
   });
 }
 
-
 function convertedOptions() {
   return props.options.map((option, index) => {
     if (typeof option === "object") {
@@ -624,8 +611,6 @@ function selectOption(option) {
   emit("selectionChanged", selected.value);
 }
 
-
-
 function ClearInput() {
   if (!props.show) {
     selected.value = {};
@@ -645,21 +630,15 @@ function exit() {
 }
 
 watch(searchFilter, (newVal) => {
-
-  if(!props.api_url)
-  {
-   filteredOptions.value = searchOptions();
-  }else
-  {
+  if (!props.api_url) {
+    filteredOptions.value = searchOptions();
+  } else {
     page.value = 1;
-  lastPage.value = null;
-  firstPage.value = 1;
-  options.value = [];
-  fetchData("down");
+    lastPage.value = null;
+    firstPage.value = 1;
+    filteredOptions.value = [];
+    fetchData("down");
   }
-
-  
-
 
   if (filteredOptions.value.length === 0) {
     selected.value = {};
@@ -670,11 +649,8 @@ watch(selected, (newVal) => {
     if (newVal && newVal.id !== props.modelValue) {
       emit("update:modelValue", newVal.id);
     }
-    
   }
 });
-
-
 
 watch(
   () => props.modelValue,
@@ -693,13 +669,11 @@ watch(
 watch(
   () => props.options,
   () => {
-    if(!props.api_url)
-    {
+    if (!props.api_url) {
       optionsValues.value = convertedOptions();
       filteredOptions.value = searchOptions();
     }
-   
-   
+
     selected.value = convertedOptionDefault();
   },
   { immediate: true, deep: true }
