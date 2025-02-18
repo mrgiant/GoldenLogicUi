@@ -332,12 +332,16 @@ const fetchData = async (direction = "down") => {
     });
 
     if (direction === "down") {
-      options.value.push(...data.data);
+
+     
+      let apiData = convertedDataOptions(data.data);
+
+      filteredOptions.value.push(...apiData);
       page.value++;
       lastPage.value = data.last_page;
     } else if (direction === "up") {
       const prevHeight = dropdownRef.value?.scrollHeight || 0;
-      options.value.unshift(...data.data);
+      filteredOptions.value.unshift(...apiData);
       page.value--;
       await nextTick();
       dropdownRef.value.scrollTop += dropdownRef.value.scrollHeight - prevHeight;
@@ -386,7 +390,7 @@ const showOptions= async ()=> {
     optionsShown.value = true;
     if(props.api_url)
     {
-      if (optionsShown.value && options.length === 0) {
+      if (optionsShown.value && filteredOptions.length === 0) {
            await fetchData("down");
       }
     }
@@ -538,6 +542,17 @@ function selectPost(key) {
     clickElement(count.value);
   }
 }
+
+function convertedDataOptions(options) {
+  return options.map((option, index) => {
+    if (typeof option === "object") {
+      return option;
+    } else {
+      return { id: option, name: option };
+    }
+  });
+}
+
 
 function convertedOptions() {
   return props.options.map((option, index) => {
