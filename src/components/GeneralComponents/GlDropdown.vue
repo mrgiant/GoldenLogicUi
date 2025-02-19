@@ -338,14 +338,14 @@ const fetchData = async (direction = "down",search="") => {
     if (direction === "down") {
       filteredOptions.value=[];
       filteredOptions.value.push(...apiData);
-      // page.value++;
+      page.value++;
       lastPage.value = data.last_page;
     } else if (direction === "up") {
       const prevHeight = dropdownRef.value?.scrollHeight || 0;
       //filteredOptions.value.unshift(...apiData);
       filteredOptions.value=[];
       filteredOptions.value.push(...apiData);
-      //page.value--;
+      page.value--;
       await nextTick();
       dropdownRef.value.scrollTop +=
         dropdownRef.value.scrollHeight - prevHeight;
@@ -372,17 +372,17 @@ const handleScroll = (event) => {
 
   if (bottom && page.value <= lastPage.value)
   {
-    if (isLoading.value) return;
+    
     fetchData("down");
-    page.value++;
+    //page.value++;
   
   }
    
   if (top && page.value > firstPage.value)
   {
-    if (isLoading.value) return;
+   
     fetchData("up");
-    page.value--;
+    //page.value--;
   } 
 };
 
