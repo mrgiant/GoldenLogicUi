@@ -336,14 +336,16 @@ const fetchData = async (direction = "down",search="") => {
     let apiData = convertedDataOptions(data.data);
 
     if (direction === "down") {
+      filteredOptions.value=[];
       filteredOptions.value.push(...apiData);
-      page.value++;
+      // page.value++;
       lastPage.value = data.last_page;
     } else if (direction === "up") {
       const prevHeight = dropdownRef.value?.scrollHeight || 0;
       //filteredOptions.value.unshift(...apiData);
+      filteredOptions.value=[];
       filteredOptions.value.push(...apiData);
-      page.value--;
+      //page.value--;
       await nextTick();
       dropdownRef.value.scrollTop +=
         dropdownRef.value.scrollHeight - prevHeight;
@@ -368,8 +370,18 @@ const handleScroll = (event) => {
     event.target.scrollHeight - event.target.clientHeight <= scrollTop + 10;
   const top = scrollTop <= 10;
 
-  if (bottom && page.value <= lastPage.value) fetchData("down");
-  if (top && page.value > firstPage.value) fetchData("up");
+  if (bottom && page.value <= lastPage.value)
+  {
+    fetchData("down");
+    page.value++;
+  
+  }
+   
+  if (top && page.value > firstPage.value)
+  {
+    fetchData("up");
+    page.value--;
+  } 
 };
 
 const preventEnterKey = (e) => {
@@ -661,8 +673,11 @@ watch(selected, (newVal) => {
       selected.value = props.modelValue;
       if (props.api_url) {
         if (filteredOptions.value.length === 0) {
-        fetchData("down",selected.value);
-      }
+           fetchData("down",selected.value);
+         }else
+         {
+          selected.value = convertedOptionDefault();
+         }
       
        //selected.value = convertedOptionDefaultApi();
       } else {
