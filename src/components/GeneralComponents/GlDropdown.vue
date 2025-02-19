@@ -319,8 +319,10 @@ const getDivDropDownWidth = () => {
 };
 
 /** Fetch Data (Handles Both Scroll Directions) */
-const fetchData = async (direction = "down") => {
+const fetchData = async (direction = "down",search="") => {
   if (isLoading.value) return;
+
+  let searchValue = search || searchFilter.value;
 
   isLoading.value = true;
 
@@ -328,7 +330,7 @@ const fetchData = async (direction = "down") => {
     const currentPage =
       direction === "up" ? Math.max(page.value - 1, firstPage) : page.value;
     const { data } = await axios.get(props.api_url, {
-      params: { search: searchFilter.value, page: currentPage, per_page: 20 },
+      params: { search: searchValue, page: currentPage, per_page: 20 },
     });
 
     let apiData = convertedDataOptions(data.data);
@@ -349,6 +351,8 @@ const fetchData = async (direction = "down") => {
 
     if (!lastPage.value) lastPage.value = data.last_page;
     if (!firstPage.value) firstPage.value = 1;
+
+    selected.value = convertedOptionDefault();
   } catch (error) {
     console.error("Error fetching data:", error);
   }
@@ -580,39 +584,25 @@ function convertedOptionDefault() {
 }
 
 
-if (typeof option === "object") {
-      return option;
-    } else {
-      return { id: option, name: option };
-    }
 
 function convertedOptionDefaultApi() {
   if (isObjectNotEmpty(selected.value)) {
     if (typeof selected.value === "object") {
-      return (
-        selected.value || {}
-      );
+      return selected.value || {};
     } else {
-      return (
-        { id: selected.value, name: selected.value } || {}
-      );
+      return { id: selected.value, name: selected.value } || {};
     }
-  } else if (props.modelValue) {
+  }
+   else if (props.modelValue) {
     if (typeof props.modelValue === "object") {
-      return (
-        props.modelValue || {}
-      );
+      return props.modelValue || {};
     } else {
-      return (
-        { id: props.modelValue, name: props.modelValue } || {}
-        
-      );
+      return { id: props.modelValue, name: props.modelValue } || {};
     }
   } else {
     return {};
   }
 }
-
 
 function selectOption(option) {
   selected.value = option;
@@ -663,20 +653,21 @@ watch(selected, (newVal) => {
   }
 });
 
-watch(
-  () => props.modelValue,
+ watch(
+  ()  =>  props.modelValue,
   (newVal) => {
     //searchFilter.value = "";
     if (newVal) {
-
       selected.value = props.modelValue;
-      if(props.api_url){
-        selected.value = convertedOptionDefaultApi();
-      }else{
-
-        selected.value = convertedOptionDefault();
+      if (props.api_url) {
+        if (filteredOptions.value.length === 0) {
+        fetchData("down",selected.value);
       }
       
+       //selected.value = convertedOptionDefaultApi();
+      } else {
+        selected.value = convertedOptionDefault();
+      }
     } else {
       selected.value = {};
     }
