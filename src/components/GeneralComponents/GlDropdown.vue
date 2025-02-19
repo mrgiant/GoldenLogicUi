@@ -372,6 +372,7 @@ const handleScroll = (event) => {
 
   if (bottom && page.value <= lastPage.value)
   {
+    if (isLoading.value) return;
     fetchData("down");
     page.value++;
   
@@ -379,6 +380,7 @@ const handleScroll = (event) => {
    
   if (top && page.value > firstPage.value)
   {
+    if (isLoading.value) return;
     fetchData("up");
     page.value--;
   } 
