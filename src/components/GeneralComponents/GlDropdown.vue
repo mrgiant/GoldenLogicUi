@@ -40,10 +40,9 @@
             :class="{
               'gl-input-form': error_message == '',
               'gl-input-form-invalid': error_message !== '',
+              [`showOptions${uuid}`]: true,
             }"
-            class="pr-2 showOptions"
-            @click="showOptions()"
-            @keydown="handleTabPressInput"
+            class="pr-2 showOptions1"
             :value="selected?.name"
             :placeholder="placeholder"
             autocomplete="off"
@@ -97,8 +96,12 @@
 
           <!-- Dropdown Menu -->
           <div
-            class="text-gray-700 bg-white dark:border-strokedark dark:bg-boxdark dark:text-gray-200 !border-b !border-t-0 !border-r !border-l absolute w-full z-[999999999] rounded-b-lg"
+            class="text-gray-700 bg-white dark:border-strokedark dark:bg-boxdark dark:text-gray-200 !border-b !border-t-0 !border-r !border-l fixed w-full z-[999999999] rounded-b-lg"
             v-show="optionsShown"
+            :style="{
+              maxWidth: divDropDownWidth + 'px',
+              top: divDropDownTop + 'px',
+            }"
           >
             <div class="p-1" v-if="!hide_search">
               <label
@@ -309,13 +312,25 @@ const optionsValues = ref([]);
 const myDivDropDown = ref(null);
 const dropdownRef = ref(null);
 
+const divDropDownWidth = ref(0);
+const divDropDownTop = ref(0);
 
+const getDivDropDownWidth = () => {
+  if (myDivDropDown.value) {
+    divDropDownWidth.value = myDivDropDown.value.offsetWidth;
+    var parentRect = myDivDropDown.value.getBoundingClientRect();
+
+    divDropDownTop.value = parentRect.top + 41 + (props.label_name ? 22 : 0);
+
+    //label_name
+  }
+};
 
 const handleTabPressInput = (event) => {
   console.log("Tab key pressed!", event.key);
   if (event.key === "Tab") {
     event.preventDefault(); // Prevent default tab behavior (optional)
-     console.log("Tab key pressed!");
+    console.log("Tab key pressed!");
     showOptions();
     // Call your method here
   }
@@ -387,25 +402,28 @@ const handleScroll = (event) => {
   }
 };
 
-const preventEnterKey = (e) => {
-
-  console.log("Tab key pressed!", e.target.id);
-  console.log("Tab key pressed!", e.target.form);
-    if (e.key === "Tab" && !e.target.classList.contains("showOptions")) {
-
-        exit();
-       count.value = 0;
-       optionsShown.value = false;
 
 
-     }
+const handleFocusChange = (event) => {
+  if (!event.target) return;
 
-
-
-  if (e.key === "Enter" && e.target.form) {
-    console.log("Enter key pressed! enter ", e.target.id);
-    e.preventDefault();
+  if (document.activeElement.classList.contains("showOptions" + uuid.value)) {
+    if (!optionsShown.value) {
+      showOptions();
+    }
+  } else {
+    if (
+      event.target.id != props.field_name + "search" + uuid.value &&
+      event.target.id != props.field_name &&
+      !event.target.classList.contains("showOptions" + uuid.value)
+    ) {
+      exit();
+      count.value = 0;
+      optionsShown.value = false;
+    }
   }
+
+  //console.log("Active Element:", document.activeElement);
 };
 
 const showOptions = () => {
@@ -478,14 +496,18 @@ onMounted(() => {
   uuid.value = generateUUID();
 
   if (!props.show) {
+    window.addEventListener("scroll", getDivDropDownWidth);
     document.body.addEventListener("click", clearData);
-    document.addEventListener("keydown", preventEnterKey);
+   // document.addEventListener("keydown", preventEnterKey);
+    document.addEventListener("focusin", handleFocusChange);
   }
 });
 
 onBeforeUnmount(() => {
+  window.removeEventListener("scroll", getDivDropDownWidth);
   document.body.removeEventListener("click", clearData);
-  document.removeEventListener("keydown", preventEnterKey);
+ // document.removeEventListener("keydown", preventEnterKey);
+  document.removeEventListener("focusin", handleFocusChange);
 });
 
 function searchOptions() {
@@ -551,7 +573,7 @@ function clearData(e) {
   if (
     e.target.id != props.field_name + "search" + uuid.value &&
     e.target.id != props.field_name &&
-    !e.target.classList.contains("showOptions")
+    !e.target.classList.contains("showOptions" + uuid.value)
   ) {
     exit();
     count.value = 0;
