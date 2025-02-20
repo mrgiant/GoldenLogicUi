@@ -98,7 +98,7 @@
               top: divDropDownTop + 'px',
             }"
           >
-            <div class="p-1">
+            <div class="p-1" v-if="!hide_search">
               <label
                 for="default-search"
                 class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
@@ -125,6 +125,7 @@
                   </svg>
                 </div>
                 <input
+                  
                   type="search"
                   v-model="searchFilter"
                   :id="`${field_name}search${uuid}`"
@@ -260,6 +261,11 @@ const props = defineProps({
   description: {
     type: String,
     default: "",
+  },
+
+  hide_search: {
+    type: Boolean,
+    default: false,
   },
 });
 
