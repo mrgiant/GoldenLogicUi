@@ -317,10 +317,13 @@ const divDropDownTop = ref(0);
 
 const getDivDropDownWidth = () => {
   if (myDivDropDown.value) {
+    
     divDropDownWidth.value = myDivDropDown.value.offsetWidth;
     var parentRect = myDivDropDown.value.getBoundingClientRect();
 
     divDropDownTop.value = parentRect.top + 41 + (props.label_name ? 22 : 0);
+
+    console.log("Div Top:", divDropDownTop.value);
 
     //label_name
   }
@@ -443,6 +446,7 @@ const showOptions = () => {
     }
 
     nextTick(() => {
+      getDivDropDownWidth();
       //refs[props.field_name + "search" + uuid.value].focus();
       var input_search_feild = document.getElementById(
         `${props.field_name}search${uuid.value}`
