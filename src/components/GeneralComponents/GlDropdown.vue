@@ -316,6 +316,9 @@ const divDropDownWidth = ref(0);
 const divDropDownTop = ref(0);
 
 const getDivDropDownWidth = () => {
+
+   
+
   if (myDivDropDown.value) {
     
     divDropDownWidth.value = myDivDropDown.value.offsetWidth;
@@ -323,7 +326,6 @@ const getDivDropDownWidth = () => {
 
     divDropDownTop.value = parentRect.top + 41 + (props.label_name ? 22 : 0);
 
-    console.log("Div Top:", divDropDownTop.value);
 
     //label_name
   }
@@ -500,7 +502,14 @@ onMounted(() => {
   uuid.value = generateUUID();
 
   if (!props.show) {
-    window.addEventListener("scroll", getDivDropDownWidth);
+    window.addEventListener("scroll", getDivDropDownWidth, { passive: true });
+   
+    const modalElement = document.querySelector(".gl_modal_body");
+  if (modalElement) {
+    modalElement.addEventListener("scroll", getDivDropDownWidth, { passive: true });
+   }
+
+
     document.body.addEventListener("click", clearData);
    // document.addEventListener("keydown", preventEnterKey);
     document.addEventListener("focusin", handleFocusChange);
@@ -509,6 +518,13 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   window.removeEventListener("scroll", getDivDropDownWidth);
+  
+
+  const modalElement = document.querySelector(".gl_modal_body");
+   if (modalElement) {
+     modalElement.removeEventListener("scroll", getDivDropDownWidth, { passive: true });
+   }
+
   document.body.removeEventListener("click", clearData);
  // document.removeEventListener("keydown", preventEnterKey);
   document.removeEventListener("focusin", handleFocusChange);

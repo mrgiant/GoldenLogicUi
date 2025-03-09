@@ -2,10 +2,10 @@
   <DynamicConfirmation ref="ConfirmationDelete"></DynamicConfirmation>
   <div class="p-2">
     <div
-      class="flex flex-col flex-wrap pb-4 gap-4 xl:flex-row xl:items-center xl:justify-between flex-column"
+      class="flex flex-col flex-wrap gap-4 pb-4 xl:flex-row xl:items-center xl:justify-between flex-column"
     >
       <div class="flex items-center gap-2">
-        <span class="font-medium"> {{ language?.show ?? 'Show' }} </span>
+        <span class="font-medium"> {{ language?.show ?? "Show" }} </span>
 
         <div style="margin-top: 3px">
           <dropdown
@@ -22,7 +22,7 @@
           </dropdown>
         </div>
 
-        <span class="font-medium"> {{ language?.entries ?? 'Entries' }} </span>
+        <span class="font-medium"> {{ language?.entries ?? "Entries" }} </span>
       </div>
 
       <label for="table-search" class="sr-only">Search</label>
@@ -49,12 +49,17 @@
           v-model="search"
           @input="handleSearch()"
           class="block w-full p-2 text-sm text-gray-900 border border-gray-300 rounded-lg ps-10 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-          :placeholder="language?.search ? language?.search + ' ...' : 'Search ...'" 
+          :placeholder="
+            language?.search ? language?.search + ' ...' : 'Search ...'
+          "
         />
       </div>
     </div>
 
-    <div class="grid xs:grid-cols-1 xl:grid-cols-2 gap-4 mb-3" :class="xprops?.customFiltersMainClass">
+    <div
+      class="grid gap-4 mb-3 xs:grid-cols-1 xl:grid-cols-2"
+      :class="xprops?.customFiltersMainClass"
+    >
       <template v-for="(column, index) in customFilters" :key="index">
         <GlDropdown
           v-if="column.type == 'dropdown'"
@@ -65,7 +70,9 @@
           :field_name="column.field_name"
           :label_name="column.field_label"
           :show="false"
-         :placeholder="language?.please_select_an_option ?? 'Please select an option'"
+          :placeholder="
+            language?.please_select_an_option ?? 'Please select an option'
+          "
         >
         </GlDropdown>
 
@@ -107,7 +114,9 @@
             :field_name="column.field_name"
             :label_name="column.field_label"
             :show="false"
-            :placeholder="language?.please_select_an_option ?? 'Please select an option'"
+            :placeholder="
+              language?.please_select_an_option ?? 'Please select an option'
+            "
           >
           </GlDropdown>
 
@@ -136,15 +145,32 @@
       </template>
     </div>
 
-    <div class="flex flex-wrap  mb-3">
-      <gl-button @click="toggleSelectAll" tag="button" button_type="default" :has_border_reduced="false" classes="">
-        {{ language?.select_all ?? 'Select all' }}
+    <div class="flex flex-wrap mb-3">
+      <gl-button
+        @click="toggleSelectAll"
+        tag="button"
+        button_type="default"
+        :has_border_reduced="false"
+        classes="rounded-s-lg"
+      >
+        {{ language?.select_all ?? "Select all" }}
       </gl-button>
-      <gl-button @click="toggleDeselectAll" tag="button" button_type="default" :has_border_reduced="false">
-        {{ language?.deselect_all ?? 'Deselect all' }}
+      <gl-button
+        @click="toggleDeselectAll"
+        tag="button"
+        button_type="default"
+        :has_border_reduced="false"
+      >
+        {{ language?.deselect_all ?? "Deselect all" }}
       </gl-button>
-      <gl-button tag="button" @click="deleteSelected" button_type="red" :has_border_reduced="false">
-        {{ language?.delete_selected ?? 'Delete selected' }}
+      <gl-button
+        tag="button"
+        @click="deleteSelected"
+        button_type="red"
+        :has_border_reduced="false"
+        classes="rounded-e-lg"
+      >
+        {{ language?.delete_selected ?? "Delete selected" }}
       </gl-button>
     </div>
 
@@ -182,66 +208,66 @@
                 <div class="flex items-center justify-between">
                   <div>
                     <div
-                      class="h-3 bg-gray-300 rounded-full dark:bg-gray-600 w-24 mb-3"
+                      class="w-24 h-3 mb-3 bg-gray-300 rounded-full dark:bg-gray-600"
                     ></div>
                     <div
                       class="w-32 h-2 bg-gray-200 rounded-full dark:bg-gray-700"
                     ></div>
                   </div>
                   <div
-                    class="h-3 bg-gray-300 rounded-full dark:bg-gray-700 w-12"
+                    class="w-12 h-3 bg-gray-300 rounded-full dark:bg-gray-700"
                   ></div>
                 </div>
                 <div class="flex items-center justify-between pt-4">
                   <div>
                     <div
-                      class="h-3 bg-gray-300 rounded-full dark:bg-gray-600 w-24 mb-3"
+                      class="w-24 h-3 mb-3 bg-gray-300 rounded-full dark:bg-gray-600"
                     ></div>
                     <div
                       class="w-32 h-2 bg-gray-200 rounded-full dark:bg-gray-700"
                     ></div>
                   </div>
                   <div
-                    class="h-3 bg-gray-300 rounded-full dark:bg-gray-700 w-12"
+                    class="w-12 h-3 bg-gray-300 rounded-full dark:bg-gray-700"
                   ></div>
                 </div>
                 <div class="flex items-center justify-between pt-4">
                   <div>
                     <div
-                      class="h-3 bg-gray-300 rounded-full dark:bg-gray-600 w-24 mb-3"
+                      class="w-24 h-3 mb-3 bg-gray-300 rounded-full dark:bg-gray-600"
                     ></div>
                     <div
                       class="w-32 h-2 bg-gray-200 rounded-full dark:bg-gray-700"
                     ></div>
                   </div>
                   <div
-                    class="h-3 bg-gray-300 rounded-full dark:bg-gray-700 w-12"
+                    class="w-12 h-3 bg-gray-300 rounded-full dark:bg-gray-700"
                   ></div>
                 </div>
                 <div class="flex items-center justify-between pt-4">
                   <div>
                     <div
-                      class="h-3 bg-gray-300 rounded-full dark:bg-gray-600 w-24 mb-3"
+                      class="w-24 h-3 mb-3 bg-gray-300 rounded-full dark:bg-gray-600"
                     ></div>
                     <div
                       class="w-32 h-2 bg-gray-200 rounded-full dark:bg-gray-700"
                     ></div>
                   </div>
                   <div
-                    class="h-3 bg-gray-300 rounded-full dark:bg-gray-700 w-12"
+                    class="w-12 h-3 bg-gray-300 rounded-full dark:bg-gray-700"
                   ></div>
                 </div>
                 <div class="flex items-center justify-between pt-4">
                   <div>
                     <div
-                      class="h-3 bg-gray-300 rounded-full dark:bg-gray-600 w-24 mb-3"
+                      class="w-24 h-3 mb-3 bg-gray-300 rounded-full dark:bg-gray-600"
                     ></div>
                     <div
                       class="w-32 h-2 bg-gray-200 rounded-full dark:bg-gray-700"
                     ></div>
                   </div>
                   <div
-                    class="h-3 bg-gray-300 rounded-full dark:bg-gray-700 w-12"
+                    class="w-12 h-3 bg-gray-300 rounded-full dark:bg-gray-700"
                   ></div>
                 </div>
                 <span class="sr-only">Loading...</span>
@@ -253,12 +279,12 @@
             v-if="!isLoading"
             v-for="(item, index) in itemLists.data"
             :key="index"
-            class="bg-white dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 hover:dark:text-gray-200 text-gray-500"
+            class="text-gray-500 bg-white dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 hover:dark:text-gray-200"
           >
             <!-- remove  md:flex-row from  below td to be the text below lable if want in line add it -->
 
             <td
-              class="text-center rounded-t-lg lg:rounded-t-none text-pretty before:content-[attr(data-label)] before:font-bold lg:before:content-none flex flex-col justify-between gap-2 lg:table-cell py-4 px-5 lg:py-3 lg:px-4 border-[1px] dark:border-gray-700"
+              class="text-center rounded-t-lg lg:!rounded-t-none text-pretty before:content-[attr(data-label)] before:font-bold lg:before:content-none flex flex-col justify-between gap-2 lg:table-cell py-4 px-5 lg:py-3 lg:px-4 border-[1px] dark:border-gray-700"
               data-label=""
             >
               <input
@@ -277,7 +303,7 @@
               class="text-pretty before:content-[attr(data-label)] before:font-bold lg:before:content-none flex flex-col justify-between gap-2 lg:table-cell py-4 px-5 lg:py-3 lg:px-4 border-[1px] dark:border-gray-700"
               :class="{
                 /* 'rounded-t-lg lg:rounded-t-none': colIndex === 0,*/
-                'rounded-b-lg lg:rounded-b-none':
+                'rounded-b-lg lg:!rounded-b-none':
                   colIndex === columns.length - 1,
               }"
             >
@@ -306,10 +332,11 @@
     </div>
 
     <div
-      class="flex items-center justify-between px-4 py-3 bg-white border-gray-200 sm:px-6 dark:text-gray-400 dark:bg-gray-800"
+      class="flex items-center justify-between bg-white border-gray-200 dark:text-gray-400 dark:bg-gray-800"
     >
       <TailwindPagination
         class="mt-3 mb-0"
+        classes="px-4 py-3 sm:px-6"
         :data="itemLists"
         :limit="limit"
         :size="size"
@@ -339,21 +366,19 @@ export default {
     DynamicConfirmation,
   },
   props: {
-
     columns: {
-    type: Array,
-    required: false,
-    default: () => []
-  },
+      type: Array,
+      required: false,
+      default: () => [],
+    },
 
-
-  language: {
-    type: Object,
-    required: false,
-    default: () => {}
-  },
+    language: {
+      type: Object,
+      required: false,
+      default: () => {},
+    },
     data: Array,
-   
+
     get_item_url: String,
     xprops: Object,
     refreshData: Boolean,
@@ -376,7 +401,9 @@ export default {
 
       sortField: this.xprops.defaultSortField
         ? this.xprops.defaultSortField
-        : (this.columns && this.columns.length > 0 ? this.columns[0].field_name : ''),
+        : this.columns && this.columns.length > 0
+        ? this.columns[0].field_name
+        : "",
 
       sortOrder: "desc",
 
@@ -387,15 +414,9 @@ export default {
   },
   emits: ["editAction", "generalAction"],
   computed: {
-
-    
     columns1() {
       return this.columns;
     },
-
-
-
-
 
     filteredData() {
       const searchTerm = this.search.toLowerCase();
@@ -415,7 +436,9 @@ export default {
     async deleteSelected() {
       if (this.checkedIds.length <= 0) {
         GlToast.methods.add({
-          message: this.language?.please_select_at_least_one_item_to_delete ?? "Please select at least one item to delete",
+          message:
+            this.language?.please_select_at_least_one_item_to_delete ??
+            "Please select at least one item to delete",
           type: "error",
           duration: 5000,
         });
@@ -424,18 +447,21 @@ export default {
       }
 
       const ok = await this.$refs.ConfirmationDelete.show({
-        title: this.language?.title_delete_confirmation ?? "Delete Confirmation",
-        message: this.language?.message_delete_confirmation ?? "Are you sure you want to delete the selected items?",
-        okButton: this.language?.okbutton_delete_confirmation ?? "Yes, delete it",
-        cancelButton: this.language?.cancelbutton_delete_confirmation ?? "Cancel",
+        title:
+          this.language?.title_delete_confirmation ?? "Delete Confirmation",
+        message:
+          this.language?.message_delete_confirmation ??
+          "Are you sure you want to delete the selected items?",
+        okButton:
+          this.language?.okbutton_delete_confirmation ?? "Yes, delete it",
+        cancelButton:
+          this.language?.cancelbutton_delete_confirmation ?? "Cancel",
       });
 
       if (ok) {
         this.$refs.ConfirmationDelete.showLoading();
 
-
-        this.checkedIds.forEach(id => {
-
+        this.checkedIds.forEach((id) => {
           axios
             .delete(`${this.xprops.route}/${id}`)
             .then(() => {})
@@ -443,25 +469,21 @@ export default {
               // handle error
               console.log(error);
             });
-       
-      });
+        });
 
         this.checkedIds = [];
 
         this.$refs.ConfirmationDelete.hideLoading();
 
-      
-
         GlToast.methods.add({
-          message: this.language?.selected_items_deleted_successfully ?? "Selected items deleted successfully.",
+          message:
+            this.language?.selected_items_deleted_successfully ??
+            "Selected items deleted successfully.",
           type: "success",
           duration: 5000,
         });
 
-
         this.GetItemLists();
-
-
       } else {
         return;
       }
@@ -532,7 +554,10 @@ export default {
       this.GetItemLists(this.page);
     },
     handleSearch() {
-      this.sortField =  (this.columns && this.columns.length > 0 ? this.columns[0].field_name : '');
+      this.sortField =
+        this.columns && this.columns.length > 0
+          ? this.columns[0].field_name
+          : "";
       this.sortOrder = "asc";
       this.page = 1;
       this.GetItemLists(this.page);
@@ -545,8 +570,6 @@ export default {
   },
 
   watch: {
-
-   
     searchFilter() {
       if (this.filteredOptions.length === 0) {
         this.selected = {};

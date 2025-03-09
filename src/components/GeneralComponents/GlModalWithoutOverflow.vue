@@ -88,7 +88,7 @@ onBeforeUnmount(() => {
 
   <!-- Modal -->
   <div
-    class="fixed left-0 top-13 h-full w-full overflow-y-auto  outline-none inset-0 bg-black !bg-opacity-80"
+    class=" fixed left-0 top-13 h-full w-full overflow-y-auto  outline-none inset-0 !bg-black !bg-opacity-80"
     :class="has_large_z_index ? 'z-[9999]' : 'z-[1055]'"
     v-if="is_open"
     tabindex="-1"
@@ -99,7 +99,7 @@ onBeforeUnmount(() => {
       :class="max_width"
     >
       <div
-        class="pointer-events-auto relative flex  w-full flex-col  text-current shadow-4 outline-none bg-white border rounded-lg border-stroke dark:border-strokedark dark:bg-boxdark"
+        class="relative flex flex-col w-full text-current bg-white border rounded-lg outline-none pointer-events-auto shadow-4 border-stroke dark:border-strokedark dark:bg-boxdark"
       >
         <div
           v-if="has_header"
@@ -171,7 +171,7 @@ onBeforeUnmount(() => {
           <div class="h-2 bg-gray-200 rounded-full dark:bg-gray-700"></div>
           <div class="flex items-center mt-4">
             <svg
-              class="w-10 h-10 me-3 text-gray-200 dark:text-gray-700"
+              class="w-10 h-10 text-gray-200 me-3 dark:text-gray-700"
               aria-hidden="true"
               xmlns="http://www.w3.org/2000/svg"
               fill="currentColor"
@@ -196,7 +196,7 @@ onBeforeUnmount(() => {
         <!-- Modal body -->
         <div
           v-show="!is_loading"
-          class="relative"
+          class="relative gl_modal_body"
           :class="bodyClass"
         >
           <slot name="body"></slot>

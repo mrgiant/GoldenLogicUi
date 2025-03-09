@@ -73,7 +73,7 @@ watch(
 
   <!-- Modal -->
   <div
-    class="fixed left-0 top-13 h-full w-full overflow-y-auto overflow-x-hidden outline-none inset-0 bg-black !bg-opacity-80"
+    class=" fixed left-0 top-13 h-full w-full overflow-y-auto overflow-x-hidden outline-none inset-0 !bg-black !bg-opacity-80"
     :class="has_large_z_index ? 'z-[9999]' : 'z-[1055]'"
     v-show="is_open"
     tabindex="-1"
@@ -157,7 +157,7 @@ watch(
           <div class="h-2 bg-gray-200 rounded-full dark:bg-gray-700"></div>
           <div class="flex items-center mt-4">
             <svg
-              class="w-10 h-10 me-3 text-gray-200 dark:text-gray-700"
+              class="w-10 h-10 text-gray-200 me-3 dark:text-gray-700"
               aria-hidden="true"
               xmlns="http://www.w3.org/2000/svg"
               fill="currentColor"
@@ -180,7 +180,7 @@ watch(
         </div>
 
         <!-- Modal body -->
-        <div  v-show="!is_loading" class="relative overflow-y-auto" :class="bodyClass">
+        <div  v-show="!is_loading" class="relative overflow-y-auto gl_modal_body" :class="bodyClass">
           <slot name="body"></slot>
         </div>
 

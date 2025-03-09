@@ -5,7 +5,7 @@
     @pagination-change-page="onPaginationChangePage"
     v-slot="slotProps"
   >
-    <div class="flex flex-col items-center">
+    <div class="flex flex-col items-center" :class="classes" v-if="slotProps.computed.total > slotProps.computed.perPage">
       <!-- Help text -->
       <span
         class="text-sm text-gray-700 dark:text-gray-400"
@@ -173,6 +173,11 @@ export default {
         return ["left", "center", "right"].indexOf(value) !== -1;
       },
     },
+
+    classes:{
+      type: String,
+      default: "",
+    }
   },
 
   methods: {
@@ -182,7 +187,7 @@ export default {
   },
 
   mounted() {
-    // console.log(this.slotProps);
+     //console.log(this.slotProps);
   },
 };
 </script>
