@@ -1,13 +1,14 @@
 <template>
   <div class="p-2">
     <div
-      class="flex flex-col flex-wrap pb-4 space-y-4 xl:flex-row xl:items-center xl:justify-between flex-column sm:space-y-0"
+      class="flex flex-col flex-wrap pb-4 space-y-4 xl:flex-row xl:items-center xl:justify-between sm:space-y-0"
     >
       <div class="flex items-center gap-2">
         <span class="font-medium"> Show </span>
 
         <div style="margin-top: 9px">
           <dropdown
+            :options_top_size="0"
             :has_cancel="false"
             :options="pageOptions"
             v-model="perPage"
@@ -29,19 +30,7 @@
         <div
           class="absolute inset-y-0 left-0 flex items-center pointer-events-none rtl:inset-r-0 rtl:right-0 ps-3"
         >
-          <svg
-            class="w-5 h-5 text-gray-500 dark:text-gray-400"
-            aria-hidden="true"
-            fill="currentColor"
-            viewBox="0 0 20 20"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-              clip-rule="evenodd"
-            ></path>
-          </svg>
+         
         </div>
         <input
           type="text"
@@ -80,71 +69,71 @@
             <td :colspan="columns.length">
               <div
                 role="status"
-                class=" p-4 space-y-4 border border-gray-200 divide-y divide-gray-200 rounded shadow animate-pulse dark:divide-gray-700 md:p-6 dark:border-gray-700"
+                class="p-4 space-y-4 border border-gray-200 divide-y divide-gray-200 rounded shadow animate-pulse dark:divide-gray-700 md:p-6 dark:border-gray-700"
               >
                 <div class="flex items-center justify-between">
                   <div>
                     <div
-                      class="h-3 bg-gray-300 rounded-full dark:bg-gray-600 w-24 mb-3"
+                      class="w-24 h-3 mb-3 bg-gray-300 rounded-full dark:bg-gray-600"
                     ></div>
                     <div
                       class="w-32 h-2 bg-gray-200 rounded-full dark:bg-gray-700"
                     ></div>
                   </div>
                   <div
-                    class="h-3 bg-gray-300 rounded-full dark:bg-gray-700 w-12"
+                    class="w-12 h-3 bg-gray-300 rounded-full dark:bg-gray-700"
                   ></div>
                 </div>
                 <div class="flex items-center justify-between pt-4">
                   <div>
                     <div
-                      class="h-3 bg-gray-300 rounded-full dark:bg-gray-600 w-24 mb-3"
+                      class="w-24 h-3 mb-3 bg-gray-300 rounded-full dark:bg-gray-600"
                     ></div>
                     <div
                       class="w-32 h-2 bg-gray-200 rounded-full dark:bg-gray-700"
                     ></div>
                   </div>
                   <div
-                    class="h-3 bg-gray-300 rounded-full dark:bg-gray-700 w-12"
+                    class="w-12 h-3 bg-gray-300 rounded-full dark:bg-gray-700"
                   ></div>
                 </div>
                 <div class="flex items-center justify-between pt-4">
                   <div>
                     <div
-                      class="h-3 bg-gray-300 rounded-full dark:bg-gray-600 w-24 mb-3"
+                      class="w-24 h-3 mb-3 bg-gray-300 rounded-full dark:bg-gray-600"
                     ></div>
                     <div
                       class="w-32 h-2 bg-gray-200 rounded-full dark:bg-gray-700"
                     ></div>
                   </div>
                   <div
-                    class="h-3 bg-gray-300 rounded-full dark:bg-gray-700 w-12"
+                    class="w-12 h-3 bg-gray-300 rounded-full dark:bg-gray-700"
                   ></div>
                 </div>
                 <div class="flex items-center justify-between pt-4">
                   <div>
                     <div
-                      class="h-3 bg-gray-300 rounded-full dark:bg-gray-600 w-24 mb-3"
+                      class="w-24 h-3 mb-3 bg-gray-300 rounded-full dark:bg-gray-600"
                     ></div>
                     <div
                       class="w-32 h-2 bg-gray-200 rounded-full dark:bg-gray-700"
                     ></div>
                   </div>
                   <div
-                    class="h-3 bg-gray-300 rounded-full dark:bg-gray-700 w-12"
+                    class="w-12 h-3 bg-gray-300 rounded-full dark:bg-gray-700"
                   ></div>
                 </div>
                 <div class="flex items-center justify-between pt-4">
                   <div>
                     <div
-                      class="h-3 bg-gray-300 rounded-full dark:bg-gray-600 w-24 mb-3"
+                      class="w-24 h-3 mb-3 bg-gray-300 rounded-full dark:bg-gray-600"
                     ></div>
                     <div
                       class="w-32 h-2 bg-gray-200 rounded-full dark:bg-gray-700"
                     ></div>
                   </div>
                   <div
-                    class="h-3 bg-gray-300 rounded-full dark:bg-gray-700 w-12"
+                    class="w-12 h-3 bg-gray-300 rounded-full dark:bg-gray-700"
                   ></div>
                 </div>
                 <span class="sr-only">Loading...</span>
@@ -156,7 +145,7 @@
           <template  v-for="(items, group) in groupedItems"  v-if="!isLoading">
 
 
-            <tr class="bg-white dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 hover:dark:text-gray-200 text-gray-500"><td :colspan="columns.length" class="text-pretty before:content-[attr(data-label)] before:font-bold lg:before:content-none flex md:flex-row flex-col justify-between gap-2 lg:table-cell py-4 px-5 lg:py-3 lg:px-4 border dark:border-gray-700"> {{  group  }} </td></tr>
+            <tr class="text-gray-500 bg-white dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 hover:dark:text-gray-200"><td :colspan="columns.length" class="text-pretty before:content-[attr(data-label)] before:font-bold lg:before:content-none flex md:flex-row flex-col justify-between gap-2 lg:table-cell py-4 px-5 lg:py-3 lg:px-4 border dark:border-gray-700"> {{  group  }} </td></tr>
 
 
 
@@ -166,7 +155,7 @@
            
             v-for="(item, index) in items" :key="index"
           
-            class="bg-white dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 hover:dark:text-gray-200 text-gray-500"
+            class="text-gray-500 bg-white dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 hover:dark:text-gray-200"
           >
             <td
               v-for="(column, colIndex) in columns"
