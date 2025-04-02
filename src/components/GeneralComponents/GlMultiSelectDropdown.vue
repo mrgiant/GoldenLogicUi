@@ -549,7 +549,7 @@ function exit() {
   }
   */
   searchFilter.value = "";
-  emit("selected", selected.value);
+  //emit("selected", selected.value);
   // optionsShown.value = false;
 }
 

@@ -660,6 +660,8 @@ function ClearInput() {
     selected.value = {};
     searchFilter.value = "";
     emit("update:modelValue", "");
+    emit("selected", selected.value);
+    emit("selectionChanged", selected.value);
     showOptions();
   }
 }
@@ -669,9 +671,12 @@ function exit() {
     selected.value = {};
     searchFilter.value = "";
   }
-  emit("selected", selected.value);
-  //optionsShown.value = false;
+  //emit("selected", selected.value);
+  
 }
+
+
+
 
 watch(searchFilter, (newVal) => {
   if (!props.api_url) {

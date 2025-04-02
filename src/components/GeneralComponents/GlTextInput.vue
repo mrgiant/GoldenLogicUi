@@ -54,6 +54,16 @@ const props = defineProps({
         type: String,
         default: null,
     },
+
+    input_class: {
+        type: String,
+        default: "",
+    },
+    container_class: {
+        type: String,
+        default: "",
+    },
+
 });
 
 const emit = defineEmits(["update:modelValue", "keydown", "blur"]);
@@ -98,9 +108,9 @@ defineExpose({ focus: () => input.value.focus() });
 
 <template>
     <div :class="field_name" v-if="show">
-        <h3 class="font-bold  dark:text-white">{{ label_name }}</h3>
+        <h3 class="font-bold dark:text-white">{{ label_name }}</h3>
 
-        <p class="mt-1  text-gray-900 dark:text-white">
+        <p class="mt-1 text-gray-900 dark:text-white">
             {{
                 type == "password"
                     ? modelValue.replace(/./g, "*")
@@ -111,7 +121,17 @@ defineExpose({ focus: () => input.value.focus() });
         <hr class="!opacity-100 bg-gray-200 border-0 dark:bg-gray-700" />
     </div>
 
-    <div  :class="field_name" v-if="!show">
+    <div  
+    
+    
+
+     :class="{
+        [field_name]: field_name && field_name !== '',
+        [container_class]: container_class && container_class !== ''
+    }"
+    
+    
+     v-if="!show">
         <label
             v-if="label_name"
             :class="{
@@ -132,6 +152,7 @@ defineExpose({ focus: () => input.value.focus() });
             :class="{
                 'gl-input-form': error_message == '',
                 'gl-input-form-invalid': error_message !== '',
+                [input_class]: input_class && input_class !== ''
             }"
             :type="type"
              v-model="proxyValue"

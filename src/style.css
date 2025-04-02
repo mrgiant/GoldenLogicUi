@@ -33,7 +33,7 @@
 
 
 .btn-dark {
-  @apply text-white bg-slate-700 rounded-md hover:bg-slate-900 hover:text-white;
+  @apply text-white rounded-md bg-slate-700 hover:bg-slate-900 hover:text-white;
 }
 
 
@@ -157,6 +157,11 @@ input::-webkit-calendar-picker-indicator {
   border-radius: 4px;
   background-color: rgba(0, 0, 0, .5);
   box-shadow: 0 0 1px rgba(255, 255, 255, .5);
+}
+
+
+[type='date'],[type='time'],[type='datetime-local'],[type='month'] {
+  color-scheme: dark;
 }
 
 

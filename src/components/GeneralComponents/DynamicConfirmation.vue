@@ -21,7 +21,7 @@
       >
       <!-- Modal content -->
       <div
-        class="inline-block overflow-hidden text-left align-bottom transition-all transform bg-white dark:bg-gray-800 rounded-lg shadow-xl sm:my-8 sm:align-middle sm:max-w-lg sm:w-full"
+        class="inline-block overflow-hidden text-left align-bottom transition-all transform bg-white rounded-lg shadow-xl dark:bg-gray-800 sm:my-8 sm:align-middle sm:max-w-lg sm:w-full"
       >
         <!-- Modal header -->
         <div class="px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
@@ -40,7 +40,7 @@
         </div>
         <!-- Modal footer -->
         <div
-          class="gap-1 border-t border-gray-200 rounded-b dark:border-gray-600 px-4 py-3 sm:px-6 flex sm:flex-row-reverse"
+          class="flex gap-1 px-4 py-3 border-t border-gray-200 rounded-b dark:border-gray-600 sm:px-6 sm:flex-row-reverse"
         >
           
 
@@ -139,16 +139,23 @@ const show = (opts = {}) => {
 const showLoading = () => {
   
   isLoading.value = true;
+  console.log("Loading");
   
 };
 
 const hideLoading = () => {
   
   isLoading.value = false;
+  isOpen.value = false;
+  //resolvePromise.value(true);
   
 };
 
 const confirmAction = () => {
+  if(isLoading.value=== true){
+    console.log("Still Loading");{
+    return;
+  }
   isOpen.value = false;
   resolvePromise.value(true);
 };
