@@ -176,7 +176,9 @@
                 v-if="!isLoading && filteredOptions.length === 0"
                 class="p-2 text-gray-500"
               >
-                No results found
+                {{
+                  no_results_found_placeholder
+                }}
               </div>
             </div>
           </div>
@@ -249,6 +251,13 @@ const props = defineProps({
     required: false,
     default: "Search ...",
     note: "Placeholder of search input",
+  },
+
+  no_results_found_placeholder: {
+    type: String,
+    required: false,
+    default: "No results found",
+    note: "Placeholder of no results found",
   },
 
   maxItem: {
