@@ -114,6 +114,7 @@ const okButton = ref("");
 const cancelButton = ref("Cancel");
 const isOpen = ref(false);
 const isLoading = ref(false);
+const hasLoading = ref(false);
 
 const resolvePromise = ref(undefined);
 const rejectPromise = ref(undefined);
@@ -124,6 +125,9 @@ const show = (opts = {}) => {
   okButton.value = opts.okButton;
   if (opts.cancelButton) {
     cancelButton.value = opts.cancelButton;
+  }
+  if (opts.hasLoading) {
+    hasLoading.value = opts.hasLoading;
   }
   // Once we set our config, we tell the popup modal to open
   isOpen.value = true;
@@ -139,7 +143,8 @@ const show = (opts = {}) => {
 const showLoading = () => {
   
   isLoading.value = true;
-  console.log("Loading");
+ 
+
   
 };
 
@@ -147,15 +152,21 @@ const hideLoading = () => {
   
   isLoading.value = false;
   isOpen.value = false;
-  //resolvePromise.value(true);
+  hasLoading.value = false;
+  resolvePromise.value(false);
+  
   
 };
 
 const confirmAction = () => {
-  if(isLoading.value=== true){
-    console.log("Still Loading");{
+ 
+  if(hasLoading.value=== true){
+
+    resolvePromise.value(true);
+    
     return;
   }
+
   isOpen.value = false;
   resolvePromise.value(true);
 };

@@ -523,12 +523,15 @@ export default {
           this.language?.okbutton_delete_confirmation ?? "Yes, delete it",
         cancelButton:
           this.language?.cancelbutton_delete_confirmation ?? "Cancel",
+        hasLoading: true,
       });
 
       if (ok) {
 
         
-        this.$refs.ConfirmationDelete.showLoading();
+       this.$refs.ConfirmationDelete.showLoading();
+
+       this.isLoading = true;
 
 
 
@@ -538,7 +541,7 @@ export default {
           .delete(`${this.xprops.route}/${id}`)
           .then(() => {
           
-            console.log(`Item with ID ${id} deleted successfully.`);
+            
           })
           .catch((error) => {
           
