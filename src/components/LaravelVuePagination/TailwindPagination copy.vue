@@ -11,20 +11,19 @@
         class="text-sm text-gray-700 dark:text-gray-400"
         v-if="slotProps.computed.total > slotProps.computed.perPage"
       >
-        {{ translation.showing }}
+        Showing
         <span class="font-semibold text-gray-900 dark:text-white">{{
           slotProps.computed.from
         }}</span>
-        {{ translation.to }}
-
+        to
         <span class="font-semibold text-gray-900 dark:text-white">{{
           slotProps.computed.to
         }}</span>
-        {{ translation.of }}
+        of
         <span class="font-semibold text-gray-900 dark:text-white">{{
           slotProps.computed.total
         }}</span>
-        {{ translation.entries }}
+        Entries
       </span>
 
       <ul
@@ -148,19 +147,6 @@ export default {
   },
 
   props: {
-
-
-    translation: {
-      type: Object,
-      default: () => ({
-        of: "of",
-        entries: "Entries",
-        showing: "Showing",
-        to: "to",
-      }),
-    },
-
-
     data: {
       type: Object,
       default: () => {},
