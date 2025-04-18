@@ -86,7 +86,7 @@ defineExpose({ focus: () => select.value.focus() });
 
   :class="errorMessage==''? 'border-0 ring-1 ring-inset ring-gray-300  focus:ring-2 focus:ring-inset focus:ring-indigo-600':'border border-red-500'"
 
-    class="block w-full h-10 px-3 py-1 m-0 text-base font-normal text-gray-900 rounded-md shadow-sm appearance-none sm:text-sm sm:leading-6 placeholder:text-gray-400"
+    class="block w-full h-10 px-3 py-1 m-0 text-base font-normal text-gray-900 rounded-md shadow-xs appearance-none sm:text-sm sm:leading-6 placeholder:text-gray-400"
     :value="modelValue"
         @input="$emit('update:modelValue', $event.target.value)"
         ref="select"

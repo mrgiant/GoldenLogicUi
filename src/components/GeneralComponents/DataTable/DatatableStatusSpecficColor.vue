@@ -44,11 +44,11 @@
 
 switch (this.tdProps.badge_type) {
     case "Default":
-        return "rounded text-xs";
+        return "rounded-sm text-xs";
     case "Large":
-        return "rounded text-sm ";
+        return "rounded-sm text-sm ";
     case "Bordered":
-        return "rounded text-xs border";
+        return "rounded-sm text-xs border";
     case "Pills":
         return "rounded-full text-xs";
   

@@ -69,7 +69,7 @@
             <td :colspan="columns.length">
               <div
                 role="status"
-                class="p-4 space-y-4 border border-gray-200 divide-y divide-gray-200 rounded shadow animate-pulse dark:divide-gray-700 md:p-6 dark:border-gray-700"
+                class="p-4 space-y-4 border border-gray-200 divide-y divide-gray-200 rounded-sm shadow-sm animate-pulse dark:divide-gray-700 md:p-6 dark:border-gray-700"
               >
                 <div class="flex items-center justify-between">
                   <div>
@@ -145,7 +145,7 @@
           <template  v-for="(items, group) in groupedItems"  v-if="!isLoading">
 
 
-            <tr class="text-gray-500 bg-white dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 hover:dark:text-gray-200"><td :colspan="columns.length" class="text-pretty before:content-[attr(data-label)] before:font-bold lg:before:content-none flex md:flex-row flex-col justify-between gap-2 lg:table-cell py-4 px-5 lg:py-3 lg:px-4 border dark:border-gray-700"> {{  group  }} </td></tr>
+            <tr class="text-gray-500 bg-white dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 dark:hover:text-gray-200"><td :colspan="columns.length" class="text-pretty before:content-[attr(data-label)] before:font-bold lg:before:content-none flex md:flex-row flex-col justify-between gap-2 lg:table-cell py-4 px-5 lg:py-3 lg:px-4 border dark:border-gray-700"> {{  group  }} </td></tr>
 
 
 
@@ -155,7 +155,7 @@
            
             v-for="(item, index) in items" :key="index"
           
-            class="text-gray-500 bg-white dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 hover:dark:text-gray-200"
+            class="text-gray-500 bg-white dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 dark:hover:text-gray-200"
           >
             <td
               v-for="(column, colIndex) in columns"

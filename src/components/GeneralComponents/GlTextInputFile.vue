@@ -110,7 +110,7 @@ watch(
             }}
         </p>
 
-        <hr class="!opacity-100 bg-gray-200 border-0 dark:bg-gray-700" />
+        <hr class="opacity-100! bg-gray-200 border-0 dark:bg-gray-700" />
     </div>
 
     <div  :class="field_name" v-if="!show">

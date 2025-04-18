@@ -5,12 +5,12 @@
     <p class="mt-3 mb-4">
       <span
         v-for="(selectedValue, index) in selected"
-        class="px-3 py-1 mt-2 mb-2 text-sm font-medium text-blue-800 bg-blue-100 rounded me-2 dark:bg-blue-900 dark:text-blue-300"
+        class="px-3 py-1 mt-2 mb-2 text-sm font-medium text-blue-800 bg-blue-100 rounded-sm me-2 dark:bg-blue-900 dark:text-blue-300"
         >{{ selectedValue?.name }}</span
       >
     </p>
 
-    <hr class="!opacity-100 bg-gray-200 border-0 dark:bg-gray-700" />
+    <hr class="opacity-100! bg-gray-200 border-0 dark:bg-gray-700" />
   </div>
 
   <div :class="field_name" v-if="!show">
@@ -32,7 +32,7 @@
         >{{ label_name }}</label
       >
 
-      <div class="inline-flex ml-2 rounded-md shadow-sm" role="group">
+      <div class="inline-flex ml-2 rounded-md shadow-xs" role="group">
         <button
           @click="selectAll"
           type="button"
@@ -44,7 +44,7 @@
         <button
           @click="deselectAll"
           type="button"
-          class="ltr:rounded-tr-lg rtl:!rounded-tl-lg px-4 py-0 text-sm font-medium text-gray-900 bg-transparent border border-gray-900 hover:bg-gray-900 hover:text-white focus:z-10 focus:bg-gray-900 focus:text-white dark:border-white dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:bg-gray-700"
+          class="ltr:rounded-tr-lg rtl:rounded-tl-lg! px-4 py-0 text-sm font-medium text-gray-900 bg-transparent border border-gray-900 hover:bg-gray-900 hover:text-white focus:z-10 focus:bg-gray-900 focus:text-white dark:border-white dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:bg-gray-700"
         >
           {{ language?.deselect_all ?? "Deselect all" }}
         </button>
@@ -64,7 +64,7 @@
             <span
               v-for="(selectedValue, index) in selected"
               :key="index"
-              class="flex gap-2 px-2 py-1 text-xs font-medium text-blue-800 bg-blue-100 rounded pointer-events-none dark:bg-blue-900 dark:text-blue-300"
+              class="flex gap-2 px-2 py-1 text-xs font-medium text-blue-800 bg-blue-100 rounded-sm pointer-events-none dark:bg-blue-900 dark:text-blue-300"
               >{{ selectedValue?.name }}
               <i
                 @click.stop="clearOption(selectedValue)"
@@ -114,7 +114,7 @@
           <!-- Dropdown Menu -->
 
           <div
-            class="text-gray-700 bg-white dark:border-strokedark dark:bg-boxdark dark:text-gray-200 !border-b !border-t-0 !border-r !border-l fixed w-full z-[999999999] showOptions rounded-b-lg"
+            class="text-gray-700 bg-white dark:border-strokedark dark:bg-boxdark dark:text-gray-200 border-b! border-t-0! border-r! border-l! fixed w-full z-999999999 showOptions rounded-b-lg"
             v-show="optionsShown"
             :style="{
               maxWidth: divDropDownWidth + 'px',

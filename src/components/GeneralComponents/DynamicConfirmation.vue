@@ -11,7 +11,7 @@
     >
       <!-- Modal overlay -->
       <div
-        class="fixed inset-0 transition-opacity bg-gray-500 !bg-opacity-75"
+        class="fixed inset-0 transition-opacity bg-gray-500 bg-opacity-75!"
         aria-hidden="true"
       ></div>
       <span
@@ -57,7 +57,7 @@
         v-else
         is="button"
         disabled
-        :class="`inline-flex justify-center w-full px-4 py-2 text-base font-medium text-white bg-red-600 border border-transparent rounded-md shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm`"
+        :class="`inline-flex justify-center w-full px-4 py-2 text-base font-medium text-white bg-red-600 border border-transparent rounded-md shadow-xs hover:bg-red-700 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm`"
     >
         <svg
             aria-hidden="true"

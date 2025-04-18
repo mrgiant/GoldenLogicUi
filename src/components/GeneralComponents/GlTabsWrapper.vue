@@ -11,7 +11,7 @@
           >
             <a
                :class="{'text-slate-600 bg-white dark:bg-meta': selectedTitle != tab.title, 'text-white  bg-primary dark:bg-primaryDark': selectedTitle === tab.title}"
-              class="block px-5 py-3 text-xs font-bold leading-normal rounded shadow-lg hover:text-white tex hover:bg-primary dark:hover:bg-primaryDark dark:text-white tabs_buttons"
+              class="block px-5 py-3 text-xs font-bold leading-normal rounded-sm shadow-lg hover:text-white tex hover:bg-primary dark:hover:bg-primaryDark dark:text-white tabs_buttons"
             >
               <i :class="tab.icon" class="mr-1 text-base"></i> {{ tab.title }}
             </a>
@@ -21,7 +21,7 @@
     </div>
 
     <div
-      class="relative flex flex-col w-full min-w-0 mb-6 break-words bg-white rounded shadow-lg dark:border-strokedark dark:bg-boxdark"
+      class="relative flex flex-col w-full min-w-0 mb-6 break-words bg-white rounded-sm shadow-lg dark:border-strokedark dark:bg-boxdark"
     >
       <div class="flex-auto px-4 py-5">
         <div class="tab-content tab-space">

@@ -1,7 +1,7 @@
 <template>
     <div class="flex flex-wrap gap-2" v-if="row[field]">
      
-      <span  class="px-2 py-1 text-xs font-medium text-blue-800 bg-blue-100 rounded dark:bg-blue-900 dark:text-blue-300">{{ convertCronToHuman(row[field]) }}</span>
+      <span  class="px-2 py-1 text-xs font-medium text-blue-800 bg-blue-100 rounded-sm dark:bg-blue-900 dark:text-blue-300">{{ convertCronToHuman(row[field]) }}</span>
     </div>
 </template>
 

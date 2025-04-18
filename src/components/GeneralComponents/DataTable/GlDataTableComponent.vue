@@ -67,7 +67,7 @@
             <td :colspan="columns.length">
               <div
                 role="status"
-                class=" p-4 space-y-4 border border-gray-200 divide-y divide-gray-200 rounded shadow animate-pulse dark:divide-gray-700 md:p-6 dark:border-gray-700"
+                class=" p-4 space-y-4 border border-gray-200 divide-y divide-gray-200 rounded-sm shadow-sm animate-pulse dark:divide-gray-700 md:p-6 dark:border-gray-700"
               >
                 <div class="flex items-center justify-between">
                   <div>
@@ -143,7 +143,7 @@
             v-if="!isLoading"
             v-for="(item, index) in paginatedData"
             :key="index"
-            class="bg-white dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 hover:dark:text-gray-200 text-gray-500"
+            class="bg-white dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 dark:hover:text-gray-200 text-gray-500"
           >
 
           <!-- remove  md:flex-row from  below td to be the text below lable if want in line add it -->

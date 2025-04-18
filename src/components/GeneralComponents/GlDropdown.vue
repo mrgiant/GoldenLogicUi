@@ -4,12 +4,12 @@
 
     <p class="mt-3 mb-4">
       <span
-        class="bg-blue-100 text-blue-800 text-sm font-medium mb-2 mt-2 me-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300"
+        class="bg-blue-100 text-blue-800 text-sm font-medium mb-2 mt-2 me-2 px-2.5 py-0.5 rounded-sm dark:bg-blue-900 dark:text-blue-300"
         >{{ selected?.name }}</span
       >
     </p>
 
-    <hr class="!opacity-100 bg-gray-200 border-0 dark:bg-gray-700" />
+    <hr class="opacity-100! bg-gray-200 border-0 dark:bg-gray-700" />
   </div>
 
   <div :class="field_name" v-if="!show">
@@ -97,7 +97,7 @@
 
           <!-- Dropdown Menu -->
           <div
-            class="text-gray-700 bg-white dark:border-strokedark dark:bg-boxdark dark:text-gray-200 !border-b !border-t-0 !border-r !border-l fixed w-full z-[999999999] rounded-b-lg"
+            class="text-gray-700 bg-white dark:border-strokedark dark:bg-boxdark dark:text-gray-200 border-b! border-t-0! border-r! border-l! fixed w-full z-999999999 rounded-b-lg"
             v-show="optionsShown"
             :style="{
               maxWidth: divDropDownWidth + 'px',
@@ -123,7 +123,7 @@
                   @keydown="handleKeyDown"
                   @blur="exit()"
                   autocomplete="off"
-                  class="block w-full p-2 text-sm text-gray-900 border rounded-lg outline-none border-primary ps-10 bg-gray-50 focus:border-primary dark:bg-gray-700 dark:border-primaryDark dark:placeholder-primaryDark dark:text-white dark:focus:border-primaryDark"
+                  class="block w-full p-2 text-sm text-gray-900 border rounded-lg outline-hidden border-primary ps-10 bg-gray-50 focus:border-primary dark:bg-gray-700 dark:border-primaryDark dark:placeholder-primaryDark dark:text-white dark:focus:border-primaryDark"
                   :placeholder="search_input_placeholder"
                 />
               </div>
@@ -149,7 +149,7 @@
                 <div class="flex items-center py-2 pl-10 pr-4">
                   <svg
                     v-if="selected?.id === option.id"
-                    class="absolute flex items-center flex-shrink-0 w-4 h-4 text-green-500 left-2 dark:text-green-400"
+                    class="absolute flex items-center shrink-0 w-4 h-4 text-green-500 left-2 dark:text-green-400"
                     aria-hidden="true"
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"

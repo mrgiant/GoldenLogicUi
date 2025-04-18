@@ -66,7 +66,7 @@ const props = defineProps({
 
 });
 
-const emit = defineEmits(["update:modelValue", "keydown", "blur"]);
+const emit = defineEmits(["update:modelValue", "keydown", "blur-sm"]);
 
 const input = ref(null);
 
@@ -118,7 +118,7 @@ defineExpose({ focus: () => input.value.focus() });
             }}
         </p>
 
-        <hr class="!opacity-100 bg-gray-200 border-0 dark:bg-gray-700" />
+        <hr class="opacity-100! bg-gray-200 border-0 dark:bg-gray-700" />
     </div>
 
     <div  
@@ -157,7 +157,7 @@ defineExpose({ focus: () => input.value.focus() });
             :type="type"
              v-model="proxyValue"
             @keydown="$emit('keydown', $event)"
-            @blur="$emit('blur', $event)"
+            @blur="$emit('blur-sm', $event)"
             ref="input"
             :placeholder="placeholder"
         />

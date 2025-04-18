@@ -95,8 +95,8 @@ watch(
 
   <!-- Modal -->
   <div
-    class=" fixed left-0 top-13 h-full w-full overflow-y-auto overflow-x-hidden outline-none inset-0 !bg-black !bg-opacity-80"
-    :class="has_large_z_index ? 'z-[9999]' : 'z-[1055]'"
+    class=" fixed left-0 top-13 h-full w-full overflow-y-auto overflow-x-hidden outline-hidden inset-0 bg-black! bg-opacity-80!"
+    :class="has_large_z_index ? 'z-9999' : 'z-1055'"
     v-if="is_open"
     tabindex="-1"
   >
@@ -105,10 +105,10 @@ watch(
       :class="max_width"
     >
       <div
-        class="pointer-events-auto relative flex max-h-[100%] w-full flex-col overflow-hidden text-current shadow-4 outline-none bg-white border rounded-lg border-stroke dark:border-strokedark dark:bg-boxdark"
+        class="pointer-events-auto relative flex max-h-[100%] w-full flex-col overflow-hidden text-current shadow-4 outline-hidden bg-white border rounded-lg border-stroke dark:border-strokedark dark:bg-boxdark"
       >
         <div
-          class="flex items-center justify-between flex-shrink-0 pt-10 pb-3 pl-3 pr-3 border-b-2 dark:border-gray-600"
+          class="flex items-center justify-between shrink-0 pt-10 pb-3 pl-3 pr-3 border-b-2 dark:border-gray-600"
         >
           <!-- Modal title -->
           <h5
@@ -119,7 +119,7 @@ watch(
           <!-- Close button -->
           <button
             type="button"
-            class="box-content border-none rounded-none text-neutral-500 hover:text-neutral-800 hover:no-underline focus:text-neutral-800 focus:opacity-100 focus:shadow-none focus:outline-none dark:text-neutral-400 dark:hover:text-neutral-300 dark:focus:text-neutral-300"
+            class="box-content border-none rounded-none text-neutral-500 hover:text-neutral-800 hover:no-underline focus:text-neutral-800 focus:opacity-100 focus:shadow-none focus:outline-hidden dark:text-neutral-400 dark:hover:text-neutral-300 dark:focus:text-neutral-300"
             @click="closeModal"
             aria-label="Close"
           >
@@ -144,10 +144,10 @@ watch(
         <div
           v-if="isLoadingComputed"
           role="status"
-          class="max-w-full p-4 border border-gray-200 rounded shadow animate-pulse md:p-6 dark:border-gray-700"
+          class="max-w-full p-4 border border-gray-200 rounded-sm shadow-sm animate-pulse md:p-6 dark:border-gray-700"
         >
           <div
-            class="flex items-center justify-center h-48 mb-4 bg-gray-300 rounded dark:bg-gray-700"
+            class="flex items-center justify-center h-48 mb-4 bg-gray-300 rounded-sm dark:bg-gray-700"
           >
             <svg
               class="w-10 h-10 text-gray-200 dark:text-gray-600"
@@ -211,14 +211,14 @@ watch(
         <div
          
           v-show="!isLoadingComputed && !hide_model_footer"
-          class="flex flex-wrap items-center justify-end flex-shrink-0 p-4 border-t-2 rounded-b-md border-neutral-100 dark:border-gray-600"
+          class="flex flex-wrap items-center justify-end shrink-0 p-4 border-t-2 rounded-b-md border-neutral-100 dark:border-gray-600"
         >
           <slot name="buttons"></slot>
 
           <button
             @click="closeModal"
             type="button"
-            class="px-5 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-200 rounded-lg ms-3 hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-blue-300 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600"
+            class="px-5 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-200 rounded-lg ms-3 hover:bg-gray-100 focus:ring-4 focus:outline-hidden focus:ring-blue-300 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600"
           >
             {{ language?.close ?? "Close" }}
           </button>

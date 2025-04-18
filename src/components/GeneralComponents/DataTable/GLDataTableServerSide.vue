@@ -190,19 +190,19 @@
     >
       <table
         :id="'table'+Random_string"
-        class="w-full h-full max-w-full overflow-hidden bg-white border-separate xl:overflow-auto lg:border-collapse print:!border-collapse border-spacing-y-5 lg:border-spacing-y-0 print:!border-spacing-y-0 dark:border-strokedark dark:bg-boxdark"
+        class="w-full h-full max-w-full overflow-hidden bg-white border-separate xl:overflow-auto lg:border-collapse print:border-collapse! border-spacing-y-5 lg:border-spacing-y-0 print:border-spacing-y-0! dark:border-strokedark dark:bg-boxdark"
       >
         <thead
-          class="hidden text-sm font-normal text-center text-gray-500 print:!table-header-group lg:table-header-group dark:border-strokedark bg-gray-50 dark:bg-gray-700 dark:text-gray-400 print:!border-[1px]"
+          class="hidden text-sm font-normal text-center text-gray-500 print:table-header-group! lg:table-header-group dark:border-strokedark bg-gray-50 dark:bg-gray-700 dark:text-gray-400 print:border-[1px]!"
         >
           <tr>
-            <th  v-if="enable_select_deselect_delete" class="w-full px-4 py-2 lg:!w-[3%] print:!hidden"></th>
+            <th  v-if="enable_select_deselect_delete" class="w-full px-4 py-2 lg:w-[3%]! print:hidden!"></th>
 
             <th
               v-for="(column, index) in columns"
               :key="index"
               @click="updateSortColumn(column.field_name, column.sortable)"
-              class="w-full px-4 py-2 lg:w-2/12 print:!w-2/12 print:!border-[1px]"
+              class="w-full px-4 py-2 lg:w-2/12 print:w-2/12! print:border-[1px]!"
               :class="{
                 'no-print':
                   column.field_name === 'Action' ||
@@ -212,7 +212,7 @@
               {{ column.field_label }}
               <span
                 v-if="sortField === column.field_name"
-                class="ml-2 print:!hidden"
+                class="ml-2 print:hidden!"
               >
                 <i v-if="sortOrder === 'asc'" class="fa fa-arrow-up"></i>
                 <i v-else class="fa fa-arrow-down"></i>
@@ -225,7 +225,7 @@
             <td :colspan="columns.length+(enable_select_deselect_delete?1:0)">
               <div
                 role="status"
-                class="p-4 space-y-4 border border-gray-200 divide-y divide-gray-200 rounded shadow animate-pulse dark:divide-gray-700 md:p-6 dark:border-gray-700"
+                class="p-4 space-y-4 border border-gray-200 divide-y divide-gray-200 rounded-sm shadow-sm animate-pulse dark:divide-gray-700 md:p-6 dark:border-gray-700"
               >
                 <div class="flex items-center justify-between">
                   <div>
@@ -301,13 +301,13 @@
             v-if="!isLoading"
             v-for="(item, index) in itemLists.data"
             :key="index"
-            class="text-gray-500 bg-white dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 hover:dark:text-gray-200"
+            class="text-gray-500 bg-white dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 dark:hover:text-gray-200"
           >
             <!-- remove  md:flex-row from  below td to be the text below lable if want in line add it -->
 
             <td
               v-if="enable_select_deselect_delete"
-              class="print:!hidden text-center rounded-t-lg lg:!rounded-t-none print:!!rounded-t-none text-pretty before:content-[attr(data-label)] before:font-bold lg:before:content-none print:before:!content-none flex flex-col justify-between gap-2 lg:table-cell py-4 px-5 lg:py-3 lg:px-4 print:!py-3 print:!px-4 border-[1px] dark:border-gray-700"
+              class="print:hidden! text-center rounded-t-lg lg:rounded-t-none! print:!!rounded-t-none text-pretty before:content-[attr(data-label)] before:font-bold lg:before:content-none print:before:content-none! flex flex-col justify-between gap-2 lg:table-cell py-4 px-5 lg:py-3 lg:px-4 print:py-3! print:px-4! border-[1px] dark:border-gray-700"
               data-label=""
             >
               <input
@@ -315,7 +315,7 @@
                 @change="toggleCheck(item.id)"
                 type="checkbox"
                 value=""
-                class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
               />
             </td>
 
@@ -324,10 +324,10 @@
               :style="column?.style"
               :key="colIndex"
               :data-label="column.field_label"
-              class="text-pretty before:content-[attr(data-label)] before:font-bold lg:before:content-none print:before:!content-none flex flex-col justify-between gap-2 lg:table-cell print:!table-cell py-4 px-5 lg:py-3 lg:px-4 print:!py-3 print:!px-4 border-[1px] dark:border-gray-700"
+              class="text-pretty before:content-[attr(data-label)] before:font-bold lg:before:content-none print:before:content-none! flex flex-col justify-between gap-2 lg:table-cell print:table-cell! py-4 px-5 lg:py-3 lg:px-4 print:py-3! print:px-4! border-[1px] dark:border-gray-700"
               :class="{
                 /* 'rounded-t-lg lg:rounded-t-none': colIndex === 0,*/
-                'rounded-b-lg lg:!rounded-b-none':
+                'rounded-b-lg lg:rounded-b-none!':
                   colIndex === columns.length - 1,
                 'no-print':
                   column.field_name === 'Action' ||

@@ -3,7 +3,7 @@
 
       <pre
         
-        class=" w-full h-full p-3 mx-0 mt-0 overflow-auto font-mono  text-left  break-words rounded cursor-default whitespace-nowrap console_styles">
+        class=" w-full h-full p-3 mx-0 mt-0 overflow-auto font-mono  text-left  break-words rounded-sm cursor-default whitespace-nowrap console_styles">
         {{ row[field] }} 
         </pre>
      

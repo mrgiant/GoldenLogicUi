@@ -7,7 +7,7 @@
     >
       {{ model_value }}
     </p>
-    <hr class="!opacity-100 bg-gray-200 border-0 dark:bg-gray-700" />
+    <hr class="opacity-100! bg-gray-200 border-0 dark:bg-gray-700" />
   </div>
 
   <div class="mb-4" :class="field_name" v-if="!show">

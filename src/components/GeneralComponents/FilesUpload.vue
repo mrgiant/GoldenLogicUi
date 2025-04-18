@@ -9,7 +9,7 @@
       'border-red-500  dark:border-red-500': error_message_data !== '',
       'border-gray-200 dark:border-gray-700': error_message_data == '',
     }"
-    class="w-full p-4 bg-white border rounded-lg shadow dark:bg-gray-800"
+    class="w-full p-4 bg-white border rounded-lg shadow-sm dark:bg-gray-800"
   >
     <label
       :class="{
@@ -77,7 +77,7 @@
 
     <section class="" v-if="files.length > 0">
       <li
-        class="flex items-center justify-between p-2 mb-2 text-gray-900 rounded-lg bg-gray-50 hover:bg-gray-100 hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white"
+        class="flex items-center justify-between p-2 mb-2 text-gray-900 rounded-lg bg-gray-50 hover:bg-gray-100 hover:shadow-sm dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white"
         v-for="(file, index) in files"
       >
         <i class="text-3xl fas fa-file-alt"></i>
@@ -104,7 +104,7 @@
 
     <section class="overflow-x-scroll max-h-56">
       <li
-        class="flex items-center justify-between p-2 mb-2 text-gray-900 rounded-lg bg-gray-50 hover:bg-gray-100 hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white"
+        class="flex items-center justify-between p-2 mb-2 text-gray-900 rounded-lg bg-gray-50 hover:bg-gray-100 hover:shadow-sm dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white"
         v-for="(file, index) in uploadFileListFinal"
       >
         <div class="flex items-center">

@@ -69,7 +69,7 @@
           <tr
             v-for="(item, index) in paginatedData"
             :key="index"
-            class="bg-white dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 hover:dark:text-gray-200 text-gray-500"
+            class="bg-white dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 dark:hover:text-gray-200 text-gray-500"
           >
             <td
               v-for="(column, colIndex) in columns"

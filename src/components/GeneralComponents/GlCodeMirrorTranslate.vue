@@ -18,7 +18,7 @@
 
 
     />
-    <hr class="!opacity-100 bg-gray-200 border-0 dark:bg-gray-700" />
+    <hr class="opacity-100! bg-gray-200 border-0 dark:bg-gray-700" />
   </div>
 
   <div class="mb-4" :class="field_name" v-if="!show">
@@ -33,7 +33,7 @@
     >
 
     <span
-      class="language-label js-language-label bg-blue-100 text-blue-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300"
+      class="language-label js-language-label bg-blue-100 text-blue-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-sm dark:bg-blue-900 dark:text-blue-300"
     ></span>
 
 

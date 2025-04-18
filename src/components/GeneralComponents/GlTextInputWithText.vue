@@ -120,7 +120,7 @@ defineExpose({ focus: () => input.value.focus() });
       {{ type == "password" ? modelValue.replace(/./g, "*") : modelValue }}
     </p>
 
-    <hr class="!opacity-100 bg-gray-200 border-0 dark:bg-gray-700" />
+    <hr class="opacity-100! bg-gray-200 border-0 dark:bg-gray-700" />
   </div>
 
   <div :class="field_name" v-if="!show">
@@ -144,7 +144,7 @@ defineExpose({ focus: () => input.value.focus() });
             'gl-input-form-text': error_message == '',
             'gl-input-form-invalid-text': error_message !== '',
           }"
-          class="!border-e-0 !rounded-s-lg"
+          class="border-e-0! rounded-s-lg!"
          
           :type="type"
           v-model="proxyValue"
@@ -156,7 +156,7 @@ defineExpose({ focus: () => input.value.focus() });
 
       <label
      
-        class="h-10 z-10 inline-flex items-center flex-shrink-0 px-4  text-sm font-medium text-center text-gray-500 bg-gray-100 border border-gray-300 dark:text-gray-400 rounded-e-lg focus:outline-none dark:bg-gray-700 dark:border-gray-600"
+        class="h-10 z-10 inline-flex items-center shrink-0 px-4  text-sm font-medium text-center text-gray-500 bg-gray-100 border border-gray-300 dark:text-gray-400 rounded-e-lg focus:outline-hidden dark:bg-gray-700 dark:border-gray-600"
       >
         {{ input_text }}
       </label>

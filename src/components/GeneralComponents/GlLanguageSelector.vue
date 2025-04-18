@@ -11,8 +11,8 @@
 
 
         :class="{
-      'border md:!rounded-s-lg': index===0,
-      'border md:!rounded-e-lg': index === locals.length - 1,
+      'border md:rounded-s-lg!': index===0,
+      'border md:rounded-e-lg!': index === locals.length - 1,
       'border-t border-b': index !== 0 && index !== locals.length - 1
         }"
 
