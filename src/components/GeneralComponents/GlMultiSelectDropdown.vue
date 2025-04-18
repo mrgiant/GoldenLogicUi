@@ -114,7 +114,7 @@
           <!-- Dropdown Menu -->
 
           <div
-            class="text-gray-700 bg-white dark:border-strokedark dark:bg-boxdark dark:text-gray-200 border-b! border-t-0! border-r! border-l! fixed w-full z-999999999 showOptions rounded-b-lg"
+            class="text-gray-700 bg-white dark:border-strokeDark dark:bg-boxDark dark:text-gray-200 border-b! border-t-0! border-r! border-l! fixed w-full z-999999999 showOptions rounded-b-lg"
             v-show="optionsShown"
             :style="{
               maxWidth: divDropDownWidth + 'px',

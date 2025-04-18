@@ -42,10 +42,10 @@
 
     <div class="overflow-auto rounded-lg dark:text-gray-400 dark:bg-gray-800">
       <table
-        class="w-full h-full max-w-full overflow-hidden bg-white border-separate xl:overflow-auto lg:border-collapse border-spacing-y-3 lg:border-spacing-y-0 dark:border-strokedark dark:bg-boxdark"
+        class="w-full h-full max-w-full overflow-hidden bg-white border-separate xl:overflow-auto lg:border-collapse border-spacing-y-3 lg:border-spacing-y-0 dark:border-strokeDark dark:bg-boxDark"
       >
         <thead
-          class="hidden text-sm font-normal text-center text-gray-700 lg:table-header-group dark:border-strokedark bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
+          class="hidden text-sm font-normal text-center text-gray-700 lg:table-header-group dark:border-strokeDark bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
         >
           <tr>
             <th

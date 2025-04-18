@@ -99,7 +99,7 @@ onBeforeUnmount(() => {
       :class="max_width"
     >
       <div
-        class="relative flex flex-col w-full text-current bg-white border rounded-lg outline-hidden pointer-events-auto shadow-4 border-stroke dark:border-strokedark dark:bg-boxdark"
+        class="relative flex flex-col w-full text-current bg-white border rounded-lg outline-hidden pointer-events-auto shadow-4 border-stroke dark:border-strokeDark dark:bg-boxDark"
       >
         <div
           v-if="has_header"

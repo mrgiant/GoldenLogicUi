@@ -28,14 +28,14 @@ module.exports = {
         bodydark2: '#8A99AF',
 
         graydark: '#333A48',
-        'boxdark-2': '#1A222C',
-        strokedark: '#2E3A47',
-        'form-strokedark': '#3d4d60',
+        'boxDark-2': '#1A222C',
+        strokeDark: '#2E3A47',
+        'form-strokeDark': '#3d4d60',
         primary:'var(--theme-color)',
         primaryDark:'var(--theme-dark-color)',
         frontend:'var(--theme-color)',
         frontenddark:'var(--theme-dark-color)',
-        boxdark: '#24303F',
+        boxDark: '#24303F',
         bodydark: '#AEB7C0',
         meta: '#313D4A',
 

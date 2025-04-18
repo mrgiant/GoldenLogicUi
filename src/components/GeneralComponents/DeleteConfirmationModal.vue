@@ -1,92 +1,86 @@
 <template>
-    <!-- Modal for delete confirmation -->
-    <div v-if="isOpen" class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-      <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
-        <!-- Modal overlay -->
-        <div class="fixed inset-0 transition-opacity bg-gray-500/75" aria-hidden="true"></div>
-        <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-        <!-- Modal content -->
-        <div class="inline-block overflow-hidden text-left align-bottom transition-all transform bg-white dark:bg-gray-800 rounded-lg shadow-xl sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-          <!-- Modal header -->
-          <div class="px-4 pt-5 pb-4  sm:p-6 sm:pb-4">
-            <div class="sm:flex sm:items-start">
-              <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                <h3 class="text-lg font-medium leading-6 " id="modal-title">
-                  
-                  {{ language?.title_delete_confirmation ?? 'Confirm Deletion' }}
-                </h3>
-                <div class="mt-2">
-                  <p class="text-sm ">
-                    {{ language?.message_delete_confirmation ?? 'Are you sure you want to delete this item? This action cannot be undone.' }}
-                    
-                  </p>
-                </div>
+  <!-- Modal for delete confirmation -->
+  <div v-if="isOpen" class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog"
+    aria-modal="true">
+    <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+      <!-- Modal overlay -->
+      <div class="fixed inset-0 transition-opacity bg-gray-500/75" aria-hidden="true"></div>
+      <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+      <!-- Modal content -->
+      <div
+        class="inline-block relative overflow-hidden text-left align-bottom transition-all transform bg-white dark:bg-gray-800 rounded-lg shadow-xl sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+        <!-- Modal header -->
+        <div class="px-4 pt-5 pb-4  sm:p-6 sm:pb-4">
+          <div class="sm:flex sm:items-start">
+            <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+              <h3 class="text-lg font-medium leading-6 " id="modal-title">
+
+                {{ language?.title_delete_confirmation ?? 'Confirm Deletion' }}
+              </h3>
+              <div class="mt-2">
+                <p class="text-sm ">
+                  {{ language?.message_delete_confirmation ?? 'Are you sure you want to delete this item? This action
+                  cannot be undone.' }}
+
+                </p>
               </div>
             </div>
           </div>
-          <!-- Modal footer -->
-          <div class="border-t border-gray-200 rounded-b dark:border-gray-600 px-4 py-3  sm:px-6 sm:flex sm:flex-row-reverse gap-2">
-           
-           
-           
-            <!-- Confirm deletion button -->
+        </div>
+        <!-- Modal footer -->
+        <div
+          class="border-t border-gray-200 rounded-b dark:border-gray-600 px-4 py-3  sm:px-6 sm:flex sm:flex-row-reverse gap-2">
 
 
-            <gl-button
-             @click="confirmDeletion"
-             tag="button"
-             button_type="red"
-             
-              >
-              {{ language?.okbutton_delete_confirmation ?? 'Delete' }}
-            </gl-button>
 
-            <!-- Cancel deletion button -->
-            <gl-button
-            @click="cancelDeletion"
-             tag="button"
-             button_type="light"
-             
-              > 
-              {{ language?.cancelbutton_delete_confirmation ?? 'Cancel' }}
-            </gl-button>
-           
-        
-          </div>
+          <!-- Confirm deletion button -->
+
+
+          <gl-button @click="confirmDeletion" tag="button" button_type="red">
+            {{ language?.okbutton_delete_confirmation ?? 'Delete' }}
+          </gl-button>
+
+          <!-- Cancel deletion button -->
+          <gl-button @click="cancelDeletion" tag="button" button_type="light">
+            {{ language?.cancelbutton_delete_confirmation ?? 'Cancel' }}
+          </gl-button>
+
+
         </div>
       </div>
     </div>
+  </div>
 </template>
 
-  <script>
+<script>
 
 import GlButton from "/src/components/GeneralComponents/GlButton.vue";
-  export default {
-    components: {
+export default {
+  components: {
     GlButton,
   },
-    props: {
-      
-      isOpen: {
-        type: Boolean,
-        default: false,
-      },
-      language: {
-        type: Object,
-        default: () => {},
-      },
+  props: {
 
-      
-
-
+    isOpen: {
+      type: Boolean,
+      default: false,
     },
-    methods: {
-      confirmDeletion() {
-        this.$emit('confirm-delete');
-      },
-      cancelDeletion() {
-        this.$emit('cancel-delete');
-      }
+    language: {
+      type: Object,
+      default: () => { },
+    },
+
+
+
+
+  },
+  methods: {
+    confirmDeletion() {
+      this.$emit('confirm-delete');
+    },
+    cancelDeletion() {
+      this.$emit('cancel-delete');
     }
   }
-  </script>
+}
+</script>

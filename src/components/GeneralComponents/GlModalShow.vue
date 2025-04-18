@@ -84,7 +84,7 @@ watch(
       :class="max_width"
     >
       <div
-        class="pointer-events-auto relative flex max-h-[100%] w-full flex-col overflow-hidden text-current shadow-4 outline-hidden bg-white border rounded-lg border-stroke dark:border-strokedark dark:bg-boxdark"
+        class="pointer-events-auto relative flex max-h-[100%] w-full flex-col overflow-hidden text-current shadow-4 outline-hidden bg-white border rounded-lg border-stroke dark:border-strokeDark dark:bg-boxDark"
       >
         <div
           class="flex items-center justify-between shrink-0 pt-10 pb-3 pl-3 pr-3 border-b-2 dark:border-gray-600"

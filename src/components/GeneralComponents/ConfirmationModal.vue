@@ -6,7 +6,7 @@
         <div class="fixed inset-0 transition-opacity bg-gray-500/75" aria-hidden="true"></div>
         <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
         <!-- Modal content -->
-        <div class="inline-block overflow-hidden text-left align-bottom transition-all transform bg-white dark:bg-gray-800 rounded-lg shadow-xl sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+        <div class="inline-block relative overflow-hidden text-left align-bottom transition-all transform bg-white dark:bg-gray-800 rounded-lg shadow-xl sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
           <!-- Modal header -->
           <div class="px-4 pt-5 pb-4  sm:p-6 sm:pb-4">
             <div class="sm:flex sm:items-start">

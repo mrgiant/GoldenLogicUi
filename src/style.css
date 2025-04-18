@@ -12,6 +12,8 @@
     --color-primary: var(--theme-color);
     --color-primaryDark: var(--theme-dark-color);
     --color-primaryLight: var(--theme-light-color);
+    --color-boxDark: #24303F;
+    --color-strokeDark: #2E3A47;
 
     /* ... */
   }
