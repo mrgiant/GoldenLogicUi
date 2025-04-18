@@ -30,7 +30,7 @@
         <button
             type="button"
             @click="dismiss"
-            class="inline-flex items-center justify-center w-6 h-6 p-1 -mx-1 -my-1 rounded-lg ms-auto focus:ring-2 hover:bg-opacity-50"
+            class="inline-flex items-center justify-center w-6 h-6 p-1 -mx-1 -my-1 rounded-lg ms-auto focus:ring-2"
             :class="buttonClasses"
             aria-label="Close"
         >
@@ -82,15 +82,15 @@ export default {
         buttonClasses() {
             switch (this.notification.type) {
                 case "info":
-                    return "bg-blue-50 text-blue-500 focus:ring-blue-400 hover:bg-blue-200 dark:hover:bg-gray-700";
+                    return "bg-blue-50 text-blue-500 focus:ring-blue-400 hover:bg-blue-200/50 dark:hover:bg-gray-700/50";
                 case "error":
-                    return "bg-red-50 text-red-500 focus:ring-red-400 hover:bg-red-200 dark:hover:bg-gray-700";
+                    return "bg-red-50 text-red-500 focus:ring-red-400 hover:bg-red-200/50 dark:hover:bg-gray-700/50";
                 case "success":
-                    return "bg-green-50 text-green-500 focus:ring-green-400 hover:bg-green-200 dark:hover:bg-gray-700";
+                    return "bg-green-50 text-green-500 focus:ring-green-400 hover:bg-green-200/50 dark:hover:bg-gray-700/50";
                 case "warning":
-                    return "bg-yellow-50 text-yellow-500 focus:ring-yellow-400 hover:bg-yellow-200 dark:hover:bg-gray-700";
+                    return "bg-yellow-50 text-yellow-500 focus:ring-yellow-400 hover:bg-yellow-200/50 dark:hover:bg-gray-700/50";
                 case "dark":
-                    return "bg-gray-50 text-gray-500 focus:ring-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700";
+                    return "bg-gray-50 text-gray-500 focus:ring-gray-400 hover:bg-gray-200/50 dark:hover:bg-gray-700/50";
                 default:
                     return "";
             }
