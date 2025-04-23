@@ -94,7 +94,7 @@ watch(
   <!-- Main modal -->
 
   <!-- Modal -->
-  <div class=" fixed left-0 top-13 h-full w-full overflow-y-auto overflow-x-hidden outline-hidden inset-0 bg-black/80!"
+  <div class=" fixed  h-full w-full overflow-y-auto overflow-x-hidden outline-hidden inset-0 bg-black/80!"
     :class="has_large_z_index ? 'z-9999' : 'z-1055'" v-if="is_open" tabindex="-1">
     <div
       class="pointer-events-none relative h-[calc(100%-1rem)] w-auto translate-y-[-50px] transition-all duration-300 ease-in-out min-[576px]:mx-auto mt-7 min-[576px]:h-[calc(100%-3.5rem)]"
