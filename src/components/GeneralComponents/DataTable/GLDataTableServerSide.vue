@@ -190,7 +190,7 @@
     >
       <table
         :id="'table'+Random_string"
-        class="w-full h-full max-w-full overflow-hidden bg-white border-separate xl:overflow-auto lg:border-collapse print:border-collapse! border-spacing-y-5 lg:border-spacing-y-0 print:border-spacing-y-0! dark:border-strokeDark dark:bg-boxDark"
+        class="w-full h-full max-w-full overflow-hidden bg-white border-separate xl:overflow-auto lg:border-collapse  border-spacing-y-5 lg:border-spacing-y-0 print:border-spacing-y-0! dark:border-strokeDark dark:bg-boxDark"
       >
         <thead
           class="hidden text-sm font-normal text-center text-gray-500 print:table-header-group! lg:table-header-group dark:border-strokeDark bg-gray-50 dark:bg-gray-700 dark:text-gray-400 print:border-[1px]!"
@@ -324,7 +324,7 @@
               :style="column?.style"
               :key="colIndex"
               :data-label="column.field_label"
-              class="text-pretty before:content-[attr(data-label)] before:font-bold lg:before:content-none print:before:content-none! flex flex-col justify-between gap-2 lg:table-cell print:table-cell! py-4 px-5 lg:py-3 lg:px-4 print:py-3! print:px-4! border-[1px] dark:border-gray-700"
+              class="text-pretty before:content-[attr(data-label)] before:font-bold lg:before:content-none print:before:content-none! flex flex-col justify-between gap-2 lg:table-cell  py-4 px-5 lg:py-3 lg:px-4 print:py-3! print:px-4! border-[1px] dark:border-gray-700"
               :class="{
                 /* 'rounded-t-lg lg:rounded-t-none': colIndex === 0,*/
                 'rounded-b-lg lg:rounded-b-none!':
