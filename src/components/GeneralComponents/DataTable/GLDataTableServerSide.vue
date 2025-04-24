@@ -334,7 +334,14 @@
                   column.field_name === 'action',
               }"
             >
-              <div  class="overflow-auto td_overflow_auto max-h-40">
+              <div  
+
+              :class="column.field_name === 'Action' ||
+                column.field_name === 'action'
+                ? ''
+                : 'overflow-auto'"
+              
+              class=" td_overflow_auto max-h-40">
                 <component
                   v-if="column.tdComp"
                   :language="language"
