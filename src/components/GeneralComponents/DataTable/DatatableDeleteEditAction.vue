@@ -35,7 +35,7 @@
 
         <div
             v-show="open"
-            class="xs:right-[unset] ltr:lg:right-[30px] rtl:lg:left-[30px]  absolute z-10 mt-6 origin-top-right bg-white divide-y divide-gray-100 rounded-lg shadow-sm w-44 dark:bg-gray-700 dark:divide-gray-600"
+            class="xs:right-[unset] ltr:lg:right-[30px] rtl:lg:left-[30px]  absolute z-10 mt-11 origin-top-right bg-white divide-y divide-gray-100 rounded-lg shadow-sm w-44 dark:bg-gray-700 dark:divide-gray-600"
         >
             <ul
                 class="py-2 text-sm text-gray-700 dark:text-gray-200"

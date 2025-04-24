@@ -185,7 +185,7 @@
     </div>
 
     <div
-      id="print"
+      :id="'print_'+Random_string"
       class="overflow-auto rounded-lg dark:text-gray-400 dark:bg-gray-800"
     >
       <table
@@ -428,10 +428,14 @@ export default {
     refreshData: Boolean,
   },
   data() {
+
+    const randomString = this.generateRandomString(6);
+
+
     return {
-      Random_string: this.generateRandomString(6),
+      Random_string: randomString,
       printObj: {
-        id: "print",
+        id: "print_"+randomString,
         popTitle: "",
         // preview:true,
       },
@@ -752,13 +756,13 @@ export default {
     size: A4 landscape;
     
   }
+
   .no-print {
     display: none !important;
   }
+  
 
-  table {
-   /* table-layout: fixed; */
-  }
+ 
   table tr {
     page-break-inside: avoid;
   }
