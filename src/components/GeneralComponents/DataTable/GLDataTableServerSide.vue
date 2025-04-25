@@ -453,7 +453,8 @@ export default {
       isDropdownOpen: false,
       itemLists: [],
 
-      cloumnsHidden: [],
+      
+      columnsHidden: [],
 
       tableData: [],
 
@@ -721,12 +722,12 @@ export default {
       console.log('User is about to print!');
       // You could update your component's state here
 
-      this.cloumnsHidden=["Action"];
+      this.columnsHidden=["Action"];
     },
     handleAfterPrint() {
       console.log('User finished printing!');
 
-      this.cloumnsHidden=[];
+      this.columnsHidden=[];
     }
 
   },
