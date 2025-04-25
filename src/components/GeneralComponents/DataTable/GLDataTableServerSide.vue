@@ -199,7 +199,7 @@
             <th  v-if="enable_select_deselect_delete" class="w-full px-4 py-2 lg:w-[3%]! print:hidden!"></th>
 
             <th
-              v-for="(column, index) in columns"
+              v-for="(column, index) in visibleColumns"
               :key="index"
               @click="updateSortColumn(column.field_name, column.sortable)"
               class="w-full px-4 py-2 lg:w-2/12 print:w-2/12! print:border-[1px]!"
@@ -320,7 +320,7 @@
             </td>
 
             <td
-              v-for="(column, colIndex) in columns"
+              v-for="(column, colIndex) in visibleColumns"
               :style="column?.style"
               :key="colIndex"
               :data-label="column.field_label"
@@ -453,6 +453,8 @@ export default {
       isDropdownOpen: false,
       itemLists: [],
 
+      cloumnsHidden: [],
+
       tableData: [],
 
       sortField: this.xprops.defaultSortField
@@ -487,6 +489,13 @@ export default {
     customFilters() {
       return this.xprops.customFilters;
     },
+
+
+    visibleColumns() {
+    return this.columns.filter(
+      (column) => !this.columnsHidden.includes(column.field_name)
+    );
+  }
 
    
 
@@ -707,11 +716,34 @@ export default {
       
     },
 
+
+    handleBeforePrint() {
+      console.log('User is about to print!');
+      // You could update your component's state here
+
+      this.cloumnsHidden=["Action"];
+    },
+    handleAfterPrint() {
+      console.log('User finished printing!');
+
+      this.cloumnsHidden=[];
+    }
+
   },
 
   mounted() {
     this.GetItemLists();
     this.isMounted = true;
+
+    window.addEventListener('beforeprint', this.handleBeforePrint);
+    window.addEventListener('afterprint', this.handleAfterPrint);
+  },
+
+
+  
+  beforeDestroy() {
+    window.removeEventListener('beforeprint', this.handleBeforePrint);
+    window.removeEventListener('afterprint', this.handleAfterPrint);
   },
 
   watch: {
