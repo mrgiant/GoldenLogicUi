@@ -75,7 +75,7 @@
               v-for="(column, colIndex) in columns"
               :key="colIndex"
               :data-label="column"
-              class="text-pretty before:content-[attr(data-label)] before:font-bold lg:before:content-none flex md:flex-row flex-col justify-between gap-2 lg:table-cell py-4 px-5 lg:py-2.5 lg:px-4 border-[1px] dark:border-gray-700"
+              class="text-pretty before:content-[attr(data-label)] before:font-bold lg:before:content-none flex md:flex-row flex-col justify-between gap-2 lg:table-cell py-4 px-5 lg:py-2.5 lg:px-4 border-[1px]! dark:border-gray-700"
             >
               <p class="text-pretty" v-html="item[colIndex]"></p>
             </td>

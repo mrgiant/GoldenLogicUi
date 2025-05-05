@@ -1,25 +1,15 @@
 <template>
   <DynamicConfirmation ref="ConfirmationDelete"></DynamicConfirmation>
+  <button ref="hiddenPrintBtn" v-print="printObj" style="display: none"></button>
   <div class="p-2">
-    <div
-      class="flex flex-col flex-wrap gap-4 pb-4 xl:flex-row xl:items-center xl:justify-between"
-    >
+    <div class="flex flex-col flex-wrap gap-4 pb-4 xl:flex-row xl:items-center xl:justify-between">
       <div class="flex items-center gap-2">
         <span class="font-medium"> {{ language?.show ?? "Show" }} </span>
 
         <div style="margin-top: 3px">
-          <dropdown
-            :options_top_size="0"
-            :has_cancel="false"
-            :options="pageOptions"
-            v-model="perPage"
-            :is_required="false"
-            field_name="perPage"
-            label_name=""
-            :default_value="5"
-            :show="false"
-            placeholder="Please select an option"
-          >
+          <dropdown :options_top_size="0" :has_cancel="false" :options="pageOptions" v-model="perPage"
+            :is_required="false" field_name="perPage" label_name="" :default_value="5" :show="false"
+            placeholder="Please select an option">
           </dropdown>
         </div>
 
@@ -28,192 +18,129 @@
 
       <label for="table-search" class="sr-only">Search</label>
       <div class="relative">
-        <div
-          class="absolute inset-y-0 left-0 flex items-center pointer-events-none rtl:inset-r-0 rtl:right-0 ps-3"
-        ></div>
-        <input
-          type="text"
-          v-model="search"
-          @input="handleSearch()"
+        <div class="absolute inset-y-0 left-0 flex items-center pointer-events-none rtl:inset-r-0 rtl:right-0 ps-3">
+        </div>
+        <input type="text" v-model="search" @input="handleSearch()"
           class="block w-full p-2 text-sm text-gray-900 border border-gray-300 rounded-lg ps-10 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-          :placeholder="
-            language?.search ? language?.search + ' ...' : 'Search ...'
-          "
-        />
+          :placeholder="language?.search ? language?.search + ' ...' : 'Search ...'
+            " />
       </div>
     </div>
 
-    <div
-      class="grid gap-4 mb-3 xs:grid-cols-1 xl:grid-cols-2"
-      :class="xprops?.customFiltersMainClass"
-    >
+    <div class="grid gap-4 mb-3 xs:grid-cols-1 xl:grid-cols-2" :class="xprops?.customFiltersMainClass">
       <template v-for="(column, index) in customFilters" :key="index">
-        <GlDropdown
-          v-if="column.type == 'dropdown'"
-          :has_cancel="true"
-          :options="column.options"
-          v-model="dynamicFilters[column.field_name]"
-          :is_required="false"
-          :field_name="column.field_name"
-          :label_name="column.field_label"
-          :show="false"
-          :placeholder="
-            language?.please_select_an_option ?? 'Please select an option'
-          "
-        >
+        <GlDropdown v-if="column.type == 'dropdown'" :has_cancel="true" :options="column.options"
+          v-model="dynamicFilters[column.field_name]" :is_required="false" :field_name="column.field_name"
+          :label_name="column.field_label" :show="false" :placeholder="language?.please_select_an_option ?? 'Please select an option'
+            ">
         </GlDropdown>
 
-        <GlTextInput
-          v-if="column.type == 'text'"
-          type="text"
-          :is_required="false"
-          :show="false"
-          v-model="dynamicFilters[column.field_name]"
-          :field_name="column.field_name"
-          :label_name="column.field_label"
-        >
+        <GlTextInput v-if="column.type == 'text'" type="text" :is_required="false" :show="false"
+          v-model="dynamicFilters[column.field_name]" :field_name="column.field_name" :label_name="column.field_label">
         </GlTextInput>
 
-        <GlTextInput
-          v-if="column.type == 'date'"
-          type="date"
-          :is_required="false"
-          :show="false"
-          v-model="dynamicFilters[column.field_name]"
-          :field_name="column.field_name"
-          :label_name="column.field_label"
-        >
+        <GlTextInput v-if="column.type == 'date'" type="date" :is_required="false" :show="false"
+          v-model="dynamicFilters[column.field_name]" :field_name="column.field_name" :label_name="column.field_label">
         </GlTextInput>
       </template>
 
       <template v-for="(column, index) in columns" :key="index">
-        <template
-          v-if="
-            column.hasOwnFilter && Object.keys(column.hasOwnFilter).length > 0
-          "
-        >
-          <GlDropdown
-            v-if="column.hasOwnFilter.type == 'dropdown'"
-            :has_cancel="true"
-            :options="column.hasOwnFilter.options"
-            v-model="dynamicFilters[column.field_name]"
-            :is_required="false"
-            :field_name="column.field_name"
-            :label_name="column.field_label"
-            :show="false"
-            :placeholder="
-              language?.please_select_an_option ?? 'Please select an option'
-            "
-          >
+        <template v-if="
+          column.hasOwnFilter && Object.keys(column.hasOwnFilter).length > 0
+        ">
+          <GlDropdown v-if="column.hasOwnFilter.type == 'dropdown'" :has_cancel="true"
+            :options="column.hasOwnFilter.options" v-model="dynamicFilters[column.field_name]" :is_required="false"
+            :field_name="column.field_name" :label_name="column.field_label" :show="false" :placeholder="language?.please_select_an_option ?? 'Please select an option'
+              ">
           </GlDropdown>
 
-          <GlTextInput
-            v-if="column.hasOwnFilter.type == 'text'"
-            type="text"
-            :is_required="false"
-            :show="false"
-            v-model="dynamicFilters[column.field_name]"
-            :field_name="column.field_name"
-            :label_name="column.field_label"
-          >
+          <GlTextInput v-if="column.hasOwnFilter.type == 'text'" type="text" :is_required="false" :show="false"
+            v-model="dynamicFilters[column.field_name]" :field_name="column.field_name"
+            :label_name="column.field_label">
           </GlTextInput>
 
-          <GlTextInput
-            v-if="column.hasOwnFilter.type == 'date'"
-            type="date"
-            :is_required="false"
-            :show="false"
-            v-model="dynamicFilters[column.field_name]"
-            :field_name="column.field_name"
-            :label_name="column.field_label"
-          >
+          <GlTextInput v-if="column.hasOwnFilter.type == 'date'" type="date" :is_required="false" :show="false"
+            v-model="dynamicFilters[column.field_name]" :field_name="column.field_name"
+            :label_name="column.field_label">
           </GlTextInput>
         </template>
       </template>
     </div>
 
     <div class="flex flex-wrap mb-3">
-      <gl-button
-        v-print="printObj"
-        tag="button"
-        button_type="default"
-        :has_border_reduced="false"
-        classes="rounded-s-lg"
-      >
+      <gl-button @click="delayedPrint" tag="button" :is_loading="isLoadinPrint" button_type="default"
+        :has_border_reduced="false" classes="rounded-s-lg">
         {{ language?.print ?? "Print" }}
       </gl-button>
 
 
-      <gl-button
-        @click="exportToExcel"
-        tag="button"
-        button_type="default"
-        :has_border_reduced="false"
-        :classes="!enable_select_deselect_delete ? 'rounded-e-lg' : ''"
-      >
+      <gl-button @click="exportToExcel" tag="button" button_type="default" :has_border_reduced="false"
+        :classes="!enable_select_deselect_delete ? 'rounded-e-lg' : ''">
         {{ language?.excel ?? "Excel" }}
       </gl-button>
 
-      <gl-button
-        v-if="enable_select_deselect_delete"
-        @click="toggleSelectAll"
-        tag="button"
-        button_type="default"
-        :has_border_reduced="false"
-      >
+      <gl-button v-if="enable_select_deselect_delete" @click="toggleSelectAll" tag="button" button_type="default"
+        :has_border_reduced="false">
         {{ language?.select_all ?? "Select all" }}
       </gl-button>
-      <gl-button
-       v-if="enable_select_deselect_delete"
-        @click="toggleDeselectAll"
-        tag="button"
-        button_type="default"
-        :has_border_reduced="false"
-      >
+      <gl-button v-if="enable_select_deselect_delete" @click="toggleDeselectAll" tag="button" button_type="default"
+        :has_border_reduced="false">
         {{ language?.deselect_all ?? "Deselect all" }}
       </gl-button>
-      <gl-button
-        v-if="enable_select_deselect_delete"
-        tag="button"
-        @click="deleteSelected"
-        button_type="red"
-        :has_border_reduced="false"
-        classes="rounded-e-lg"
-      >
+
+
+   <div  v-click-outside="closeColumnVisibilityDropdown">
+
+
+  
+<button v-on:click="toggleColumnVisibilityDropdown"   class="h-[2.5rem] text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium  text-sm px-3 py-2 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">Column visibility <svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+</svg>
+</button>
+
+<!-- Dropdown menu -->
+<div :id="'db_' + Random_string"  v-show="isOpenColumnVisibility" class="z-10 absolute  w-42 bg-white rounded-lg shadow-sm dark:bg-gray-700">
+    <ul class="p-3 space-y-1 text-sm text-gray-700 dark:text-gray-200" :aria-labelledby="'db_' + Random_string">
+      
+      <li v-for="(column, colIndex) in columns">
+
+        <div class="flex items-center p-2 rounded-sm hover:bg-gray-100 dark:hover:bg-gray-600">
+          <input :id="'cb_'+ column.field_name" type="checkbox"  v-model="columnVisibility[column.field_name]" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
+          <label :for="'cb_'+ column.field_name" class="w-full ms-2 text-sm font-medium text-gray-900 rounded-sm dark:text-gray-300">{{ column.field_name }}</label>
+        </div>
+
+
+      </li>
+      
+      
+      
+      
+    </ul>
+</div>
+</div> 
+
+
+
+
+      <gl-button v-if="enable_select_deselect_delete" tag="button" @click="deleteSelected" button_type="red"
+        :has_border_reduced="false" classes="rounded-e-lg">
         {{ language?.delete_selected ?? "Delete selected" }}
       </gl-button>
     </div>
 
-    <div
-      :id="'print_'+Random_string"
-      class="overflow-auto rounded-lg dark:text-gray-400 dark:bg-gray-800"
-    >
-      <table
-        :id="'table'+Random_string"
-        class="w-full h-full max-w-full overflow-hidden bg-white border-separate xl:overflow-auto lg:border-collapse print:border-collapse! border-spacing-y-5 lg:border-spacing-y-0 print:border-spacing-y-0! dark:border-strokeDark dark:bg-boxDark"
-      >
+    <div :id="'print_' + Random_string" class="overflow-auto rounded-lg dark:text-gray-400 dark:bg-gray-800">
+      <table :id="'table' + Random_string"
+        class="w-full h-full max-w-full overflow-hidden bg-white border-separate xl:overflow-auto lg:border-collapse print:border-collapse! border-spacing-y-5 lg:border-spacing-y-0 print:border-spacing-y-0! dark:border-strokeDark dark:bg-boxDark">
         <thead
-          class="hidden text-sm font-normal text-center text-gray-500 print:table-header-group! lg:table-header-group dark:border-strokeDark bg-gray-50 dark:bg-gray-700 dark:text-gray-400 print:border-[1px]!"
-        >
+          class="hidden text-sm font-normal text-center text-gray-500 print:table-header-group! lg:table-header-group dark:border-strokeDark bg-gray-50 dark:bg-gray-700 dark:text-gray-400 print:border-[1px]!">
           <tr>
-            <th  v-if="enable_select_deselect_delete" class="w-full px-4 py-2 lg:w-[3%]! print:hidden!"></th>
+            <th v-if="enable_select_deselect_delete" class="w-full px-4 py-2 lg:w-[3%]! print:hidden!"></th>
 
-            <th
-              v-for="(column, index) in visibleColumns"
-              :key="index"
+            <th v-for="(column, index) in visibleColumns" :key="index"
               @click="updateSortColumn(column.field_name, column.sortable)"
-              class="w-full px-4 py-2 lg:w-2/12 print:w-2/12! print:border-[1px]!"
-              :class="{
-                'no-print':
-                  column.field_name === 'Action' ||
-                  column.field_name === 'action',
-              }"
-            >
+              class="w-full px-4 py-2 lg:w-2/12 print:w-2/12! print:border-[1px]!">
               {{ column.field_label }}
-              <span
-                v-if="sortField === column.field_name"
-                class="ml-2 print:hidden!"
-              >
+              <span v-if="sortField === column.field_name" class="ml-2 print:hidden!">
                 <i v-if="sortOrder === 'asc'" class="fa fa-arrow-up"></i>
                 <i v-else class="fa fa-arrow-down"></i>
               </span>
@@ -222,138 +149,75 @@
         </thead>
         <tbody>
           <tr v-if="isLoading">
-            <td :colspan="columns.length+(enable_select_deselect_delete?1:0)">
-              <div
-                role="status"
-                class="p-4 space-y-4 border border-gray-200 divide-y divide-gray-200 rounded-sm shadow-sm animate-pulse dark:divide-gray-700 md:p-6 dark:border-gray-700"
-              >
+            <td :colspan="columns.length + (enable_select_deselect_delete ? 1 : 0)">
+              <div role="status"
+                class="p-4 space-y-4 border border-gray-200 divide-y divide-gray-200 rounded-sm shadow-sm animate-pulse dark:divide-gray-700 md:p-6 dark:border-gray-700">
                 <div class="flex items-center justify-between">
                   <div>
-                    <div
-                      class="w-24 h-3 mb-3 bg-gray-300 rounded-full dark:bg-gray-600"
-                    ></div>
-                    <div
-                      class="w-32 h-2 bg-gray-200 rounded-full dark:bg-gray-700"
-                    ></div>
+                    <div class="w-24 h-3 mb-3 bg-gray-300 rounded-full dark:bg-gray-600"></div>
+                    <div class="w-32 h-2 bg-gray-200 rounded-full dark:bg-gray-700"></div>
                   </div>
-                  <div
-                    class="w-12 h-3 bg-gray-300 rounded-full dark:bg-gray-700"
-                  ></div>
+                  <div class="w-12 h-3 bg-gray-300 rounded-full dark:bg-gray-700"></div>
                 </div>
                 <div class="flex items-center justify-between pt-4">
                   <div>
-                    <div
-                      class="w-24 h-3 mb-3 bg-gray-300 rounded-full dark:bg-gray-600"
-                    ></div>
-                    <div
-                      class="w-32 h-2 bg-gray-200 rounded-full dark:bg-gray-700"
-                    ></div>
+                    <div class="w-24 h-3 mb-3 bg-gray-300 rounded-full dark:bg-gray-600"></div>
+                    <div class="w-32 h-2 bg-gray-200 rounded-full dark:bg-gray-700"></div>
                   </div>
-                  <div
-                    class="w-12 h-3 bg-gray-300 rounded-full dark:bg-gray-700"
-                  ></div>
+                  <div class="w-12 h-3 bg-gray-300 rounded-full dark:bg-gray-700"></div>
                 </div>
                 <div class="flex items-center justify-between pt-4">
                   <div>
-                    <div
-                      class="w-24 h-3 mb-3 bg-gray-300 rounded-full dark:bg-gray-600"
-                    ></div>
-                    <div
-                      class="w-32 h-2 bg-gray-200 rounded-full dark:bg-gray-700"
-                    ></div>
+                    <div class="w-24 h-3 mb-3 bg-gray-300 rounded-full dark:bg-gray-600"></div>
+                    <div class="w-32 h-2 bg-gray-200 rounded-full dark:bg-gray-700"></div>
                   </div>
-                  <div
-                    class="w-12 h-3 bg-gray-300 rounded-full dark:bg-gray-700"
-                  ></div>
+                  <div class="w-12 h-3 bg-gray-300 rounded-full dark:bg-gray-700"></div>
                 </div>
                 <div class="flex items-center justify-between pt-4">
                   <div>
-                    <div
-                      class="w-24 h-3 mb-3 bg-gray-300 rounded-full dark:bg-gray-600"
-                    ></div>
-                    <div
-                      class="w-32 h-2 bg-gray-200 rounded-full dark:bg-gray-700"
-                    ></div>
+                    <div class="w-24 h-3 mb-3 bg-gray-300 rounded-full dark:bg-gray-600"></div>
+                    <div class="w-32 h-2 bg-gray-200 rounded-full dark:bg-gray-700"></div>
                   </div>
-                  <div
-                    class="w-12 h-3 bg-gray-300 rounded-full dark:bg-gray-700"
-                  ></div>
+                  <div class="w-12 h-3 bg-gray-300 rounded-full dark:bg-gray-700"></div>
                 </div>
                 <div class="flex items-center justify-between pt-4">
                   <div>
-                    <div
-                      class="w-24 h-3 mb-3 bg-gray-300 rounded-full dark:bg-gray-600"
-                    ></div>
-                    <div
-                      class="w-32 h-2 bg-gray-200 rounded-full dark:bg-gray-700"
-                    ></div>
+                    <div class="w-24 h-3 mb-3 bg-gray-300 rounded-full dark:bg-gray-600"></div>
+                    <div class="w-32 h-2 bg-gray-200 rounded-full dark:bg-gray-700"></div>
                   </div>
-                  <div
-                    class="w-12 h-3 bg-gray-300 rounded-full dark:bg-gray-700"
-                  ></div>
+                  <div class="w-12 h-3 bg-gray-300 rounded-full dark:bg-gray-700"></div>
                 </div>
                 <span class="sr-only">Loading...</span>
               </div>
             </td>
           </tr>
 
-          <tr
-            v-if="!isLoading"
-            v-for="(item, index) in itemLists.data"
-            :key="index"
-            class="text-gray-500 bg-white dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 dark:hover:text-gray-200"
-          >
+          <tr v-if="!isLoading" v-for="(item, index) in itemLists.data" :key="index"
+            class="text-gray-500 bg-white dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 dark:hover:text-gray-200">
             <!-- remove  md:flex-row from  below td to be the text below lable if want in line add it -->
 
-            <td
-              v-if="enable_select_deselect_delete"
-              class="print:hidden! text-center rounded-t-lg lg:rounded-t-none! print:!!rounded-t-none text-pretty before:content-[attr(data-label)] before:font-bold lg:before:content-none print:before:content-none! flex flex-col justify-between gap-2 lg:table-cell py-4 px-5 lg:py-3 lg:px-4 print:py-3! print:px-4! border-[1px] dark:border-gray-700"
-              data-label=""
-            >
-              <input
-                :checked="checkedIds.includes(item.id)"
-                @change="toggleCheck(item.id)"
-                type="checkbox"
-                value=""
-                class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-              />
+            <td v-if="enable_select_deselect_delete"
+              class="print:hidden! text-center rounded-t-lg lg:rounded-t-none! print:!!rounded-t-none text-pretty before:content-[attr(data-label)] before:font-bold lg:before:content-none print:before:content-none! flex flex-col justify-between gap-2 lg:table-cell py-4 px-5 lg:py-3 lg:px-4 print:py-3! print:px-4! border-[1px]! dark:border-gray-700"
+              data-label="">
+              <input :checked="checkedIds.includes(item.id)" @change="toggleCheck(item.id)" type="checkbox" value=""
+                class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
             </td>
 
-            <td
-              v-for="(column, colIndex) in visibleColumns"
-              :style="column?.style"
-              :key="colIndex"
+            <td v-for="(column, colIndex) in visibleColumns" :style="column?.style" :key="colIndex"
               :data-label="column.field_label"
-              class="text-pretty before:content-[attr(data-label)] before:font-bold lg:before:content-none print:before:content-none! flex flex-col justify-between gap-2 lg:table-cell print:table-cell! py-4 px-5 lg:py-3 lg:px-4 print:py-3! print:px-4! border-[1px] dark:border-gray-700"
+              class="text-pretty before:content-[attr(data-label)] before:font-bold lg:before:content-none print:before:content-none! flex flex-col justify-between gap-2 lg:table-cell print:table-cell! py-4 px-5 lg:py-3 lg:px-4 print:py-3! print:px-4! border-[1px]! dark:border-gray-700"
               :class="{
                 /* 'rounded-t-lg lg:rounded-t-none': colIndex === 0,*/
                 'rounded-b-lg lg:rounded-b-none!':
                   colIndex === columns.length - 1,
-                'no-print':
-                  column.field_name === 'Action' ||
-                  column.field_name === 'action',
-              }"
-            >
-              <div  
 
-              :class="column.field_name === 'Action' ||
-                column.field_name === 'action'
+              }">
+              <div :class="column.field_name === 'action'
                 ? ''
-                : 'overflow-auto'"
-              
-              class=" td_overflow_auto max-h-40">
-                <component
-                  v-if="column.tdComp"
-                  :language="language"
-                  :is="forDynCompIs(column.tdComp)"
-                  :row="item"
-                  :field="column.field_name"
-                  :xprops="xprops"
-                  :tdProps="column.tdProps"
-                  @deleteAction="GetItemLists()"
-                  @editAction="editAction(item)"
-                  @generalAction="generalAction(item)"
-                >
+                : 'overflow-auto'" class=" td_overflow_auto max-h-40">
+                <component v-if="column.tdComp" :language="language" :is="forDynCompIs(column.tdComp)" :row="item"
+                  :field="column.field_name" :xprops="xprops" :tdProps="column.tdProps" @deleteAction="GetItemLists()"
+                  @editAction="editAction(item)" @generalAction="generalAction(item)">
                 </component>
                 <template v-else>
                   {{ item[column.field_name] }}
@@ -366,18 +230,9 @@
     </div>
 
 
-    <div
-      class="flex items-center justify-between bg-white border-gray-200 dark:text-gray-400 dark:bg-gray-800"
-    >
-      <TailwindPagination
-        class="mt-3 mb-0"
-        classes="px-4 py-3 sm:px-6"
-        :data="itemLists"
-        :limit="limit"
-        :size="size"
-        :align="align"
-        @pagination-change-page="GetItemLists"
-      />
+    <div class="flex items-center justify-between bg-white border-gray-200 dark:text-gray-400 dark:bg-gray-800">
+      <TailwindPagination class="mt-3 mb-0" classes="px-4 py-3 sm:px-6" :data="itemLists" :limit="limit" :size="size"
+        :align="align" @pagination-change-page="GetItemLists" />
     </div>
   </div>
 </template>
@@ -412,7 +267,7 @@ export default {
     language: {
       type: Object,
       required: false,
-      default: () => {},
+      default: () => { },
     },
 
     enable_select_deselect_delete: {
@@ -436,14 +291,35 @@ export default {
     return {
       Random_string: randomString,
       printObj: {
-        id: "print_"+randomString,
+        id: "print_" + randomString,
         popTitle: "",
         // preview:true,
+
+        beforeOpenCallback(vue) {
+
+
+        },
+        openCallback(vue) {
+
+          vue.isLoadinPrint = false;
+
+
+        },
+        closeCallback(vue) {
+
+         
+          vue.columnVisibility['action'] = true;
+
+          vue.isLoadinPrint = false;
+
+        }
       },
       checkedIds: [],
       dynamicFilters: {},
       dynamicQueryString: {},
       isLoading: false,
+      isLoadinPrint: false,
+      isOpenColumnVisibility: false,
       isMounted: false,
       limit: 5,
       showDisabled: false,
@@ -453,20 +329,20 @@ export default {
       isDropdownOpen: false,
       itemLists: [],
 
-      
-      columnsHidden: [],
+
+      columnVisibility: [],
 
       tableData: [],
 
       sortField: this.xprops.defaultSortField
         ? this.xprops.defaultSortField
         : this.columns && this.columns.length > 0
-        ? this.columns[0].field_name
-        : "",
+          ? this.columns[0].field_name
+          : "",
 
       sortOrder: "desc",
 
-      pageOptions: [5, 10, 20, 50,100,200,300,400,500,600,700,800,900,1000],
+      pageOptions: [5, 10, 20, 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000],
       perPage: 5,
       page: 1,
     };
@@ -493,32 +369,60 @@ export default {
 
 
     visibleColumns() {
-    return this.columns.filter(
-      (column) => !this.columnsHidden.includes(column.field_name)
-    );
-  }
 
-   
+      return this.columns.filter(col => this.columnVisibility[col.field_name]);
+
+
+      
+    }
+
+
 
   },
   methods: {
+
+
+    closeColumnVisibilityDropdown() {
+      this.isOpenColumnVisibility = false;
+    },
+    toggleColumnVisibilityDropdown() {
+
+      this.isOpenColumnVisibility = !this.isOpenColumnVisibility;
+    },
+
+
+    delayedPrint() {
+
+      this.columnVisibility['action'] = false;
+
+
+      this.isLoadinPrint = true;
+
+      this.$nextTick(() => {
+        this.$refs.hiddenPrintBtn?.click();
+        this.isLoadinPrint = false;
+      });
+
+
+
+    },
 
     setDynamicQueryString(queryString) {
       this.dynamicQueryString = queryString;
     },
 
     generateRandomString(stringLength) {
-            let result = "";
-            const alphaNumericCharacters =
-                "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-            const alphabetsLength = alphaNumericCharacters.length;
-            for (let i = 0; i < stringLength; i++) {
-                result += alphaNumericCharacters.charAt(
-                    Math.floor(Math.random() * alphabetsLength)
-                );
-            }
-            return result;
-        },
+      let result = "";
+      const alphaNumericCharacters =
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+      const alphabetsLength = alphaNumericCharacters.length;
+      for (let i = 0; i < stringLength; i++) {
+        result += alphaNumericCharacters.charAt(
+          Math.floor(Math.random() * alphabetsLength)
+        );
+      }
+      return result;
+    },
 
 
 
@@ -550,29 +454,29 @@ export default {
 
       if (ok) {
 
-        
-       this.$refs.ConfirmationDelete.showLoading();
 
-       this.isLoading = true;
+        this.$refs.ConfirmationDelete.showLoading();
+
+        this.isLoading = true;
 
 
 
         for (const id of this.checkedIds) {
-      //try {
-        await axios
-          .delete(`${this.xprops.route}/${id}`)
-          .then(() => {
-          
-            
-          })
-          .catch((error) => {
-          
-            console.log(`Error deleting item with ID ${id}:`, error);
-          });
-    
-    }
+          //try {
+          await axios
+            .delete(`${this.xprops.route}/${id}`)
+            .then(() => {
 
-       
+
+            })
+            .catch((error) => {
+
+              console.log(`Error deleting item with ID ${id}:`, error);
+            });
+
+        }
+
+
 
         this.checkedIds = [];
 
@@ -670,14 +574,14 @@ export default {
 
     exportToExcel() {
       // Get the table element
-      const table = document.querySelector('#table'+this.Random_string);
-      
+      const table = document.querySelector('#table' + this.Random_string);
+
       // Get the headers from <thead>
-        const headers = Array.from(table.querySelectorAll('thead th'))
+      const headers = Array.from(table.querySelectorAll('thead th'))
         .map((th) => th.innerText);
 
       // Define a list of headers to exclude (e.g., "Name", "City", etc.)
-      const headersToExclude = ['Action']; // Add the headers you want to exclude
+      const headersToExclude = ['action']; // Add the headers you want to exclude
 
       // Exclude the first column (header + its data)
       const headersToExcludeWithFirstColumn = ['', ...headersToExclude];
@@ -691,7 +595,7 @@ export default {
       const rows = Array.from(table.querySelectorAll('tbody tr')).map((tr) => {
         const cells = Array.from(tr.querySelectorAll('td'))
           .map((td) => td.innerText); // Keep the cell value as is, without modifying it
-        
+
         // Remove the cells that correspond to the excluded columns
         return cells.filter((_, index) => !excludeIndices.includes(index));
       });
@@ -714,38 +618,30 @@ export default {
 
       // Trigger the download of the Excel file
       XLSX.writeFile(wb, fileName);
-      
+
     },
 
 
-    handleBeforePrint() {
-      console.log('User is about to print!');
-      // You could update your component's state here
 
-      this.columnsHidden=["Action"];
-    },
-    handleAfterPrint() {
-      console.log('User finished printing!');
-
-      this.columnsHidden=[];
-    }
 
   },
 
   mounted() {
+
+    this.columns.forEach(col => {
+
+      this.columnVisibility[col.field_name] = true;
+
+    });
+
+
     this.GetItemLists();
     this.isMounted = true;
 
-    window.addEventListener('beforeprint', this.handleBeforePrint);
-    window.addEventListener('afterprint', this.handleAfterPrint);
+
   },
 
 
-  
-  beforeDestroy() {
-    window.removeEventListener('beforeprint', this.handleBeforePrint);
-    window.removeEventListener('afterprint', this.handleAfterPrint);
-  },
 
   watch: {
     searchFilter() {
@@ -788,24 +684,24 @@ export default {
 @media print {
   @page {
     size: A4 landscape;
-    
+
   }
 
-  .no-print {
-    display: none !important;
-  }
-  
 
- 
+
+
+
   table tr {
     page-break-inside: avoid;
   }
+
   table tr td {
     page-break-inside: avoid;
   }
+
   .td_overflow_auto {
-        overflow: visible !important;
-        max-height: none !important;
+    overflow: visible !important;
+    max-height: none !important;
   }
 }
 </style>

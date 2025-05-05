@@ -16,7 +16,7 @@ const props = defineProps({
         type: String,
         default: "",
     },
-   
+
 
     modelValue: {
         type: [String, Number],
@@ -64,6 +64,16 @@ const props = defineProps({
         default: "",
     },
 
+    inputGroupType: {
+        type: String,
+        default: "",
+    },
+
+    inputGroupText: {
+        type: String,
+        default: "",
+    },
+
 });
 
 const emit = defineEmits(["update:modelValue", "keydown", "blur-sm"]);
@@ -76,7 +86,7 @@ onMounted(() => {
         input.value.focus();
     }
 
-   
+
 });
 
 
@@ -84,21 +94,19 @@ onMounted(() => {
 
 
 
-   const proxyValue = computed({
+const proxyValue = computed({
 
-    get()
-    {
+    get() {
         return props.modelValue;
     },
-    set(newValue)
-    {
+    set(newValue) {
         emit("update:modelValue", newValue);
-       
+
 
     }
-   
-   
-    });
+
+
+});
 
 
 
@@ -121,46 +129,62 @@ defineExpose({ focus: () => input.value.focus() });
         <hr class="opacity-100! bg-gray-200 border-0 dark:bg-gray-700" />
     </div>
 
-    <div  
-    
-    
-
-     :class="{
+    <div :class="{
         [field_name]: field_name && field_name !== '',
         [container_class]: container_class && container_class !== ''
-    }"
-    
-    
-     v-if="!show">
-        <label
-            v-if="label_name"
-            :class="{
-                'gl-label-form': error_message == '',
-                'gl-label-form-invalid': error_message !== '',
-                required: is_required,
-            }"
-            :for="field_name"
-            >{{ label_name }}</label
-        ><input
+    }" v-if="!show">
+        <label v-if="label_name" :class="{
+            'gl-label-form': error_message == '',
+            'gl-label-form-invalid': error_message !== '',
+            required: is_required,
+        }" :for="field_name">{{ label_name }}</label>
 
-            :minlength="minlength"
-            :maxlength="maxlength"
-            class="rtl:text-right"
-            :required="is_required"
-            :name="field_name"
-            :id="field_name"
-            :class="{
+        <div v-if="inputGroupType" class="flex items-center">
+
+            <label v-if="inputGroupType=='prepend'" v-html="inputGroupText"
+                class="h-10 z-10 inline-flex items-center shrink-0 px-4  text-sm font-medium text-center text-gray-500 bg-gray-100 border border-gray-300 dark:text-gray-400 rounded-s-lg focus:outline-hidden dark:bg-gray-700 dark:border-gray-600">
+
+            </label>
+
+            <div class="relative w-full">
+
+                <input :minlength="minlength" :maxlength="maxlength" class="rtl:text-right rounded-none!" :required="is_required"
+                    :name="field_name" :id="field_name" 
+
+
+                    
+                    :class="{
+                        'gl-input-form': error_message == '',
+                        'gl-input-form-invalid': error_message !== '',
+                        [input_class]: input_class && input_class !== '',
+                        'border-e-0! rounded-s-lg!': inputGroupType == 'append',
+                        'border-s-0! rounded-e-lg!': inputGroupType == 'prepend'
+                    }" :type="type" v-model="proxyValue" @keydown="$emit('keydown', $event)" @blur="$emit('blur-sm', $event)"
+                    ref="input" :placeholder="placeholder" />
+
+
+            </div>
+
+            <label v-if="inputGroupType=='append'" v-html="inputGroupText"
+                class="h-10 z-10 inline-flex items-center shrink-0 px-4  text-sm font-medium text-center text-gray-500 bg-gray-100 border border-gray-300 dark:text-gray-400 rounded-e-lg focus:outline-hidden dark:bg-gray-700 dark:border-gray-600">
+
+            </label>
+
+        </div>
+
+
+
+
+
+
+        <input v-if="inputGroupType==''" :minlength="minlength" :maxlength="maxlength" class="rtl:text-right"
+            :required="is_required" :name="field_name" :id="field_name" :class="{
                 'gl-input-form': error_message == '',
                 'gl-input-form-invalid': error_message !== '',
                 [input_class]: input_class && input_class !== ''
-            }"
-            :type="type"
-             v-model="proxyValue"
-            @keydown="$emit('keydown', $event)"
-            @blur="$emit('blur-sm', $event)"
-            ref="input"
-            :placeholder="placeholder"
-        />
+
+            }" :type="type" v-model="proxyValue" @keydown="$emit('keydown', $event)" @blur="$emit('blur-sm', $event)"
+            ref="input" :placeholder="placeholder" />
 
         <span class="gl-span-form-error">{{ error_message }}</span>
 

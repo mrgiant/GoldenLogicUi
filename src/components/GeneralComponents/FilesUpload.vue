@@ -35,7 +35,15 @@
           @change="uploadFiles"
         />
 
-        <input type="hidden" :name="field_name" v-model="uploadFileListFinal" />
+        <input
+      type="hidden"
+      :name="field_name + '[]'"
+      v-for="(value, index) in uploadFileListFinal"
+      :key="index"
+      :value="value.id"
+      />
+
+       
         <div
           class="flex flex-col items-center justify-center"
           @click="$refs['file_input' + this.field_name].click()"

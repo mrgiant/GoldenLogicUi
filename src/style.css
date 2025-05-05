@@ -1,5 +1,8 @@
-@import 'tailwindcss';
 
+
+@import "tailwindcss" source(none);
+
+@source not "../src/components/";
 /*@config '../tailwind.config.js'; */
 
 

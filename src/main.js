@@ -17,7 +17,6 @@ export { default as GlTextareaTranslate } from './components/GeneralComponents/G
 
 export { default as GlTextTranslate } from './components/GeneralComponents/GlTextTranslate.vue'
 export { default as GlTextInput } from './components/GeneralComponents/GlTextInput.vue'
-export { default as GlTextInputWithText } from './components/GeneralComponents/GlTextInputWithText.vue'
 export { default as GlDateRangePicker } from './components/GeneralComponents/GlDateRangePicker.vue'
 export { default as GlTextInputFile } from './components/GeneralComponents/GlTextInputFile.vue'
 export { default as GlTabsWrapper } from './components/GeneralComponents/GlTabsWrapper.vue'
