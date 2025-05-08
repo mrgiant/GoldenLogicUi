@@ -8,6 +8,9 @@
 
 
             <div class="items-center hidden w-2/12 xl:flex xxl:flex md:flex sm:flex arrow_button"
+
+               
+
                 v-if="dotsNum > 0 && !hide_arrow && slider_arrows_indicators_position == 'arrows_outside_slider'">
 
                 <div class="w-full">
@@ -462,7 +465,7 @@ export default {
     left: 0;
     bottom: 0;
     z-index: 10;
-    display: flex;
+   /* display: flex; */
     align-items: center;
     justify-content: center;
    /* width: 8%; */
@@ -484,7 +487,7 @@ export default {
     right: 0;
     bottom: 0;
     z-index: 10;
-    display: flex;
+   /* display: flex; */
     align-items: center;
     justify-content: center;
    /* width: 8%; */

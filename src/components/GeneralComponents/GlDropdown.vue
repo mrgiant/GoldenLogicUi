@@ -123,7 +123,7 @@
                   @keydown="handleKeyDown"
                   @blur="exit()"
                   autocomplete="off"
-                  class="block w-full p-2 text-sm text-gray-900 border rounded-lg outline-hidden border-primary ps-10 bg-gray-50 focus:border-primary dark:bg-gray-700 dark:border-primaryDark dark:placeholder-primaryDark dark:text-white dark:focus:border-primaryDark"
+                  class="block w-full p-2 text-sm text-gray-900 border rounded-lg outline-hidden border-primary  bg-gray-50 focus:border-primary dark:bg-gray-700 dark:border-primaryDark dark:placeholder-primaryDark dark:text-white dark:focus:border-primaryDark"
                   :placeholder="search_input_placeholder"
                 />
               </div>
