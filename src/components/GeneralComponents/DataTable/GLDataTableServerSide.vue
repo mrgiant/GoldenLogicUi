@@ -67,24 +67,24 @@
       </template>
     </div>
 
-    <div class="flex flex-wrap mb-3">
+    <div class="flex flex-wrap mb-3 gap-1 lg:gap-0!">
       <gl-button @click="delayedPrint" tag="button" :is_loading="isLoadinPrint" button_type="default"
-        :has_border_reduced="false" classes="rounded-s-lg">
+        :has_border_reduced="false" classes="rounded-lg lg:rounded-none lg:rounded-s-lg!">
         {{ language?.print ?? "Print" }}
       </gl-button>
 
 
       <gl-button @click="exportToExcel" tag="button" button_type="default" :has_border_reduced="false"
-        :classes="!enable_select_deselect_delete ? 'rounded-e-lg' : ''">
+        :classes="!enable_select_deselect_delete ? 'rounded-lg lg:rounded-e-lg!' : 'rounded-lg lg:rounded-none!'">
         {{ language?.excel ?? "Excel" }}
       </gl-button>
 
       <gl-button v-if="enable_select_deselect_delete" @click="toggleSelectAll" tag="button" button_type="default"
-        :has_border_reduced="false">
+        :has_border_reduced="false" classes="rounded-lg lg:rounded-none!">
         {{ language?.select_all ?? "Select all" }}
-      </gl-button>
+      </gl-button classes="rounded-lg lg:rounded-none!">
       <gl-button v-if="enable_select_deselect_delete" @click="toggleDeselectAll" tag="button" button_type="default"
-        :has_border_reduced="false">
+        :has_border_reduced="false" classes="rounded-lg lg:rounded-none!">
         {{ language?.deselect_all ?? "Deselect all" }}
       </gl-button>
 
@@ -93,7 +93,7 @@
 
 
   
-<button v-on:click="toggleColumnVisibilityDropdown"   class="h-[2.5rem] text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium  text-sm px-3 py-2 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">Column visibility <svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+<button v-on:click="toggleColumnVisibilityDropdown"   class="h-[2.5rem] text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium  text-sm px-3 py-2 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 rounded-lg lg:rounded-none!" type="button">Column visibility <svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
 </svg>
 </button>
@@ -123,7 +123,7 @@
 
 
       <gl-button v-if="enable_select_deselect_delete" tag="button" @click="deleteSelected" button_type="red"
-        :has_border_reduced="false" classes="rounded-e-lg">
+        :has_border_reduced="false" classes="rounded-lg lg:rounded-none lg:rounded-e-lg!">
         {{ language?.delete_selected ?? "Delete selected" }}
       </gl-button>
     </div>

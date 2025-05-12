@@ -59,17 +59,17 @@
 
     <div :id="'print_' + Random_string" class="overflow-auto rounded-lg dark:text-gray-400 dark:bg-gray-800">
       <table :id="'table' + Random_string"
-        class="w-full h-full max-w-full overflow-hidden bg-white border-separate xl:overflow-auto lg:border-collapse border-spacing-y-3 lg:border-spacing-y-0 dark:border-strokeDark dark:bg-boxDark"
+        class="w-full h-full max-w-full overflow-hidden bg-white border-separate xl:overflow-auto lg:border-collapse print:border-collapse! border-spacing-y-5 lg:border-spacing-y-0 print:border-spacing-y-0! dark:border-strokeDark dark:bg-boxDark"
       >
         <thead
-          class="hidden text-sm font-normal text-center text-gray-700 lg:table-header-group dark:border-strokeDark bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
+          class="hidden text-sm font-normal text-center text-gray-500 print:table-header-group! lg:table-header-group dark:border-strokeDark bg-gray-50 dark:bg-gray-700 dark:text-gray-400 print:border-[1px]!"
         >
           <tr>
             <th
               v-for="(column, index) in columns"
               :key="index"
               v-on:click.prevent="sort(column)"
-              class="w-full px-4 py-2 lg:w-2/12 capitalize"
+              class="w-full px-4 py-2 lg:w-2/12 print:w-2/12! print:border-[1px]!"
             >
               {{ column }}
 
@@ -86,14 +86,20 @@
           <tr
             v-for="(item, index) in paginatedData"
             :key="index"
-            class="bg-white dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 dark:hover:text-gray-200 text-gray-500"
+            class="text-gray-500 bg-white dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 dark:hover:text-gray-200"
           >
             <td
               v-for="(column, colIndex) in columns"
               :key="colIndex"
               :data-label="column"
-              class="text-pretty before:content-[attr(data-label)] before:font-bold lg:before:content-none flex md:flex-row flex-col justify-between gap-2 lg:table-cell py-4 px-5 lg:py-2.5 lg:px-4 border-[1px]! dark:border-gray-700"
-            >
+              class="text-pretty before:content-[attr(data-label)] before:font-bold lg:before:content-none print:before:content-none! flex flex-col justify-between gap-2 lg:table-cell print:table-cell! py-4 px-5 lg:py-3 lg:px-4 print:py-3! print:px-4! border-[1px]! dark:border-gray-700"
+              :class="{
+                /* 'rounded-t-lg lg:rounded-t-none': colIndex === 0,*/
+                'rounded-b-lg lg:rounded-b-none!':
+                  colIndex === columns.length - 1,
+
+              }"
+              >
               <p class="text-pretty" v-html="item[colIndex]"></p>
             </td>
           </tr>
@@ -264,7 +270,7 @@ export default {
         closeCallback(vue) {
 
          
-          vue.columnVisibility['action'] = true;
+         
 
           vue.isLoadinPrint = false;
 
@@ -272,7 +278,7 @@ export default {
       },
 
 
-      showNoOfEntries: [5, 10, 20, 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000],
+      showNoOfEntries: [5, 10, 20, 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000,11000,12000,13000,14000,15000,16000,17000,18000,19000,20000],
       search: "",
 
       sortKey: "",
