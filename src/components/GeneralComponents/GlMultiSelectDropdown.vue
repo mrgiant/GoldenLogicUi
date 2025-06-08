@@ -114,12 +114,9 @@
           <!-- Dropdown Menu -->
 
           <div
-            class="text-gray-700 bg-white dark:border-strokeDark dark:bg-boxDark dark:text-gray-200 border-b! border-t-0! border-r! border-l! fixed w-full z-999999999 showOptions rounded-b-lg"
+            class="text-gray-700 bg-white dark:border-strokeDark dark:bg-boxDark dark:text-gray-200 border-b! border-t-0! border-r! border-l! absolute w-full z-999999999 showOptions rounded-b-lg"
             v-show="optionsShown"
-            :style="{
-              maxWidth: divDropDownWidth + 'px',
-              top: divDropDownTop + 'px',
-            }"
+           
           >
             <div class="p-1">
               <label
@@ -269,18 +266,9 @@ const searchFilter = ref("");
 const uuid = ref("");
 
 const myDivDropDown = ref(null);
-const divDropDownWidth = ref(0);
-const divDropDownTop = ref(0);
 
-const getDivDropDownWidth = () => {
-  if (myDivDropDown.value) {
-    divDropDownWidth.value = myDivDropDown.value.offsetWidth;
-    var parentRect = myDivDropDown.value.getBoundingClientRect();
 
-    // divDropDownTop.value = parentRect.top+41;
-    divDropDownTop.value = parentRect.top + 41 + props.options_top_size;
-  }
-};
+
 
 const preventEnterKey = (e) => {
   if (e.key === "Enter" && e.target.form) {
@@ -292,7 +280,7 @@ onMounted(() => {
   uuid.value = generateUUID();
 
   if (!props.show) {
-    window.addEventListener("scroll", getDivDropDownWidth);
+   
 
     document.body.addEventListener("click", clearData);
     document.addEventListener("keypress", preventEnterKey);
@@ -300,7 +288,7 @@ onMounted(() => {
 });
 
 onBeforeUnmount(() => {
-  window.removeEventListener("scroll", getDivDropDownWidth);
+ 
   document.body.removeEventListener("click", clearData);
   document.removeEventListener("keypress", preventEnterKey);
 });
@@ -516,7 +504,7 @@ function showOptions() {
     searchFilter.value = "";
     optionsShown.value = true;
     nextTick(() => {
-      getDivDropDownWidth();
+     
       //refs[props.field_name + "search" + uuid.value].focus();
       var input_search_feild = document.getElementById(
         `${props.field_name}search${uuid.value}`

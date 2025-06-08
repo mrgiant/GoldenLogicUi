@@ -42,6 +42,14 @@
         <GlTextInput v-if="column.type == 'date'" type="date" :is_required="false" :show="false"
           v-model="dynamicFilters[column.field_name]" :field_name="column.field_name" :label_name="column.field_label">
         </GlTextInput>
+
+        <GlDateRangePicker v-if="column.type == 'date_range'" :is_required="false" :show="false"
+          v-model="dynamicFilters[column.field_name]" :field_name="column.field_name"
+          :label_name="column.field_label">
+        </GlDateRangePicker>
+
+
+
       </template>
 
       <template v-for="(column, index) in columns" :key="index">
@@ -242,6 +250,7 @@ import TailwindPagination from "/src/components/LaravelVuePagination/TailwindPag
 
 import GlTextInput from "/src/components/GeneralComponents/GlTextInput.vue";
 import GlDropdown from "/src/components/GeneralComponents/GlDropdown.vue";
+import GlDateRangePicker from "/src/components/GeneralComponents/GlDateRangePicker.vue";
 import GlButton from "/src/components/GeneralComponents/GlButton.vue";
 import DynamicConfirmation from "/src/components/GeneralComponents/DynamicConfirmation.vue";
 
@@ -254,6 +263,7 @@ export default {
     TailwindPagination,
     GlTextInput,
     GlDropdown,
+    GlDateRangePicker,
     GlButton,
     DynamicConfirmation,
   },

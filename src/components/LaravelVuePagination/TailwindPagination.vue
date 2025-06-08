@@ -5,7 +5,7 @@
     @pagination-change-page="onPaginationChangePage"
     v-slot="slotProps"
   >
-    <div class="flex flex-col items-center" :class="classes" v-if="slotProps.computed.total > slotProps.computed.perPage">
+    <div class="flex flex-col items-center w-full" :class="classes" v-if="slotProps.computed.total > slotProps.computed.perPage">
       <!-- Help text -->
       <span
         class="text-sm text-gray-700 dark:text-gray-400"
@@ -29,7 +29,7 @@
 
       <ul
         v-bind="$attrs"
-        class="flex items-center h-8 -space-x-px text-sm"
+        class="flex  flex-wrap items-center h-8 -space-x-px text-sm"
         :class="{
           'pagination-sm': size == 'small',
           'pagination-lg': size == 'large',

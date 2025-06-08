@@ -116,7 +116,8 @@ defineExpose({ focus: () => input.value.focus() });
 
 <template>
     <div :class="field_name" v-if="show">
-        <h3 class="font-bold dark:text-white">{{ label_name }}</h3>
+       
+        <label v-if="label_name" class="gl-label-form">{{ label_name }}</label>
 
         <p class="mt-1 text-gray-900 dark:text-white">
             {{

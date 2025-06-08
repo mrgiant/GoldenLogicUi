@@ -97,12 +97,9 @@
 
           <!-- Dropdown Menu -->
           <div
-            class="text-gray-700 bg-white dark:border-strokeDark dark:bg-boxDark dark:text-gray-200 border-b! border-t-0! border-r! border-l! fixed w-full z-999999999 rounded-b-lg"
+            class="text-gray-700 bg-white dark:border-strokeDark dark:bg-boxDark dark:text-gray-200 border-b! border-t-0! border-r! border-l! absolute w-full z-999999999 rounded-b-lg"
             v-show="optionsShown"
-            :style="{
-              maxWidth: divDropDownWidth + 'px',
-              top: divDropDownTop + 'px',
-            }"
+            
           >
             <div class="p-1" v-if="!hide_search">
               <label
@@ -315,24 +312,9 @@ const optionsValues = ref([]);
 const myDivDropDown = ref(null);
 const dropdownRef = ref(null);
 
-const divDropDownWidth = ref(0);
-const divDropDownTop = ref(0);
-
-const getDivDropDownWidth = () => {
-
-   
-
-  if (myDivDropDown.value) {
-    
-    divDropDownWidth.value = myDivDropDown.value.offsetWidth;
-    var parentRect = myDivDropDown.value.getBoundingClientRect();
-
-    divDropDownTop.value = parentRect.top + 41 + props.options_top_size;
 
 
-    //label_name
-  }
-};
+
 
 const handleTabPressInput = (event) => {
   console.log("Tab key pressed!", event.key);
@@ -451,7 +433,7 @@ const showOptions = () => {
     }
 
     nextTick(() => {
-      getDivDropDownWidth();
+    
       //refs[props.field_name + "search" + uuid.value].focus();
       var input_search_feild = document.getElementById(
         `${props.field_name}search${uuid.value}`
@@ -504,13 +486,11 @@ const convertedOptionDefault = () => {
 onMounted(() => {
   uuid.value = generateUUID();
 
+
   if (!props.show) {
-    window.addEventListener("scroll", getDivDropDownWidth, { passive: true });
-   
-    const modalElement = document.querySelector(".gl_modal_body");
-  if (modalElement) {
-    modalElement.addEventListener("scroll", getDivDropDownWidth, { passive: true });
-   }
+
+
+  
 
 
     document.body.addEventListener("click", clearData);
@@ -520,13 +500,7 @@ onMounted(() => {
 });
 
 onBeforeUnmount(() => {
-  window.removeEventListener("scroll", getDivDropDownWidth);
-  
-
-  const modalElement = document.querySelector(".gl_modal_body");
-   if (modalElement) {
-     modalElement.removeEventListener("scroll", getDivDropDownWidth, { passive: true });
-   }
+ 
 
   document.body.removeEventListener("click", clearData);
  // document.removeEventListener("keydown", preventEnterKey);

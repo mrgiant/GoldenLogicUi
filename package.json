@@ -3,10 +3,10 @@
   "description": "The most popular library of interactive components built with Vuejs && Tailwind CSS",
   "type": "module",
   "private": false,
-  "version": "1.2.87",
+  "version": "1.2.118",
   "repository": {
     "type": "git",
-    "url": "https://github.com/mrgiant/GoldenLogicUi.git"
+    "url": "git+https://github.com/mrgiant/GoldenLogicUi.git"
   },
   "author": "Mohamed Al Wahaibi",
   "license": "MIT",
@@ -38,9 +38,7 @@
     "@codemirror/state": "^6.5.0",
     "@codemirror/theme-one-dark": "^6.1.2",
     "@codemirror/view": "^6.36.1",
-   
     "codemirror": "^6.0.1",
-   
     "vue3-print-nb": "^0.1.4",
     "xlsx": "^0.18.5"
   },

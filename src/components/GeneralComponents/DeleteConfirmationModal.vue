@@ -30,7 +30,7 @@
         </div>
         <!-- Modal footer -->
         <div
-          class="border-t border-gray-200 rounded-b dark:border-gray-600 px-4 py-3  sm:px-6 sm:flex sm:flex-row-reverse gap-2">
+          class="border-t border-gray-200 rounded-b dark:border-gray-600 px-4 py-3  sm:px-6 flex  gap-2">
 
 
 

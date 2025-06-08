@@ -206,7 +206,7 @@ onBeforeUnmount(() => {
         <div
           v-if="has_footer"
           v-show="!is_loading"
-          class="flex flex-wrap items-center justify-end shrink-0 p-4 border-t-2 rounded-b-md border-neutral-100 dark:border-gray-600"
+          class="flex flex-wrap items-center justify-end shrink-0 p-4 border-t-2 rounded-b-md border-neutral-100 dark:border-gray-600 gap-2"
         >
           <slot name="buttons"></slot>
 
