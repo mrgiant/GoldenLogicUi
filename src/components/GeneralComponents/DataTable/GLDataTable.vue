@@ -3,7 +3,7 @@
     <button ref="hiddenPrintBtn" v-print="printObj" style="display: none"></button>
 
     <div
-      class="flex flex-wrap pb-4 space-y-4 md:items-center md:justify-between flex-column sm:flex-row sm:space-y-0"
+      class="flex flex-col flex-wrap gap-4 pb-4 xl:flex-row xl:items-center xl:justify-between"
     >
       <div class="flex items-center gap-2">
         <span class="font-medium"> Show </span>
