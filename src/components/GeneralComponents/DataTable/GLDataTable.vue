@@ -1,5 +1,5 @@
 <template>
-  <div class="p-2">
+  <div class="p-0">
     <button ref="hiddenPrintBtn" v-print="printObj" style="display: none"></button>
 
     <div
