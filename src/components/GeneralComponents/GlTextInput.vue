@@ -76,7 +76,7 @@ const props = defineProps({
 
 });
 
-const emit = defineEmits(["update:modelValue", "keydown", "blur-sm"]);
+const emit = defineEmits(["update:modelValue", "keydown", "blur-sm","keyup"]);
 
 const input = ref(null);
 
@@ -160,7 +160,7 @@ defineExpose({ focus: () => input.value.focus() });
                         [input_class]: input_class && input_class !== '',
                         'border-e-0! rounded-s-lg!': inputGroupType == 'append',
                         'border-s-0! rounded-e-lg!': inputGroupType == 'prepend'
-                    }" :type="type" v-model="proxyValue" @keydown="$emit('keydown', $event)" @blur="$emit('blur-sm', $event)"
+                    }" :type="type" v-model="proxyValue" @keydown="$emit('keydown', $event)" @keyup="$emit('keyup', $event)"    @blur="$emit('blur-sm', $event)"
                     ref="input" :placeholder="placeholder" />
 
 
@@ -184,7 +184,7 @@ defineExpose({ focus: () => input.value.focus() });
                 'gl-input-form-invalid': error_message !== '',
                 [input_class]: input_class && input_class !== ''
 
-            }" :type="type" v-model="proxyValue" @keydown="$emit('keydown', $event)" @blur="$emit('blur-sm', $event)"
+            }" :type="type" v-model="proxyValue" @keydown="$emit('keydown', $event)" @keyup="$emit('keyup', $event)" @blur="$emit('blur-sm', $event)"
             ref="input" :placeholder="placeholder" />
 
         <span class="gl-span-form-error">{{ error_message }}</span>

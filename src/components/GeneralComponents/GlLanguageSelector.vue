@@ -5,7 +5,7 @@
 
 
     <li v-for="(lang, index) in locals" >
-        <input type="radio" :name="trans_selector_name" :value="lang" class="hidden peer" :id="lang + '_' + field_name" autocomplete="off" :checked="lang === default_language">
+        <input type="radio" :name="trans_selector_name" :value="lang" class="hidden! peer" :id="lang + '_' + field_name" autocomplete="off" :checked="lang === default_language">
         <label :for="lang+'_'+field_name"
 
 

@@ -207,6 +207,10 @@ input::-webkit-calendar-picker-indicator {
 
 
 
+
+
+
+
 [type=checkbox],[type=radio] {
         appearance: none;
         print-color-adjust: exact;
@@ -224,6 +228,14 @@ input::-webkit-calendar-picker-indicator {
         flex-shrink: 0;
         padding: 0;
         display: inline-block
+    }
+
+
+
+    [type=checkbox],[type=radio] {
+        
+        @apply text-primary dark:text-primaryDark
+       
     }
 
     [type=checkbox] {
