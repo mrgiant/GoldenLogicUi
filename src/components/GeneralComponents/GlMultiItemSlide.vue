@@ -253,6 +253,14 @@ export default {
         slider_arrows_indicators_position: {
             type: String,
             default: "arrows_outside_slider"
+        },
+        auto_play: {
+            type: Boolean,
+            default: false
+        },
+        auto_play_interval: {
+            type: Number,
+            default: 3
         }
     },
 
@@ -267,7 +275,8 @@ export default {
             isMoving: false,
             initialX: 0,
             initialY: 0,
-            Random_string: this.generateRandomString(6)
+            Random_string: this.generateRandomString(6),
+            autoPlayTimer: null
         };
     },
 
@@ -280,12 +289,18 @@ export default {
             }
             // Attach resize event listener
             window.addEventListener("resize", this.resizeHandler);
+            // Start auto play if enabled
+            if (this.auto_play) {
+                this.startAutoPlay();
+            }
         });
     },
 
     beforeDestroy() {
         // Remove resize event listener
         window.removeEventListener("resize", this.resizeHandler);
+        // Clear auto play timer
+        this.stopAutoPlay();
     },
 
     beforeUnmount() {
@@ -293,6 +308,8 @@ export default {
         if (this.mutationObserver) {
             this.mutationObserver.disconnect();
         }
+        // Clear auto play timer
+        this.stopAutoPlay();
     },
 
     methods: {
@@ -369,6 +386,10 @@ export default {
             if (this.currentDot < this.dotsNavigation.length) {
                 this.currentDot++;
                 this.setDot(this.currentDot);
+            } else if (this.auto_play) {
+                // Loop back to first slide when auto play is enabled
+                this.currentDot = 1;
+                this.setDot(this.currentDot);
             }
         },
 
@@ -376,6 +397,30 @@ export default {
             if (this.currentDot > 1) {
                 this.currentDot--;
                 this.setDot(this.currentDot);
+            }
+        },
+
+        startAutoPlay() {
+            this.stopAutoPlay(); // Clear any existing timer
+            this.autoPlayTimer = setInterval(() => {
+                this.next();
+            }, this.auto_play_interval * 1000); // Convert seconds to milliseconds
+        },
+
+        stopAutoPlay() {
+            if (this.autoPlayTimer) {
+                clearInterval(this.autoPlayTimer);
+                this.autoPlayTimer = null;
+            }
+        },
+
+        pauseAutoPlay() {
+            this.stopAutoPlay();
+        },
+
+        resumeAutoPlay() {
+            if (this.auto_play) {
+                this.startAutoPlay();
             }
         },
 
@@ -423,6 +468,11 @@ export default {
                 slider.style.marginLeft = -this.dotsNavigation[index - 1] + "px";
             }
             this.currentDot = index;
+            
+            // Reset auto play timer when manually changing slides
+            if (this.auto_play) {
+                this.startAutoPlay();
+            }
         }
     }
 };

@@ -113,7 +113,7 @@
       <li v-for="(column, colIndex) in columns">
 
         <div class="flex items-center p-2 rounded-sm hover:bg-gray-100 dark:hover:bg-gray-600">
-          <input :id="'cb_'+ column.field_name" type="checkbox"  v-model="columnVisibility[column.field_name]" class="w-4 h-4  bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
+          <input :id="'cb_'+ column.field_name" type="checkbox"  v-model="columnVisibility[column.field_name]" class="w-4 h-4 rounded-sm  ">
           <label :for="'cb_'+ column.field_name" class="w-full ms-2 text-sm font-medium text-gray-900 rounded-sm dark:text-gray-300">{{ column.field_name }}</label>
         </div>
 
@@ -208,7 +208,7 @@
               class="print:hidden! text-center rounded-t-lg lg:rounded-t-none! print:!!rounded-t-none text-pretty before:content-[attr(data-label)] before:font-bold lg:before:content-none print:before:content-none! flex flex-col justify-between gap-2 lg:table-cell py-4 px-5 lg:py-3 lg:px-4 print:py-3! print:px-4! border-[1px]! dark:border-gray-700"
               data-label="">
               <input :checked="checkedIds.includes(item.id)" @change="toggleCheck(item.id)" type="checkbox" value=""
-                class="w-4 h-4  bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
+                class="w-4 h-4 rounded-sm" />
             </td>
 
             <td v-for="(column, colIndex) in visibleColumns" :style="column?.style" :key="colIndex"
@@ -255,8 +255,10 @@ import GlButton from "/src/components/GeneralComponents/GlButton.vue";
 import DynamicConfirmation from "/src/components/GeneralComponents/DynamicConfirmation.vue";
 
 import GlToast from "/src/Stores/toast.js";
-import print from "vue3-print-nb";
+//import print from "vue3-print-nb";
 import * as XLSX from 'xlsx';
+
+import print from '/src/print/print.js';
 
 export default {
   components: {
@@ -303,7 +305,7 @@ export default {
       printObj: {
         id: "print_" + randomString,
         popTitle: "",
-        // preview:true,
+        extraHead: '<meta charset="UTF-8">,<meta name="viewport"content="width=device-width">,<meta http-equiv="X-UA-Compatible" content="ie=edge">',
 
         beforeOpenCallback(vue) {
 

@@ -97,15 +97,23 @@ watch(
   <div class=" fixed  h-full w-full overflow-y-auto overflow-x-hidden outline-hidden inset-0 bg-black/80! min-w-full"
     :class="has_large_z_index ? 'z-9999' : 'z-1055'" v-if="is_open" tabindex="-1">
     <div
-      class="pointer-events-none relative  w-auto translate-y-[-50px] transition-all duration-300 ease-in-out min-[576px]:mx-auto mt-7"
+      class="pointer-events-none relative  w-auto  transition-all duration-300 ease-in-out min-[576px]:mx-auto mt-7"
       :class="max_width">
+
       <div
-        class="pointer-events-auto relative flex max-h-[100%] w-full flex-col  text-current shadow-4 outline-hidden bg-white border rounded-lg border-stroke dark:border-strokeDark dark:bg-boxDark">
-        <div class="flex items-center justify-between shrink-0 pt-10 pb-3 pl-3 pr-3 border-b-2 dark:border-gray-600">
+            class="w-full bg-white rounded-[20px] shadow-sm dark:border md:mt-0  p-2 dark:bg-gray-800 dark:border-gray-700">
+
+
+
+      <div
+        class="pointer-events-auto relative flex max-h-[100%] w-full flex-col  text-current shadow-4 outline-hidden bg-white border rounded-xl dark:bg-gray-800 dark:border-gray-700">
+        <div class="flex items-center justify-between shrink-0 pt-3 pb-3 pl-3 pr-3  ">
           <!-- Modal title -->
           <h5 class="text-xl font-medium leading-normal text-surface dark:text-white">
             {{ title }}
           </h5>
+
+
           <!-- Close button -->
           <button type="button"
             class="box-content border-none rounded-none text-neutral-500 hover:text-neutral-800 hover:no-underline focus:text-neutral-800 focus:opacity-100 focus:shadow-none focus:outline-hidden dark:text-neutral-400 dark:hover:text-neutral-300 dark:focus:text-neutral-300"
@@ -154,7 +162,7 @@ watch(
 
         <!-- Modal footer -->
         <div v-show="!isLoadingComputed && !hide_model_footer"
-          class="flex flex-wrap items-center justify-end shrink-0 p-4 border-t-2 rounded-b-md border-neutral-100 dark:border-gray-600 gap-2">
+          class="flex flex-wrap items-center justify-end shrink-0 p-4  rounded-b-md   gap-2">
           <slot name="buttons"></slot>
 
           <button @click="closeModal" type="button"
@@ -162,6 +170,8 @@ watch(
             {{ language?.close ?? "Close" }}
           </button>
         </div>
+      </div>
+
       </div>
     </div>
   </div>

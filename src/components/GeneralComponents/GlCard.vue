@@ -1,9 +1,9 @@
 <template>
   <div class="flex flex-col gap-9" :class="cardClass">
     <div
-      class="bg-white border rounded-lg border-stroke shadow-default dark:border-strokeDark dark:bg-boxDark"
+      class="bg-white border rounded-lg  shadow-default dark:bg-gray-800 dark:border-gray-700"
     >
-      <div class="px-3 py-4 border-b border-stroke dark:border-strokeDark">
+      <div class="px-3 py-4 border-b  dark:border-gray-700">
         <h3 class="font-semibold text-black dark:text-white">
           <slot name="header"></slot>
         </h3>

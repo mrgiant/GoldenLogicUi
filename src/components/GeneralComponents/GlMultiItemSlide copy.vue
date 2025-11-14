@@ -8,6 +8,9 @@
 
 
             <div class="items-center hidden w-2/12 xl:flex xxl:flex md:flex sm:flex arrow_button"
+
+               
+
                 v-if="dotsNum > 0 && !hide_arrow && slider_arrows_indicators_position == 'arrows_outside_slider'">
 
                 <div class="w-full">
@@ -34,10 +37,10 @@
 
 
 
-            <div class="overflow-hidden flex flex-col gap-3" :id="'sliderContainer_' + Random_string" :class="sliderContainerAction()">
+            <div  ref="slotContainer" class="overflow-hidden flex flex-col gap-3" :id="'sliderContainer_' + Random_string" :class="sliderContainerAction()">
 
 
-                <ul class="flex " :id="'slider_' + Random_string" :class="elements_to_show_prop==1?'':'gap-7'">
+                <ul   class="flex duration-700 ease-in-out " :id="'slider_' + Random_string" :class="elements_to_show_prop==1 || this.elementsToShow==1 ?'':'gap-7'">
 
                     <div class="items-center justify-center hidden arrow_button xl:flex xxl:flex md:flex sm:flex"
                         v-if=" dotsNum > 0 && !hide_arrow && slider_arrows_indicators_position == 'arrows_indicators_inside_slider'"  :class="direction_property == 'rtl' ? 'arrow_button_next':'arrow_button_prev'">
@@ -255,6 +258,7 @@ export default {
 
     data() {
         return {
+            mutationObserver: null,
             elementsToShow: this.elements_to_show_prop,
             dotsNum: 0,
             currentDot: 1,
@@ -269,6 +273,7 @@ export default {
 
     mounted() {
         this.$nextTick(() => {
+            this.observeSlotChanges();
             this.initSlider();
             if (!this.disable_touch) {
                 this.movingActions();
@@ -283,7 +288,44 @@ export default {
         window.removeEventListener("resize", this.resizeHandler);
     },
 
+    beforeUnmount() {
+        // Disconnect the observer when the component is destroyed
+        if (this.mutationObserver) {
+            this.mutationObserver.disconnect();
+        }
+    },
+
     methods: {
+
+
+
+        observeSlotChanges() {
+            const slotContent = this.$refs.slotContainer;
+
+          
+
+            if (slotContent) {
+                this.mutationObserver = new MutationObserver((mutations) => {
+                    mutations.forEach((mutation) => {
+                       
+                        this.initSlider();
+                    });
+                });
+
+                // Observe the slot for changes
+                this.mutationObserver.observe(slotContent, {
+                    childList: true,
+                    subtree: true,
+                });
+            }
+        },
+
+
+
+
+
+
+
         resizeHandler() {
             this.initSlider(); // Reinitialize slider on resize
         },
@@ -367,8 +409,8 @@ export default {
             }
 
             slider.style.width = `${cards.length * cardwidth}px`;
-            slider.style.transition = "margin";
-            slider.style.transitionDuration = "1s";
+           // slider.style.transition = "margin";
+            //slider.style.transitionDuration = "700ms";
 
             cards.forEach(card => card.style.width = `${cardwidth}px`);
         },
@@ -423,7 +465,7 @@ export default {
     left: 0;
     bottom: 0;
     z-index: 10;
-    display: flex;
+   /* display: flex; */
     align-items: center;
     justify-content: center;
    /* width: 8%; */
@@ -445,7 +487,7 @@ export default {
     right: 0;
     bottom: 0;
     z-index: 10;
-    display: flex;
+   /* display: flex; */
     align-items: center;
     justify-content: center;
    /* width: 8%; */

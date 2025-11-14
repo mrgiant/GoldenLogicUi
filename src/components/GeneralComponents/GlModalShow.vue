@@ -80,14 +80,22 @@ watch(
     
   >
     <div
-      class="pointer-events-none relative h-[calc(100%-1rem)] w-auto translate-y-[-50px] transition-all duration-300 ease-in-out min-[576px]:mx-auto mt-7 min-[576px]:h-[calc(100%-3.5rem)]"
+      class="pointer-events-none relative h-[calc(100%-1rem)] w-auto  transition-all duration-300 ease-in-out min-[576px]:mx-auto mt-7 min-[576px]:h-[calc(100%-3.5rem)]"
       :class="max_width"
     >
+
+     <div
+            class="w-full bg-white rounded-[20px] shadow-sm dark:border md:mt-0  p-2 dark:bg-gray-800 dark:border-gray-700">
+
+
+
+            
+
       <div
-        class="pointer-events-auto relative flex max-h-[100%] w-full flex-col overflow-hidden text-current shadow-4 outline-hidden bg-white border rounded-lg border-stroke dark:border-strokeDark dark:bg-boxDark"
+        class="pointer-events-auto relative flex max-h-[100%] w-full flex-col overflow-hidden text-current shadow-4 outline-hidden bg-white border rounded-xl dark:bg-gray-800 dark:border-gray-700"
       >
         <div
-          class="flex items-center justify-between shrink-0 pt-10 pb-3 pl-3 pr-3 border-b-2 dark:border-gray-600"
+          class="flex items-center justify-between shrink-0 pt-3 pb-3 pl-3 pr-3 "
         >
           <!-- Modal title -->
           <h5
@@ -186,7 +194,7 @@ watch(
 
         <!-- Modal footer -->
         <div v-show="!is_loading"
-          class="flex flex-wrap items-center justify-end shrink-0 p-4 border-t-2 rounded-b-md border-neutral-100 dark:border-gray-600 gap-2"
+          class="flex flex-wrap items-center justify-end shrink-0 p-4  rounded-b-md  gap-2"
         >
           <slot name="buttons"></slot>
 
@@ -198,6 +206,8 @@ watch(
             {{ language?.close ?? 'Close' }}
           </button>
         </div>
+      </div>
+
       </div>
     </div>
   </div>

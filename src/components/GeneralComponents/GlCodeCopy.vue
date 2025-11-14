@@ -16,6 +16,11 @@ const props = defineProps({
     type: String,
     default: "",
   },
+  isPre: {
+    type: Boolean,
+    default: false,
+  },
+
 });
 
 
@@ -58,7 +63,8 @@ const code_value = computed(() => {
     </div>
     <div class="relative bg-gray-50 rounded-lg dark:bg-gray-700 p-4 h-auto">
       <div class="overflow-auto max-h-32">
-        <code  class="text-sm text-gray-500 dark:text-gray-400">
+        <pre v-if="isPre" class="text-sm text-gray-500 dark:text-gray-400" v-html="code_value"/>
+        <code v-else class="text-sm text-gray-500 dark:text-gray-400">
         {{ code_value }}
         </code>
 
