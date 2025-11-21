@@ -6,9 +6,11 @@
         :disabled="is_disabled"
         v-bind="{ type: is_submit ? 'submit' : undefined }"
         :href="tag === 'a' ? href : undefined"
-        :class="`  ${is_disabled ? 'cursor-not-allowed opacity-50':''}   ${icon ? 'flex':''}    h-[2.5rem]  items-center gap-2 focus:outline-hidden text-sm px-3 py-2   font-medium   ${has_border_reduced ? 'rounded-lg':''}  ${buttonTypeClass} ${classes}`"
+        :class="`  ${is_disabled ? 'cursor-not-allowed opacity-50':''}   ${icon || svg_icon ? 'flex':''}    h-[2.5rem]  items-center gap-2 focus:outline-hidden text-sm px-3 py-2   font-medium   ${has_border_reduced ? 'rounded-lg':''}  ${buttonTypeClass} ${classes}`"
     >
         <i v-if="icon" :class="icon" class="text-base"></i>
+       
+        <span v-else-if="svg_icon" v-html="svg_icon" class="w-4 h-4"></span>
         <slot></slot>
     </component>
 
@@ -63,6 +65,16 @@ export default {
             default: "",
         },
 
+        icon: {
+            type: String,
+            default: "",
+        },
+
+        svg_icon: {
+            type: String,
+            default: "",
+        },
+
         is_loading: {
             type: Boolean,
             default: false,
@@ -96,21 +108,21 @@ export default {
 
             switch (this.button_type) {
                 case "default":
-                    return "text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300        dark:bg-blue-600 dark:hover:bg-blue-700  dark:focus:ring-blue-800";
+                    return "text-white bg-blue-700 hover:bg-blue-800        dark:bg-blue-600 dark:hover:bg-blue-700";
                 case "alternative":
-                    return "      text-gray-900  bg-white  border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700";
+                    return "      text-gray-900  bg-white  border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700";
                 case "dark":
-                    return "text-white bg-gray-800 hover:bg-gray-900  focus:ring-4 focus:ring-gray-300        dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700";
+                    return "text-white bg-gray-800 hover:bg-gray-900        dark:bg-gray-800 dark:hover:bg-gray-700 dark:border-gray-700";
                 case "light":
-                    return "text-gray-900 bg-white border border-gray-300  hover:bg-gray-100 focus:ring-4 focus:ring-gray-100        dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700";
+                    return "text-gray-900 bg-white border border-gray-300  hover:bg-gray-100        dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600";
                 case "green":
-                    return " text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300        dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800";
+                    return " text-white bg-green-700 hover:bg-green-800        dark:bg-green-600 dark:hover:bg-green-700";
                 case "red":
-                    return " text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300        dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900";
+                    return " text-white bg-red-700 hover:bg-red-800        dark:bg-red-600 dark:hover:bg-red-700";
                 case "yellow":
-                    return " text-white bg-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:ring-yellow-300        dark:focus:ring-yellow-900";
+                    return " text-white bg-yellow-400 hover:bg-yellow-500";
                 case "purple":
-                    return " text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300       dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900";
+                    return " text-white bg-purple-700 hover:bg-purple-800       dark:bg-purple-600 dark:hover:bg-purple-700";
                 case "primary":
                     return "text-white gl-btn-primary";
                 default:

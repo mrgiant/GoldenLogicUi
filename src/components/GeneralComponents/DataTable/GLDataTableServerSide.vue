@@ -76,22 +76,31 @@
     </div>
 
     <div class="flex flex-wrap mb-3 gap-1 lg:gap-0!">
-      <gl-button @click="delayedPrint" tag="button" :is_loading="isLoadinPrint" button_type="default"
-        :has_border_reduced="false" classes="rounded-lg lg:rounded-none lg:rounded-s-lg!">
+      <gl-button @click="delayedPrint" tag="button" :is_loading="isLoadinPrint" button_type="light"
+        :has_border_reduced="false" classes="rounded-lg lg:rounded-none lg:rounded-s-lg!"
+        
+        svg_icon='<svg  aria-hidden="true" xmlns="http://www.w3.org/2000/svg"  fill="none" viewBox="0 0 24 24">
+                 <path stroke="currentColor" stroke-linejoin="round" stroke-width="2" d="M16.444 18H19a1 1 0 0 0 1-1v-5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1h2.556M17 11V5a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v6h10ZM7 15h10v4a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1v-4Z"/>
+                 </svg>'
+                >
         {{ language?.print ?? "Print" }}
       </gl-button>
 
 
-      <gl-button @click="exportToExcel" tag="button" button_type="default" :has_border_reduced="false"
-        :classes="!enable_select_deselect_delete ? 'rounded-lg lg:rounded-e-lg!' : 'rounded-lg lg:rounded-none!'">
+      <gl-button @click="exportToExcel" tag="button" button_type="light" :has_border_reduced="false"
+        :classes="!enable_select_deselect_delete ? 'rounded-lg lg:rounded-e-lg!' : 'rounded-lg lg:rounded-none!'"
+        svg_icon='<svg  aria-hidden="true" xmlns="http://www.w3.org/2000/svg"  fill="none" viewBox="0 0 24 24">
+                 <path stroke="currentColor" stroke-linejoin="round" stroke-width="2" d="M10 3v4a1 1 0 0 1-1 1H5m14-4v16a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V7.914a1 1 0 0 1 .293-.707l3.914-3.914A1 1 0 0 1 9.914 3H18a1 1 0 0 1 1 1Z"/>
+                 </svg>
+                  '>
         {{ language?.excel ?? "Excel" }}
       </gl-button>
 
-      <gl-button v-if="enable_select_deselect_delete" @click="toggleSelectAll" tag="button" button_type="default"
+      <gl-button v-if="enable_select_deselect_delete" @click="toggleSelectAll" tag="button" button_type="light"
         :has_border_reduced="false" classes="rounded-lg lg:rounded-none!">
         {{ language?.select_all ?? "Select all" }}
       </gl-button classes="rounded-lg lg:rounded-none!">
-      <gl-button v-if="enable_select_deselect_delete" @click="toggleDeselectAll" tag="button" button_type="default"
+      <gl-button v-if="enable_select_deselect_delete" @click="toggleDeselectAll" tag="button" button_type="light"
         :has_border_reduced="false" classes="rounded-lg lg:rounded-none!">
         {{ language?.deselect_all ?? "Deselect all" }}
       </gl-button>
@@ -101,7 +110,11 @@
 
 
   
-<button v-on:click="toggleColumnVisibilityDropdown"   class="h-[2.5rem] text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium  text-sm px-3 py-2 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 rounded-lg lg:rounded-none!" type="button">Column visibility <svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+<button v-on:click="toggleColumnVisibilityDropdown"   class="h-[2.5rem] text-gray-900 bg-white border border-gray-300  hover:bg-gray-100 focus:ring-4 focus:ring-gray-100        dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700  focus:outline-none  font-medium  text-sm px-3 py-2 text-center inline-flex items-center  rounded-lg lg:rounded-none!" type="button"><svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"  fill="none" viewBox="0 0 24 24">
+  <path stroke="currentColor" stroke-width="2" d="M21 12c0 1.2-4.03 6-9 6s-9-4.8-9-6c0-1.2 4.03-6 9-6s9 4.8 9 6Z"/>
+  <path stroke="currentColor" stroke-width="2" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/>
+</svg>
+Column visibility <svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
 </svg>
 </button>
@@ -131,8 +144,12 @@
 
 
       <gl-button v-if="enable_select_deselect_delete" tag="button" @click="deleteSelected" button_type="red"
-        :has_border_reduced="false" classes="rounded-lg lg:rounded-none lg:rounded-e-lg!">
-        {{ language?.delete_selected ?? "Delete selected" }}
+        :has_border_reduced="false" classes="rounded-lg lg:rounded-none lg:rounded-e-lg!" :is_disabled="checkedIds.length <= 0"
+        
+        svg_icon='<svg  aria-hidden="true" xmlns="http://www.w3.org/2000/svg"  fill="none" viewBox="0 0 24 24">
+                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"/>
+                </svg>'>
+        {{ language?.delete_selected ?? "Delete selected" }} {{ checkedIds.length > 0 ? `(${checkedIds.length})` : "" }}
       </gl-button>
     </div>
 
