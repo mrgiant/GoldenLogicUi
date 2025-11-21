@@ -73,7 +73,7 @@
 
 
 .btn-dark {
-  @apply text-white rounded-md bg-slate-700 hover:bg-slate-900 hover:text-white;
+  @apply text-white rounded-md bg-gray-700 hover:bg-gray-900 hover:text-white;
 }
 
 
@@ -86,7 +86,7 @@
 
 
 .gl-label-form {
-  @apply block mb-2 text-sm font-medium text-slate-900 dark:text-white
+  @apply block mb-2 text-sm font-medium text-gray-900 dark:text-white
 }
 
 
@@ -97,45 +97,45 @@
 
 
 .gl-label-translation-form {
-  @apply text-sm font-medium text-slate-900 dark:text-white
+  @apply text-sm font-medium text-gray-900 dark:text-white
 }
 
 
 
 
 .gl-input-form-invalid {
-  @apply h-10 bg-red-50 border border-red-500 text-red-900 placeholder-red-700 text-sm rounded-lg outline-hidden dark:bg-slate-700 focus:border-red-500 block w-full p-3 dark:text-red-500 dark:placeholder-red-500 dark:border-red-500
+  @apply h-10 bg-red-50 border border-red-500 text-red-900 placeholder-red-700 text-sm rounded-lg outline-hidden dark:bg-gray-800 focus:border-red-500 block w-full p-3 dark:text-red-500 dark:placeholder-red-500 dark:border-red-500
 }
 
 
 .gl-input-form {
-  @apply h-10 bg-slate-50 border text-slate-900 text-sm rounded-lg outline-hidden focus:border-primary block w-full p-3 dark:bg-slate-700 dark:border-slate-600 dark:placeholder-slate-400 dark:text-white dark:focus:border-primaryDark border-slate-200
+  @apply h-10 bg-gray-50 border text-gray-900 text-sm rounded-lg outline-hidden focus:border-primary block w-full p-3 dark:bg-gray-800 dark:border-gray-700 dark:placeholder-gray-400 dark:text-white dark:focus:border-primaryDark border-gray-200
 }
 
 
 
 .gl-input-form-invalid-text {
-  @apply h-10 bg-red-50 border border-red-500 text-red-900 placeholder-red-700 text-sm outline-hidden dark:bg-slate-700 focus:border-red-500 block w-full p-3 dark:text-red-500 dark:placeholder-red-500 dark:border-red-500
+  @apply h-10 bg-red-50 border border-red-500 text-red-900 placeholder-red-700 text-sm outline-hidden dark:bg-gray-800 focus:border-red-500 block w-full p-3 dark:text-red-500 dark:placeholder-red-500 dark:border-red-500
 }
 
 
 .gl-input-form-text {
-  @apply h-10 bg-slate-50 border text-slate-900 text-sm outline-hidden focus:border-primary block w-full p-3 dark:bg-slate-700 dark:border-slate-600 dark:placeholder-slate-400 dark:text-white dark:focus:border-primaryDark border-slate-200
+  @apply h-10 bg-gray-50 border text-gray-900 text-sm outline-hidden focus:border-primary block w-full p-3 dark:bg-gray-800 dark:border-gray-700 dark:placeholder-gray-400 dark:text-white dark:focus:border-primaryDark border-gray-200
 }
 
 
 
 .gl-textarea-form-invalid {
-  @apply bg-red-50 border border-red-500 text-red-900 placeholder-red-700 text-sm outline-hidden rounded-lg dark:bg-slate-700 focus:border-red-500 block w-full p-3 dark:text-red-500 dark:placeholder-red-500 dark:border-red-500
+  @apply bg-red-50 border border-red-500 text-red-900 placeholder-red-700 text-sm outline-hidden rounded-lg dark:bg-gray-800 focus:border-red-500 block w-full p-3 dark:text-red-500 dark:placeholder-red-500 dark:border-red-500
 }
 
 
 .gl-textarea-form {
-  @apply bg-slate-50 border text-slate-900 text-sm rounded-lg outline-hidden focus:border-primary block w-full p-3 dark:bg-slate-700 dark:border-slate-600 dark:placeholder-slate-400 dark:text-white dark:focus:border-primaryDark border-slate-200
+  @apply bg-gray-50 border text-gray-900 text-sm rounded-lg outline-hidden focus:border-primary block w-full p-3 dark:bg-gray-800 dark:border-gray-700 dark:placeholder-gray-400 dark:text-white dark:focus:border-primaryDark border-gray-200
 }
 
 .gl-multi-dropdown {
-  @apply min-h-10 bg-slate-50 border text-slate-900 text-sm rounded-lg outline-hidden focus:border-primary w-full p-2 dark:bg-slate-700 dark:border-slate-600 dark:placeholder-slate-400 dark:text-white dark:focus:border-primaryDark border-slate-200
+  @apply min-h-10 bg-gray-50 border text-gray-900 text-sm rounded-lg outline-hidden focus:border-primary w-full p-2 dark:bg-gray-800 dark:border-gray-700 dark:placeholder-gray-400 dark:text-white dark:focus:border-primaryDark border-gray-200
 }
 
 

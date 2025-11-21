@@ -16,7 +16,7 @@
                 
 
             <a
-               :class="{' bg-gray-50 dark:bg-gray-800  hover:text-gray-900 hover:bg-gray-100  dark:hover:bg-gray-700 dark:hover:text-white border border-gray-300 dark:border-gray-700': selectedTitle != tab.title, 'text-white  bg-primary dark:bg-primaryDark': selectedTitle === tab.title}"
+               :class="{' bg-gray-50 dark:bg-gray-900  hover:text-gray-900 hover:bg-gray-100  dark:hover:bg-gray-800 dark:hover:text-white border border-gray-300 dark:border-gray-800': selectedTitle != tab.title, 'text-white  bg-primary dark:bg-primaryDark': selectedTitle === tab.title}"
               class="block px-5 py-3 text-xs font-bold leading-normal rounded-lg    tabs_buttons"
             >
               <i v-if="tab.icon" :class="tab.icon" class="me-2 text-sm"></i>{{ tab.title }}
@@ -28,7 +28,7 @@
 
     <div
       v-show="selectedTitle"
-      class="relative flex flex-col w-full min-w-0 mb-6 break-words bg-gray-50 rounded-lg  dark:bg-gray-800 "
+      class="relative flex flex-col w-full min-w-0 mb-6 break-words  rounded-[20px]  border border-gray-200 dark:border-gray-800 "
     >
       <div class="flex-auto px-4 py-5">
         <div class="tab-content tab-space">

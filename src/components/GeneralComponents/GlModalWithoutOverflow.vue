@@ -100,12 +100,12 @@ onBeforeUnmount(() => {
     >
 
     <div
-            class="w-full bg-white rounded-[20px] shadow-sm dark:border md:mt-0  p-2 dark:bg-gray-800 dark:border-gray-700">
+            class="w-full bg-white rounded-[20px] shadow-sm dark:border md:mt-0  p-2 dark:bg-gray-900 dark:border-gray-800">
 
 
 
       <div
-        class="relative flex flex-col w-full text-current bg-white border  outline-hidden pointer-events-auto shadow-4 border-stroke rounded-xl dark:bg-gray-800 dark:border-gray-700"
+        class="relative flex flex-col w-full text-current bg-white border  outline-hidden pointer-events-auto shadow-4 border-stroke rounded-xl dark:bg-gray-900 dark:border-gray-800"
       >
         <div
           v-if="has_header"

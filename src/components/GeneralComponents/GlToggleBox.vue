@@ -120,7 +120,7 @@ const proxyValue = computed({
     <div class=" flex justify-between items-center" v-if="has_label_up">
         <label  class="gl-label-form">{{ label_name }}</label>
     </div>
-    <li class="flex justify-between p-2 -mb-px border  rounded-lg no-underlin   bg-slate-50 focus:border-primary  dark:bg-slate-700 dark:border-slate-600  dark:text-white dark:focus:border-primaryDark border-slate-200">
+    <li class="flex justify-between p-2 -mb-px border  rounded-lg no-underlin   bg-gray-50 focus:border-primary  dark:bg-gray-800 dark:border-gray-700  dark:text-white dark:focus:border-primaryDark border-gray-200">
       {{ label_name }}
 
       <label class="relative inline-flex items-center cursor-pointer">

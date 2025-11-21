@@ -74,7 +74,7 @@
           </i>
           <i
             @click.stop="showOptions()"
-            class="absolute text-xl text-gray-500 cursor-pointer ltr:right-2 rtl:left-2 hover:text-gray-700 dark:hover:text-gray-800 showOptions"
+            class="absolute text-xl text-gray-500 cursor-pointer ltr:right-2 rtl:left-2 hover:text-gray-700 dark:hover:text-gray-700 showOptions"
             style="top: 13px"
           >
             <svg
@@ -97,7 +97,7 @@
 
           <!-- Dropdown Menu -->
           <div
-            class="text-gray-700 bg-white dark:border-strokeDark dark:bg-boxDark dark:text-gray-200 border-b! border-t-0! border-r! border-l! absolute w-full z-999999999 rounded-b-lg"
+            class="text-gray-700 bg-white dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 border-b! border-t-0! border-r! border-l! absolute w-full z-999999999 rounded-b-lg"
             v-show="optionsShown"
             
           >
@@ -120,7 +120,7 @@
                   @keydown="handleKeyDown"
                   @blur="exit()"
                   autocomplete="off"
-                  class="block w-full p-2 text-sm text-gray-900 border rounded-lg outline-hidden border-primary  bg-gray-50 focus:border-primary dark:bg-gray-700 dark:border-primaryDark dark:placeholder-primaryDark dark:text-white dark:focus:border-primaryDark"
+                  class="block w-full p-2 text-sm text-gray-900 border rounded-lg outline-hidden border-primary  bg-gray-50 focus:border-primary dark:bg-gray-800 dark:border-primaryDark dark:placeholder-primaryDark dark:text-white dark:focus:border-primaryDark"
                   :placeholder="search_input_placeholder"
                 />
               </div>
@@ -133,12 +133,12 @@
             >
               <div
                 v-if="filteredOptions.length"
-                class="relative px-2 py-2 text-xs leading-4 text-gray-700 no-underline cursor-pointer dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                class="relative px-2 py-2 text-xs leading-4 text-gray-700 no-underline cursor-pointer dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white"
                 @click="selectOption(option)"
                 @mousedown="selectOption(option)"
                 v-for="(option, index) in filteredOptions"
                 :class="
-                  index + 1 == count ? 'bg-gray-100 dark:bg-gray-600' : ''
+                  index + 1 == count ? 'bg-gray-100 dark:bg-gray-700' : ''
                 "
                 :key="index"
                 :id="`${index + 1}${uuid}`"

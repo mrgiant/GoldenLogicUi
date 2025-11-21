@@ -1,53 +1,36 @@
 <template>
-  <div class="p-2">
-    <div
-      class="flex flex-col flex-wrap pb-4 space-y-4 xl:flex-row xl:items-center xl:justify-between sm:space-y-0"
-    >
+  <div class="p-0">
+   <div class="flex flex-col flex-wrap gap-4 pb-4 xl:flex-row xl:items-center xl:justify-between">
       <div class="flex items-center gap-2">
-        <span class="font-medium"> Show </span>
+        <span class="font-medium"> {{ language?.show ?? "Show" }} </span>
 
-        <div style="margin-top: 9px">
-          <dropdown
-            :options_top_size="0"
-            :has_cancel="false"
-            :options="pageOptions"
-            v-model="perPage"
-            :is_required="false"
-            field_name="perPage"
-            label_name=""
-            :default_value="5"
-            :show="false"
-            placeholder="Please select an option"
-          >
+        <div class="mt-[3px]">
+          <dropdown :options_top_size="0" :has_cancel="false" :options="pageOptions" v-model="perPage"
+            :is_required="false" field_name="perPage" label_name="" :default_value="5" :show="false"
+            placeholder="Please select an option">
           </dropdown>
         </div>
 
-        <span class="font-medium"> Entries </span>
+        <span class="font-medium"> {{ language?.entries ?? "Entries" }} </span>
       </div>
 
       <label for="table-search" class="sr-only">Search</label>
       <div class="relative">
-        <div
-          class="absolute inset-y-0 left-0 flex items-center pointer-events-none rtl:inset-r-0 rtl:right-0 ps-3"
-        >
-         
+        <div class="absolute inset-y-0 left-0 flex items-center pointer-events-none rtl:inset-r-0 rtl:right-0 ps-3">
         </div>
-        <input
-          type="text"
-          v-model="search"
-          @input="handleSearch()"
-          class="block w-full p-2 text-sm text-gray-900 border border-gray-300 rounded-lg  bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-          placeholder="Search ..."
-        />
+        <input type="text" v-model="search" @input="handleSearch()"
+          class="gl-input-form"
+          :placeholder="language?.search ? language?.search + ' ...' : 'Search ...'
+            " />
       </div>
     </div>
 
     <div class="overflow-auto rounded-lg dark:text-gray-400 dark:bg-gray-800">
       <table
-        class="w-full h-full max-w-full overflow-hidden bg-white border-separate xl:overflow-auto lg:border-collapse border-spacing-y-3 lg:border-spacing-y-0 dark:border-strokeDark dark:bg-boxDark"
+        class="w-full h-full max-w-full overflow-hidden bg-white border-separate xl:overflow-auto lg:border-collapse print:border-collapse! border-spacing-y-5 lg:border-spacing-y-0 print:border-spacing-y-0! dark:border-gray-800 dark:bg-gray-900"
       >
         <thead
-          class="hidden text-sm font-normal text-center text-gray-500 lg:table-header-group dark:border-strokeDark bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
+          class="hidden text-sm font-normal text-center text-gray-600 print:table-header-group! lg:table-header-group dark:border-gray-600 bg-gray-50 dark:bg-gray-800 dark:text-gray-400 print:border-[1px]!"
         >
           <tr>
             <th
@@ -64,7 +47,7 @@
             </th>
           </tr>
         </thead>
-        <tbody>
+        <tbody class="bg-white dark:bg-gray-900">
           <tr v-if="isLoading">
             <td :colspan="columns.length">
               <div
@@ -145,7 +128,7 @@
           <template  v-for="(items, group) in groupedItems"  v-if="!isLoading">
 
 
-            <tr class="text-gray-500 bg-white dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 dark:hover:text-gray-200"><td :colspan="columns.length" class="text-pretty before:content-[attr(data-label)] before:font-bold lg:before:content-none flex md:flex-row flex-col justify-between gap-2 lg:table-cell py-4 px-5 lg:py-3 lg:px-4 border dark:border-gray-700"> {{  group  }} </td></tr>
+            <tr class="text-gray-500   dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-200"><td :colspan="columns.length" class="text-pretty before:content-[attr(data-label)] before:font-bold lg:before:content-none flex md:flex-row flex-col justify-between gap-2 lg:table-cell py-4 px-5 lg:py-3 lg:px-4 border dark:border-gray-700"> {{  group  }} </td></tr>
 
 
 
@@ -155,7 +138,7 @@
            
             v-for="(item, index) in items" :key="index"
           
-            class="text-gray-500 bg-white dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 dark:hover:text-gray-200"
+            class="text-gray-500  dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-200"
           >
             <td
               v-for="(column, colIndex) in columns"

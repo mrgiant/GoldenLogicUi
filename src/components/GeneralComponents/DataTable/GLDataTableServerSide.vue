@@ -6,7 +6,7 @@
       <div class="flex items-center gap-2">
         <span class="font-medium"> {{ language?.show ?? "Show" }} </span>
 
-        <div style="margin-top: 3px">
+        <div class="mt-[3px]">
           <dropdown :options_top_size="0" :has_cancel="false" :options="pageOptions" v-model="perPage"
             :is_required="false" field_name="perPage" label_name="" :default_value="5" :show="false"
             placeholder="Please select an option">
@@ -21,7 +21,7 @@
         <div class="absolute inset-y-0 left-0 flex items-center pointer-events-none rtl:inset-r-0 rtl:right-0 ps-3">
         </div>
         <input type="text" v-model="search" @input="handleSearch()"
-          class="block w-full p-2 text-sm text-gray-900 border border-gray-300 rounded-lg  bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+          class="gl-input-form"
           :placeholder="language?.search ? language?.search + ' ...' : 'Search ...'
             " />
       </div>
@@ -138,9 +138,9 @@
 
     <div :id="'print_' + Random_string" class="overflow-auto rounded-lg dark:text-gray-400 dark:bg-gray-800">
       <table :id="'table' + Random_string"
-        class="w-full h-full max-w-full overflow-hidden bg-white border-separate xl:overflow-auto lg:border-collapse print:border-collapse! border-spacing-y-5 lg:border-spacing-y-0 print:border-spacing-y-0! dark:border-strokeDark dark:bg-boxDark">
+        class="w-full h-full max-w-full overflow-hidden bg-white border-separate xl:overflow-auto lg:border-collapse print:border-collapse! border-spacing-y-5 lg:border-spacing-y-0 print:border-spacing-y-0! dark:border-gray-800 dark:bg-gray-900">
         <thead
-          class="hidden text-sm font-normal text-center text-gray-500 print:table-header-group! lg:table-header-group dark:border-strokeDark bg-gray-50 dark:bg-gray-700 dark:text-gray-400 print:border-[1px]!">
+          class="hidden text-sm font-normal text-center text-gray-600 print:table-header-group! lg:table-header-group dark:border-gray-600 bg-gray-50 dark:bg-gray-800 dark:text-gray-400 print:border-[1px]!">
           <tr>
             <th v-if="enable_select_deselect_delete" class="w-full px-4 py-2 lg:w-[3%]! print:hidden!"></th>
 
@@ -155,7 +155,7 @@
             </th>
           </tr>
         </thead>
-        <tbody>
+        <tbody class="bg-white dark:bg-gray-900">
           <tr v-if="isLoading">
             <td :colspan="columns.length + (enable_select_deselect_delete ? 1 : 0)">
               <div role="status"
@@ -201,11 +201,12 @@
           </tr>
 
           <tr v-if="!isLoading" v-for="(item, index) in itemLists.data" :key="index"
-            class="text-gray-500 bg-white dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 dark:hover:text-gray-200">
+            class="text-gray-500   dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-200">
             <!-- remove  md:flex-row from  below td to be the text below lable if want in line add it -->
 
+           
             <td v-if="enable_select_deselect_delete"
-              class="print:hidden! text-center rounded-t-lg lg:rounded-t-none! print:!!rounded-t-none text-pretty before:content-[attr(data-label)] before:font-bold lg:before:content-none print:before:content-none! flex flex-col justify-between gap-2 lg:table-cell py-4 px-5 lg:py-3 lg:px-4 print:py-3! print:px-4! border-[1px]! dark:border-gray-700"
+              class="print:hidden! text-center rounded-t-lg lg:rounded-t-none! print:rounded-t-none! text-pretty before:content-[attr(data-label)] before:font-bold dark:before:text-gray-400 lg:before:content-[''] print:before:content-['']! flex flex-col justify-between gap-2 lg:table-cell py-4 px-5 lg:py-3 lg:px-4 print:py-3! print:px-4! border-[1px]! dark:border-gray-700"
               data-label="">
               <input :checked="checkedIds.includes(item.id)" @change="toggleCheck(item.id)" type="checkbox" value=""
                 class="w-4 h-4 rounded-sm" />

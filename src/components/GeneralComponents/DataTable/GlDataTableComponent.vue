@@ -1,12 +1,13 @@
 <template>
-  <div class="p-2">
+  <div class="p-0">
+     <button ref="hiddenPrintBtn" v-print="printObj" style="display: none"></button>
     <div
-      class="flex flex-wrap pb-4 space-y-4 md:items-center md:justify-between flex-column sm:flex-row sm:space-y-0"
+      class="flex flex-col flex-wrap gap-4 pb-4 xl:flex-row xl:items-center xl:justify-between"
     >
       <div class="flex items-center gap-2">
         <span class="font-medium"> Show </span>
 
-        <div style="margin-top: 9px">
+        <div class="mt-[9px]">
           <dropdown
             :has_cancel="false"
             :options="showNoOfEntries"
@@ -34,25 +35,40 @@
         <input
           type="text"
           v-model="search"
-          class="block p-2 text-sm text-gray-900 border border-gray-300 rounded-lg  w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+          class="gl-input-form"
           placeholder="Search ..."
         />
       </div>
     </div>
 
-    <div class="overflow-auto rounded-lg dark:text-gray-400 dark:bg-gray-800">
-      <table
-        class="w-full h-full max-w-full overflow-hidden bg-white border-separate xl:overflow-auto lg:border-collapse border-spacing-y-5 lg:border-spacing-y-0 dark:border-strokeDark dark:bg-boxDark"
+
+    <div class="flex flex-wrap mb-3">
+      <gl-button @click="delayedPrint" tag="button" :is_loading="isLoadinPrint" button_type="default"
+        :has_border_reduced="false" classes="rounded-s-lg">
+        {{ language?.print ?? "Print" }}
+      </gl-button>
+
+
+      <gl-button @click="exportToExcel" tag="button" button_type="default" :has_border_reduced="false"
+        classes="rounded-e-lg">
+        {{ language?.excel ?? "Excel" }}
+      </gl-button>
+
+      </div>
+
+    <div :id="'print_' + Random_string" class="overflow-auto rounded-lg dark:text-gray-400 dark:bg-gray-800">
+      <table :id="'table' + Random_string"
+        class="w-full h-full max-w-full overflow-hidden bg-white border-separate xl:overflow-auto lg:border-collapse print:border-collapse! border-spacing-y-5 lg:border-spacing-y-0 print:border-spacing-y-0! dark:border-gray-800 dark:bg-gray-900"
       >
         <thead
-          class="hidden text-sm font-normal text-center text-gray-500 lg:table-header-group dark:border-strokeDark bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
+          class="hidden text-sm font-normal text-center text-gray-600 print:table-header-group! lg:table-header-group dark:border-gray-600 bg-gray-50 dark:bg-gray-800 dark:text-gray-400 print:border-[1px]!"
         >
           <tr>
             <th
               v-for="(column, index) in columns"
               :key="index"
               @click="sort(column.field_name, column.sortable)"
-              class="w-full px-4 py-2 lg:w-2/12"
+              class="w-full px-4 py-2 lg:w-2/12 print:w-2/12! print:border-[1px]!"
             >
               {{ column.field_label }}
               <span v-if="sortKey === column.field_name" class="ml-2">
@@ -62,7 +78,7 @@
             </th>
           </tr>
         </thead>
-        <tbody>
+        <tbody class="bg-white dark:bg-gray-900">
           <tr v-if="isLoading">
             <td :colspan="columns.length">
               <div
@@ -143,7 +159,7 @@
             v-if="!isLoading"
             v-for="(item, index) in paginatedData"
             :key="index"
-            class="bg-white dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 dark:hover:text-gray-200 text-gray-500"
+            class="text-gray-500   dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-200"
           >
 
           <!-- remove  md:flex-row from  below td to be the text below lable if want in line add it -->
@@ -151,13 +167,14 @@
               v-for="(column, colIndex) in columns"
               :key="colIndex"
               :data-label="column.field_label"
-              class="text-pretty before:content-[attr(data-label)] before:font-bold lg:before:content-none flex flex-col justify-between gap-2 lg:table-cell py-4 px-5 lg:py-3 lg:px-4 border-[1px]! dark:border-gray-700"
+              class="text-pretty  before:content-[attr(data-label)] before:font-bold dark:before:text-gray-400 lg:before:content-[''] print:before:content-['']! flex flex-col justify-between gap-2 lg:table-cell print:table-cell! py-4 px-5 lg:py-3 lg:px-4 print:py-3! print:px-4! border-[1px]! dark:border-gray-700"
 
               :class="{
-          
-          'rounded-t-lg lg:rounded-t-none': colIndex === 0,
-          'rounded-b-lg lg:rounded-b-none': colIndex === columns.length - 1
-        }"
+                 'rounded-t-lg lg:rounded-t-none!': colIndex === 0,
+                'rounded-b-lg lg:rounded-b-none!':
+                  colIndex === columns.length - 1,
+
+              }"
             >
               <div class="overflow-auto max-h-40">
                 <component
@@ -173,7 +190,8 @@
                 >
                 </component>
                 <template v-else>
-                  {{ item[column.field_name] }}
+                  <p class="text-pretty" v-html="item[column.field_name]"></p>
+                 
                 </template>
               </div>
             </td>
@@ -305,6 +323,8 @@
 </template>
 
 <script>
+import print from "vue3-print-nb";
+import * as XLSX from 'xlsx';
 export default {
   components: {},
   props: {
@@ -312,14 +332,48 @@ export default {
     columns: Array,
     get_item_url: String,
     xprops: Object,
+    language: {
+      type: Object,
+      required: false,
+      default: () => { },
+    },
     
   },
   data() {
+     const randomString = this.generateRandomString(6);
     return {
+
+      isLoadinPrint: false,
+      Random_string: randomString,
+      printObj: {
+        id: "print_" + randomString,
+        popTitle: "",
+        // preview:true,
+
+        beforeOpenCallback(vue) {
+
+
+        },
+        openCallback(vue) {
+
+          vue.isLoadinPrint = false;
+
+
+        },
+        closeCallback(vue) {
+
+         
+         
+
+          vue.isLoadinPrint = false;
+
+        }
+      },
+
       isLoading: false,
       itemLists:[],
       data:[],
-      showNoOfEntries: [1, 2, 3, 10, 20, 30, 40],
+      showNoOfEntries: [5, 10, 20, 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000,11000,12000,13000,14000,15000,16000,17000,18000,19000,20000],
       search: "",
       
 
@@ -334,16 +388,23 @@ export default {
   emits: ['editAction','generalAction','deleteAction'],
 
   computed: {
-    filteredData() {
+   filteredData() {
       const searchTerm = this.search.toLowerCase();
       const sortedData = this.sortData(this.itemLists);
+      
+      if (!searchTerm) {
+        return sortedData;
+      }
+      
       return sortedData.filter((item) => {
-        return Object.values(item).some(
-          (value) =>
+        return this.columns.some((column) => {
+          const value = item[column.field_name];
+          return (
             value !== null &&
             value !== undefined &&
-            value.toString().toLowerCase().includes(searchTerm)
-        );
+            String(value).toLowerCase().includes(searchTerm)
+          );
+        });
       });
     },
     totalPages() {
@@ -383,6 +444,87 @@ export default {
     },
   },
   methods: {
+
+
+
+     exportToExcel() {
+      // Get the table element
+      const table = document.querySelector('#table' + this.Random_string);
+
+      // Get the headers from <thead>
+      const headers = Array.from(table.querySelectorAll('thead th'))
+        .map((th) => th.innerText);
+
+      // Define a list of headers to exclude (e.g., "Name", "City", etc.)
+      const headersToExclude = ['action']; // Add the headers you want to exclude
+
+      // Exclude the first column (header + its data)
+      const headersToExcludeWithFirstColumn = ['', ...headersToExclude];
+
+      // Find the indices of columns to exclude based on header names
+      const excludeIndices = headers
+        .map((header, index) => (headersToExcludeWithFirstColumn.includes(header) ? index : -1))
+        .filter((index) => index !== -1);
+
+      // Get the rows from <tbody>
+      const rows = Array.from(table.querySelectorAll('tbody tr')).map((tr) => {
+        const cells = Array.from(tr.querySelectorAll('td'))
+          .map((td) => td.innerText); // Keep the cell value as is, without modifying it
+
+        // Remove the cells that correspond to the excluded columns
+        return cells.filter((_, index) => !excludeIndices.includes(index));
+      });
+
+      // Remove the excluded headers from the header array
+      const filteredHeaders = headers.filter((_, index) => !excludeIndices.includes(index));
+
+      // Combine the filtered headers and rows into one array
+      const data = [filteredHeaders, ...rows];
+
+      // Convert the array into a worksheet
+      const ws = XLSX.utils.aoa_to_sheet(data);
+
+      // Create a new workbook and append the worksheet
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+
+      // Set the file name for the export
+      const fileName = 'exported-file.xlsx';
+
+      // Trigger the download of the Excel file
+      XLSX.writeFile(wb, fileName);
+
+    },
+
+    generateRandomString(stringLength) {
+      let result = "";
+      const alphaNumericCharacters =
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+      const alphabetsLength = alphaNumericCharacters.length;
+      for (let i = 0; i < stringLength; i++) {
+        result += alphaNumericCharacters.charAt(
+          Math.floor(Math.random() * alphabetsLength)
+        );
+      }
+      return result;
+    },
+
+
+     delayedPrint() {
+
+     
+
+
+      this.isLoadinPrint = true;
+
+      this.$nextTick(() => {
+        this.$refs.hiddenPrintBtn?.click();
+        this.isLoadinPrint = false;
+      });
+
+
+
+    },
 
 
     editAction(data) {
@@ -489,5 +631,34 @@ export default {
     this.GetItemLists();
    
   },
+  directives: {
+    print,
+  },
 };
 </script>
+
+<style scoped>
+@media print {
+  @page {
+    size: A4 landscape;
+
+  }
+
+
+
+
+
+  table tr {
+    page-break-inside: avoid;
+  }
+
+  table tr td {
+    page-break-inside: avoid;
+  }
+
+  .td_overflow_auto {
+    overflow: visible !important;
+    max-height: none !important;
+  }
+}
+</style>

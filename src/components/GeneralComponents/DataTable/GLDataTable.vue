@@ -8,7 +8,7 @@
       <div class="flex items-center gap-2">
         <span class="font-medium"> Show </span>
 
-        <div style="margin-top: 9px">
+        <div class="mt-[9px]">
           <dropdown
             :has_cancel="false"
             :options="showNoOfEntries"
@@ -36,7 +36,7 @@
         <input
           type="text"
           v-model="search"
-          class="w-full block p-2 text-sm text-gray-900 border border-gray-300 rounded-lg   bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+          class="gl-input-form"
           placeholder="Search ..."
         />
       </div>
@@ -59,10 +59,10 @@
 
     <div :id="'print_' + Random_string" class="overflow-auto rounded-lg dark:text-gray-400 dark:bg-gray-800">
       <table :id="'table' + Random_string"
-        class="w-full h-full max-w-full overflow-hidden bg-white border-separate xl:overflow-auto lg:border-collapse print:border-collapse! border-spacing-y-5 lg:border-spacing-y-0 print:border-spacing-y-0! dark:border-strokeDark dark:bg-boxDark"
+        class="w-full h-full max-w-full overflow-hidden bg-white border-separate xl:overflow-auto lg:border-collapse print:border-collapse! border-spacing-y-5 lg:border-spacing-y-0 print:border-spacing-y-0! dark:border-gray-800 dark:bg-gray-900"
       >
         <thead
-          class="hidden text-sm font-normal text-center text-gray-500 print:table-header-group! lg:table-header-group dark:border-strokeDark bg-gray-50 dark:bg-gray-700 dark:text-gray-400 print:border-[1px]!"
+          class="hidden text-sm font-normal text-center text-gray-600 print:table-header-group! lg:table-header-group dark:border-gray-600 bg-gray-50 dark:bg-gray-800 dark:text-gray-400 print:border-[1px]!"
         >
           <tr>
             <th
@@ -82,19 +82,19 @@
             </th>
           </tr>
         </thead>
-        <tbody>
+        <tbody class="bg-white dark:bg-gray-900">
           <tr
             v-for="(item, index) in paginatedData"
             :key="index"
-            class="text-gray-500 bg-white dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 dark:hover:text-gray-200"
+            class="text-gray-500   dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-200"
           >
             <td
               v-for="(column, colIndex) in columns"
               :key="colIndex"
               :data-label="column"
-              class="text-pretty before:content-[attr(data-label)] before:font-bold lg:before:content-none print:before:content-none! flex flex-col justify-between gap-2 lg:table-cell print:table-cell! py-4 px-5 lg:py-3 lg:px-4 print:py-3! print:px-4! border-[1px]! dark:border-gray-700"
+              class="text-pretty before:content-[attr(data-label)] before:font-bold dark:before:text-gray-400 lg:before:content-[''] print:before:content-['']! flex flex-col justify-between gap-2 lg:table-cell print:table-cell! py-4 px-5 lg:py-3 lg:px-4 print:py-3! print:px-4! border-[1px]! dark:border-gray-700"
               :class="{
-                /* 'rounded-t-lg lg:rounded-t-none': colIndex === 0,*/
+                'rounded-t-lg lg:rounded-t-none!': colIndex === 0,
                 'rounded-b-lg lg:rounded-b-none!':
                   colIndex === columns.length - 1,
 

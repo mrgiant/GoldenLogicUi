@@ -101,12 +101,12 @@ watch(
       :class="max_width">
 
       <div
-            class="w-full bg-white rounded-[20px] shadow-sm dark:border md:mt-0  p-2 dark:bg-gray-800 dark:border-gray-700">
+            class="w-full bg-white rounded-[20px] shadow-sm dark:border md:mt-0  p-2 dark:bg-gray-900 dark:border-gray-800">
 
 
 
       <div
-        class="pointer-events-auto relative flex max-h-[100%] w-full flex-col  text-current shadow-4 outline-hidden bg-white border rounded-xl dark:bg-gray-800 dark:border-gray-700">
+        class="pointer-events-auto relative flex max-h-[100%] w-full flex-col  text-current shadow-4 outline-hidden bg-white border rounded-xl dark:bg-gray-900 dark:border-gray-800">
         <div class="flex items-center justify-between shrink-0 pt-3 pb-3 pl-3 pr-3  ">
           <!-- Modal title -->
           <h5 class="text-xl font-medium leading-normal text-surface dark:text-white">
