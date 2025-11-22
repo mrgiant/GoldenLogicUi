@@ -110,7 +110,7 @@
 
 
   
-<button v-on:click="toggleColumnVisibilityDropdown"   class="h-[2.5rem] text-gray-900 bg-white border border-gray-300  hover:bg-gray-100 focus:ring-4 focus:ring-gray-100        dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700  focus:outline-none  font-medium  text-sm px-3 py-2 text-center inline-flex items-center  rounded-lg lg:rounded-none!" type="button"><svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"  fill="none" viewBox="0 0 24 24">
+<button v-on:click="toggleColumnVisibilityDropdown"   class="h-[2.5rem] text-gray-900 bg-white border border-gray-300  hover:bg-gray-100 focus:ring-4 focus:ring-gray-100        dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700  focus:outline-none  font-medium  text-sm px-3 py-2 text-center inline-flex items-center  rounded-lg lg:rounded-none!" type="button"><svg class="w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"  fill="none" viewBox="0 0 24 24">
   <path stroke="currentColor" stroke-width="2" d="M21 12c0 1.2-4.03 6-9 6s-9-4.8-9-6c0-1.2 4.03-6 9-6s9 4.8 9 6Z"/>
   <path stroke="currentColor" stroke-width="2" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/>
 </svg>
