@@ -164,11 +164,15 @@ Column visibility <svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http:/
             <th v-for="(column, index) in visibleColumns" :key="index"
               @click="updateSortColumn(column.field_name, column.sortable)"
               class="w-full px-4 py-2 lg:w-2/12 print:w-2/12! print:border-[1px]!">
-              {{ column.field_label }}
-              <span v-if="sortField === column.field_name" class="ml-2 print:hidden!">
-                <i v-if="sortOrder === 'asc'" class="fa fa-arrow-up"></i>
-                <i v-else class="fa fa-arrow-down"></i>
+              <div class="inline-flex items-center justify-center gap-1">
+              <span>{{ column.field_label }}</span>
+              <span v-if="sortField === column.field_name" class="print:hidden!">
+                 <svg class="w-4 h-4"  aria-hidden="true" xmlns="http://www.w3.org/2000/svg"  fill="none" viewBox="0 0 24 24">
+                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 20V7m0 13-4-4m4 4 4-4m4-12v13m0-13 4 4m-4-4-4 4"/>
+                 </svg>
+
               </span>
+              </div>
             </th>
           </tr>
         </thead>
@@ -176,7 +180,7 @@ Column visibility <svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http:/
           <tr v-if="isLoading">
             <td :colspan="columns.length + (enable_select_deselect_delete ? 1 : 0)">
               <div role="status"
-                class="p-4 space-y-4 border border-gray-200 divide-y divide-gray-200 rounded-sm shadow-sm animate-pulse dark:divide-gray-700 md:p-6 dark:border-gray-700">
+                class=" w-full p-4 space-y-4 border border-gray-200 divide-y divide-gray-200 rounded-sm shadow-sm animate-pulse dark:divide-gray-700 md:p-6 dark:border-gray-700">
                 <div class="flex items-center justify-between">
                   <div>
                     <div class="w-24 h-3 mb-3 bg-gray-300 rounded-full dark:bg-gray-600"></div>
@@ -240,7 +244,7 @@ Column visibility <svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http:/
               }">
               <div :class="column.field_name === 'action'
                 ? ''
-                : 'overflow-auto'" class=" td_overflow_auto max-h-40">
+                : 'overflow-auto'" class=" td_overflow_auto max-h-40 max-w-100">
                 <component v-if="column.tdComp" :language="language" :is="forDynCompIs(column.tdComp)" :row="item"
                   :field="column.field_name" :xprops="xprops" :tdProps="column.tdProps" @deleteAction="GetItemLists()"
                   @editAction="editAction(item)" @generalAction="generalAction(item)">

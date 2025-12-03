@@ -70,11 +70,18 @@
               @click="sort(column.field_name, column.sortable)"
               class="w-full px-4 py-2 lg:w-2/12 print:w-2/12! print:border-[1px]!"
             >
-              {{ column.field_label }}
-              <span v-if="sortKey === column.field_name" class="ml-2">
-                <i v-if="sortOrder === 1" class="fa fa-arrow-up"></i>
-                <i v-else class="fa fa-arrow-down"></i>
+
+
+            <div class="inline-flex items-center justify-center gap-1">
+              <span>{{ column.field_label }}</span>
+              <span v-if="sortKey === column.field_name" class="print:hidden!">
+                 <svg class="w-4 h-4"  aria-hidden="true" xmlns="http://www.w3.org/2000/svg"  fill="none" viewBox="0 0 24 24">
+                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 20V7m0 13-4-4m4 4 4-4m4-12v13m0-13 4 4m-4-4-4 4"/>
+                 </svg>
+
               </span>
+              </div>
+
             </th>
           </tr>
         </thead>
@@ -176,7 +183,10 @@
 
               }"
             >
-              <div class="overflow-auto max-h-40">
+             <div :class="column.field_name === 'action'
+                ? ''
+                : 'overflow-auto'" class=" td_overflow_auto max-h-40 max-w-100">
+             
                 <component
                   v-if="column.tdComp"
                   :is="forDynCompIs(column.tdComp)"
@@ -184,7 +194,6 @@
                   :field="column.field_name"
                   :xprops="xprops"
                   :tdProps="column.tdProps"
-                  @deleteAction="GetItemLists()"
                   @editAction="editAction(item)"
                   @generalAction="generalAction(item)"
                 >
@@ -371,8 +380,8 @@ export default {
       },
 
       isLoading: false,
-      itemLists:[],
-      data:[],
+     
+     // data:[],
       showNoOfEntries: [5, 10, 20, 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000,11000,12000,13000,14000,15000,16000,17000,18000,19000,20000],
       search: "",
       
@@ -388,6 +397,14 @@ export default {
   emits: ['editAction','generalAction','deleteAction'],
 
   computed: {
+
+
+     itemLists() {
+      return this.data;
+    },
+
+
+
    filteredData() {
       const searchTerm = this.search.toLowerCase();
       const sortedData = this.sortData(this.itemLists);
@@ -628,7 +645,9 @@ export default {
 
   },
   mounted() {
-    this.GetItemLists();
+   // this.GetItemLists();
+
+   
    
   },
   directives: {

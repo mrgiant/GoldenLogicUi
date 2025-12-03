@@ -71,14 +71,17 @@
               v-on:click.prevent="sort(column)"
               class="w-full px-4 py-2 lg:w-2/12 print:w-2/12! print:border-[1px]!"
             >
-              {{ column }}
 
-            
+            <div class="inline-flex items-center justify-center gap-1">
+              <span>{{ column }}</span>
+              <span v-if="sortKey === column" class="print:hidden!">
+                 <svg class="w-4 h-4"  aria-hidden="true" xmlns="http://www.w3.org/2000/svg"  fill="none" viewBox="0 0 24 24">
+                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 20V7m0 13-4-4m4 4 4-4m4-12v13m0-13 4 4m-4-4-4 4"/>
+                 </svg>
 
-              <span v-if="sortKey === column" class="ml-2">
-                <i v-if="sortOrder === 1" class="fa fa-arrow-up"></i>
-                <i v-else class="fa fa-arrow-down"></i>
               </span>
+              </div>
+              
             </th>
           </tr>
         </thead>

@@ -91,11 +91,11 @@
           <i
              @click.stop="showOptions()"
             class="absolute text-xl text-gray-500 cursor-pointer fas ltr:right-2 rtl:left-2 hover:text-gray-700 dark:hover:text-gray-800 showOptions"
-            style="top: 13px"
+            style="top: 14px"
           >
             <svg
               :class="optionsShown ? '' : 'rotate-180'"
-              class="w-4 h-4 shrink-0"
+              class="w-3 h-3 shrink-0"
               aria-hidden="true"
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -114,11 +114,11 @@
           <!-- Dropdown Menu -->
 
           <div
-            class="text-gray-700 bg-white dark:border-strokeDark dark:bg-boxDark dark:text-gray-200 border-b! border-t-0! border-r! border-l! absolute w-full z-999999999 showOptions rounded-b-lg"
+            class="text-gray-700 bg-white border dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200  absolute w-full z-999999999 rounded-md mt-1 pt-1 showOptions"
             v-show="optionsShown"
            
           >
-            <div class="p-1">
+            <div class="border-b border-gray-200 dark:border-gray-700">
               <label
                 for="default-search"
                 class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
@@ -138,27 +138,54 @@
                   @keydown="handleKeyDown"
                   @blur="exit()"
                   autocomplete="off"
-                  class="block w-full p-2 text-sm text-gray-900 border border-gray-300 rounded-lg  bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  class="block w-full p-2 text-sm text-gray-900   outline-hidden     dark:bg-gray-800   dark:text-white"
                   :placeholder="search_input_placeholder"
                 />
               </div>
             </div>
 
-            <div class="overflow-y-auto max-h-64">
+            <div class="overflow-y-auto max-h-64 px-1 py-1">
               <div
-                class="block px-2 py-2 text-xs leading-4 text-gray-700 no-underline cursor-pointer dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                class="block px-2 py-0.5 text-xs leading-4 text-gray-700 no-underline cursor-pointer dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white hover:rounded-sm"
                 @click="selectOption(option)"
                 @mousedown="selectOption(option)"
                 v-for="(option, index) in filteredOptions"
                 :class="
-                  index + 1 == count || isOptionSelected(option.id)
-                    ? 'bg-gray-100 dark:bg-gray-600'
+                  index + 1 == count
+                    ? 'bg-gray-100 dark:bg-gray-700 rounded-sm'
                     : ''
                 "
                 :key="index"
                 :id="`${index + 1}${uuid}`"
               >
-                {{ option.name || option.id || "-" }}
+
+
+
+              <div class="flex items-center py-2  pr-4">
+                  <svg
+                    v-if="isOptionSelected(option.id)"
+                    class="absolute flex items-center shrink-0 w-4 h-4 text-green-500 ltr:right-2 rtl:left-2 dark:text-green-400"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 16 12"
+                  >
+                    <path
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M1 5.917 5.724 10.5 15 1.5"
+                    />
+                  </svg>
+
+                  <span v-html="option.name || option.id || '-'"> </span>
+                </div>
+
+
+
+
+                
               </div>
             </div>
           </div>

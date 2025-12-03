@@ -75,11 +75,11 @@
           <i
             @click.stop="showOptions()"
             class="absolute text-xl text-gray-500 cursor-pointer ltr:right-2 rtl:left-2 hover:text-gray-700 dark:hover:text-gray-700 showOptions"
-            style="top: 13px"
+            style="top: 14px"
           >
             <svg
               :class="optionsShown ? '' : 'rotate-180'"
-              class="w-4 h-4 shrink-0"
+              class="w-3 h-3 shrink-0"
               aria-hidden="true"
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -97,11 +97,11 @@
 
           <!-- Dropdown Menu -->
           <div
-            class="text-gray-700 bg-white dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 border-b! border-t-0! border-r! border-l! absolute w-full z-999999999 rounded-b-lg"
+            class="text-gray-700 bg-white border dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200  absolute w-full z-999999999 rounded-md mt-1 pt-1"
             v-show="optionsShown"
             
           >
-            <div class="p-1" v-if="!hide_search">
+            <div class="border-b border-gray-200 dark:border-gray-700" v-if="!hide_search">
               <label
                 for="default-search"
                 class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
@@ -120,33 +120,33 @@
                   @keydown="handleKeyDown"
                   @blur="exit()"
                   autocomplete="off"
-                  class="block w-full p-2 text-sm text-gray-900 border rounded-lg outline-hidden border-primary  bg-gray-50 focus:border-primary dark:bg-gray-800 dark:border-primaryDark dark:placeholder-primaryDark dark:text-white dark:focus:border-primaryDark"
+                  class="block w-full p-2 text-sm text-gray-900   outline-hidden     dark:bg-gray-800   dark:text-white "
                   :placeholder="search_input_placeholder"
                 />
               </div>
             </div>
 
             <div
-              class="overflow-y-auto max-h-64"
+              class="overflow-y-auto max-h-64 px-1 py-1"
               @scroll="handleScroll"
               ref="dropdownRef"
             >
               <div
                 v-if="filteredOptions.length"
-                class="relative px-2 py-2 text-xs leading-4 text-gray-700 no-underline cursor-pointer dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white"
+                class="relative px-2 py-0.5 text-xs leading-4 text-gray-700 no-underline cursor-pointer dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white hover:rounded-sm"
                 @click="selectOption(option)"
                 @mousedown="selectOption(option)"
                 v-for="(option, index) in filteredOptions"
                 :class="
-                  index + 1 == count ? 'bg-gray-100 dark:bg-gray-700' : ''
+                  index + 1 == count ? 'bg-gray-100 dark:bg-gray-700 rounded-sm' : ''
                 "
                 :key="index"
                 :id="`${index + 1}${uuid}`"
               >
-                <div class="flex items-center py-2 pl-10 pr-4">
+                <div class="flex items-center py-2  pr-4">
                   <svg
                     v-if="selected?.id === option.id"
-                    class="absolute flex items-center shrink-0 w-4 h-4 text-green-500 left-2 dark:text-green-400"
+                    class="absolute flex items-center shrink-0 w-4 h-4 text-green-500 ltr:right-2 rtl:left-2 dark:text-green-400"
                     aria-hidden="true"
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
@@ -374,6 +374,7 @@ const fetchData = async (direction = "down", hasSelectedValue = false) => {
   isLoading.value = false;
 };
 
+
 /** Infinite Scroll Handling */
 const handleScroll = (event) => {
   if (!event.target) return;
@@ -496,15 +497,17 @@ onMounted(() => {
     document.body.addEventListener("click", clearData);
    // document.addEventListener("keydown", preventEnterKey);
     document.addEventListener("focusin", handleFocusChange);
+    
   }
 });
 
 onBeforeUnmount(() => {
  
-
+  
   document.body.removeEventListener("click", clearData);
  // document.removeEventListener("keydown", preventEnterKey);
   document.removeEventListener("focusin", handleFocusChange);
+  
 });
 
 function searchOptions() {
@@ -530,7 +533,8 @@ function handleKeyDown(e) {
   ];
   if (keysOfInterest.includes(e.key)) {
     if (["ArrowUp", "ArrowDown"].includes(e.key)) {
-      e.preventDefault();
+      e.preventDefault(); // Move this to prevent all keys of interest
+      
     }
 
     if (e.key === "ArrowDown" && props.posts === "") {
@@ -578,11 +582,32 @@ function clearData(e) {
   }
 }
 
+/*
+
 function scrollToElement(count) {
   const elementId = `${count}${uuid.value}`;
   const element = document.getElementById(elementId);
   if (element) {
     element.scrollIntoView();
+  }
+}
+
+*/
+
+
+function scrollToElement(count) {
+  const elementId = `${count}${uuid.value}`;
+  const element = document.getElementById(elementId);
+  const container = dropdownRef.value;
+  if (element && container) {
+    const elementRect = element.getBoundingClientRect();
+    const containerRect = container.getBoundingClientRect();
+
+    if (elementRect.top < containerRect.top) {
+      container.scrollTop -= containerRect.top - elementRect.top;
+    } else if (elementRect.bottom > containerRect.bottom) {
+      container.scrollTop += elementRect.bottom - containerRect.bottom;
+    }
   }
 }
 
@@ -657,6 +682,10 @@ function exit() {
   //emit("selected", selected.value);
   
 }
+
+
+
+
 
 
 

@@ -97,7 +97,7 @@ watch(
   <div class=" fixed  h-full w-full overflow-y-auto overflow-x-hidden outline-hidden inset-0 bg-black/80! min-w-full"
     :class="has_large_z_index ? 'z-9999' : 'z-1055'" v-if="is_open" tabindex="-1">
     <div
-      class="pointer-events-none relative  w-auto  transition-all duration-300 ease-in-out min-[576px]:mx-auto mt-7"
+      class="pointer-events-none relative  w-auto  transition-all duration-300 ease-in-out min-[576px]:mx-auto mt-2"
       :class="max_width">
 
       <div
@@ -166,7 +166,7 @@ watch(
           <slot name="buttons"></slot>
 
           <button @click="closeModal" type="button"
-            class="px-5 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-200 rounded-lg ms-3 hover:bg-gray-100 focus:ring-4 focus:outline-hidden focus:ring-blue-300 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600">
+            class="px-5 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-200 rounded-lg ms-3 hover:bg-gray-100 focus:ring-4 focus:outline-hidden focus:ring-blue-300 hover:text-gray-900 focus:z-10 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700 dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-gray-700">
             {{ language?.close ?? "Close" }}
           </button>
         </div>

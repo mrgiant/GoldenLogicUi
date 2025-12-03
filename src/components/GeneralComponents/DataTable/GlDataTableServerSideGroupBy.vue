@@ -39,11 +39,17 @@
               @click="updateSortColumn(column.field_name, column.sortable)"
               class="w-full px-4 py-2 lg:w-2/12"
             >
-              {{ column.field_label }}
-              <span v-if="sortField === column.field_name" class="ml-2">
-                <i v-if="sortOrder === 'asc'" class="fa fa-arrow-up"></i>
-                <i v-else class="fa fa-arrow-down"></i>
+
+             <div class="inline-flex items-center justify-center gap-1">
+              <span>{{ column.field_label }}</span>
+              <span v-if="sortField === column.field_name" class="print:hidden!">
+                 <svg class="w-4 h-4"  aria-hidden="true" xmlns="http://www.w3.org/2000/svg"  fill="none" viewBox="0 0 24 24">
+                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 20V7m0 13-4-4m4 4 4-4m4-12v13m0-13 4 4m-4-4-4 4"/>
+                 </svg>
+
               </span>
+              </div>
+
             </th>
           </tr>
         </thead>
@@ -146,7 +152,9 @@
               :data-label="column.field_label"
               class="text-pretty before:content-[attr(data-label)] before:font-bold lg:before:content-none flex md:flex-row flex-col justify-between gap-2 lg:table-cell py-4 px-5 lg:py-3 lg:px-4 border-[1px]! dark:border-gray-700"
             >
-              <div class="overflow-auto max-h-40">
+              <div :class="column.field_name === 'action'
+                ? ''
+                : 'overflow-auto'" class=" td_overflow_auto max-h-40 max-w-100">
                 <component
                   v-if="column.tdComp"
                   :is="forDynCompIs(column.tdComp)"
@@ -344,3 +352,29 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+@media print {
+  @page {
+    size: A4 landscape;
+
+  }
+
+
+
+
+
+  table tr {
+    page-break-inside: avoid;
+  }
+
+  table tr td {
+    page-break-inside: avoid;
+  }
+
+  .td_overflow_auto {
+    overflow: visible !important;
+    max-height: none !important;
+  }
+}
+</style>
