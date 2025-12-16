@@ -326,7 +326,7 @@ select:not([size]) {
 
 {
 
-@apply text-primary dark:text-white border border-primary dark:border-primaryDark
+@apply text-primary dark:text-primaryDark border border-primary dark:border-primaryDark
 }
 
 .arrow_button_styles:hover

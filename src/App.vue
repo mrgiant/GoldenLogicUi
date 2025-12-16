@@ -13,6 +13,7 @@ import {
 import CodeEditor  from './components/GeneralComponents/GlCodeMirror.vue';
 import GlTextInput   from './components/GeneralComponents/GlTextInput.vue';
 import GlDropdown   from './components/GeneralComponents/GlDropdown.vue';
+import GLButton   from './components/GeneralComponents/GLButton.vue';
 import GlMultiSelectDropdown   from './components/GeneralComponents/GlMultiSelectDropdown.vue';
 
 
@@ -75,20 +76,14 @@ const onChange = (value) => {
 
  
     <div class="mb-4">
-      <CodeEditor v-model="code" language="javascript" theme=""
-      
-                       :is_required="false"
-                        field_name="roles"
-                        label_name="Roles"
-                        :show="false"
-                        error_message="njnjnn"
-                        placeholder="Please select an option"
-                        @change="onChange"
-      
-      
-      
-       />
-                </div>
+
+
+      <GLButton tag="button"  :is_loading="true" button_type="red"
+                                classes="w-full block mt-6 !rounded-md " :has_border_reduced="false">sign_in
+
+                            </GLButton>
+     
+    </div>
 
                 
 
@@ -97,26 +92,7 @@ const onChange = (value) => {
 
          
 
-                <div class="mb-4">
-
-
-
-                <GlMultiSelectDropdown
-                        :options="roles"
-                        :is_required="false"
-                        field_name="roles"
-                        label_name="Roles"
-                        :show="false"
-                        v-model="role"
-                        placeholder="Please select an option"
-                    >
-                    </GlMultiSelectDropdown>
-
-
-                    </div>
-
-                 
-
+             
     
 </div>
 </template>

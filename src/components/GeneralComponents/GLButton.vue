@@ -1,6 +1,6 @@
 <template>
     <component
-        v-if="!is_loading"
+        v-if="!actualLoading"
         :is="tag"
         :type="is_submit"
         :disabled="is_disabled"
@@ -18,12 +18,12 @@
         v-else
         is="button"
         disabled
-        :class="` h-[2.5rem] flex items-center gap-2 focus:outline-hidden text-sm px-2  py-2   font-medium ${has_border_reduced ? 'rounded-lg':''}  ${buttonTypeClass} ${classes}`"
+        :class="` opacity-50 h-[2.5rem] flex items-center justify-center focus:outline-hidden text-sm px-6  py-2   font-medium ${has_border_reduced ? 'rounded-lg':''}  ${buttonTypeClass} ${classes}`"
     >
         <svg
             aria-hidden="true"
             role="status"
-            class="inline w-4 h-4 me-3 animate-spin fill-primary dark:fill-primaryDark"
+            class="inline w-5 h-5  animate-spin fill-primary dark:fill-primaryDark"
             viewBox="0 0 100 101"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
@@ -37,7 +37,7 @@
                 fill="currentFill"
             />
         </svg>
-        Loading...
+        
     </component>
 </template>
 <script>
@@ -101,6 +101,26 @@ export default {
             default: "",
         },
 
+        form_id: {
+            type: String,
+            default: "",
+        },
+
+    },
+    data() {
+        return {
+            internal_loading: false,
+        };
+    },
+    mounted() {
+        if (this.form_id) {
+            this.attachFormListener();
+        }
+    },
+    beforeUnmount() {
+        if (this.form_id) {
+            this.detachFormListener();
+        }
     },
     computed: {
         buttonTypeClass() {
@@ -129,8 +149,27 @@ export default {
                     return "";
             }
         },
+        actualLoading() {
+            return this.is_loading || this.internal_loading;
+        },
     },
-    methods: {},
+    methods: {
+        attachFormListener() {
+            const form = document.getElementById(this.form_id);
+            if (form) {
+                form.addEventListener('submit', this.handleFormSubmit);
+            }
+        },
+        detachFormListener() {
+            const form = document.getElementById(this.form_id);
+            if (form) {
+                form.removeEventListener('submit', this.handleFormSubmit);
+            }
+        },
+        handleFormSubmit() {
+            this.internal_loading = true;
+        },
+    },
 };
 </script>
 

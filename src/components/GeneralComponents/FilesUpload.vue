@@ -367,6 +367,12 @@ export default {
         formData.append("max_file_size", this.max_file_size);
         formData.append("field_name", this.field_name);
 
+        // to upload image and file config data config multipart 
+
+
+
+
+        
         Object.entries(this.file_config).forEach(([key, value]) => {
           formData.append(key, value);
         });
@@ -375,6 +381,10 @@ export default {
 
         axios
           .post(this.route_url + "/media", formData, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+
             onUploadProgress: (progressEvent) => {
               this.files[this.files.length - 1].loading = Math.floor(
                 (progressEvent.loaded / progressEvent.total) * 100

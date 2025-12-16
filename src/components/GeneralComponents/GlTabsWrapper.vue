@@ -74,6 +74,18 @@ const handleTabChange = (newTitle) => {
   emit('TabChange', newTitle);
 };
 
+// Method to programmatically change tabs
+const setActiveTab = (title) => {
+  const tab = tabs.value.find((tab) => tab.title === title);
+  if (tab) {
+    selectedTitle.value = title;
+  }
+};
+
+defineExpose({
+  setActiveTab,
+});
+
 
 const updateTabFromHash = () => {
   const hash = decodeURIComponent(window.location.hash.replace('#', ''));
