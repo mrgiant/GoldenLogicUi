@@ -339,6 +339,12 @@ const fetchData = async (direction = "down", hasSelectedValue = false) => {
       params: { search: searchFilter.value, page: currentPage, per_page: 20 },
     });
 
+    if (!data || !data.data) {
+      isLoading.value = false;
+      filteredOptions.value.push(...[]);
+      return;
+    }
+
     let apiData = convertedDataOptions(data.data);
 
     if (direction === "down") {
@@ -361,7 +367,38 @@ const fetchData = async (direction = "down", hasSelectedValue = false) => {
     if (!lastPage.value) lastPage.value = data.last_page;
     if (!firstPage.value) firstPage.value = 1;
 
-    selected.value = convertedOptionDefault();
+    // to add the default selected value if not in the current list
+
+    const defaultOption = convertedOptionDefault();
+
+    // 2. Ensure we actually have a selected value to check
+    if (defaultOption && defaultOption.value) {
+        
+        // 3. Check if this item already exists in the currently loaded options
+        // (Assuming 'value' is your unique ID key)
+        const existsInList = filteredOptions.value.some(
+            (option) => option.value === defaultOption.value
+        );
+
+        // 4. If it's NOT in the list, inject it manually
+        if (!existsInList) {
+            // We unshift (add to top) so the user sees their selection immediately
+            filteredOptions.value.unshift(defaultOption);
+        }
+
+        // 5. Sync the v-model / internal selected state
+        selected.value = defaultOption;
+
+        console.log("Default option added:", defaultOption);
+    }
+
+
+
+
+
+
+
+   
 
     if (hasSelectedValue) {
       searchFilter.value = "";

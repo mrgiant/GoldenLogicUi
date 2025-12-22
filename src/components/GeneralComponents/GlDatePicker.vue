@@ -59,11 +59,13 @@ const props = defineProps({
     },
 
     // Min and max date constraints
+    // Accepts: "YYYY-MM-DD" or relative: "+3m", "-1y", "+7d", "today"
     min_date: {
         type: String,
         default: null,
     },
 
+    // Accepts: "YYYY-MM-DD" or relative: "+3m", "-1y", "+7d", "today"
     max_date: {
         type: String,
         default: null,
@@ -99,6 +101,38 @@ const datepickerContainer = ref(null);
 const isOpen = ref(false);
 const currentMonth = ref(new Date().getMonth());
 const currentYear = ref(new Date().getFullYear());
+
+// Parse relative date string like "+3m", "-1y", "+7d", "today"
+const parseRelativeDate = (dateStr) => {
+    if (!dateStr) return null;
+    
+    // Handle "today"
+    if (dateStr.toLowerCase() === 'today') {
+        return new Date();
+    }
+    
+    // Handle relative format: +3m, -1y, +7d
+    const match = dateStr.match(/^([+-]?)(\d+)([dmy])$/i);
+    if (match) {
+        const sign = match[1] === '-' ? -1 : 1;
+        const value = parseInt(match[2]) * sign;
+        const unit = match[3].toLowerCase();
+        
+        const date = new Date();
+        if (unit === 'd') {
+            date.setDate(date.getDate() + value);
+        } else if (unit === 'm') {
+            date.setMonth(date.getMonth() + value);
+        } else if (unit === 'y') {
+            date.setFullYear(date.getFullYear() + value);
+        }
+        return date;
+    }
+    
+    // Handle standard date format
+    const date = new Date(dateStr);
+    return isNaN(date.getTime()) ? null : date;
+};
 
 // Month names based on locale
 const monthNames = computed(() => {
@@ -238,16 +272,20 @@ const isDateDisabled = (date) => {
     
     // Check min date
     if (props.min_date) {
-        const minDate = new Date(props.min_date);
-        minDate.setHours(0, 0, 0, 0);
-        if (date < minDate) return true;
+        const minDate = parseRelativeDate(props.min_date);
+        if (minDate) {
+            minDate.setHours(0, 0, 0, 0);
+            if (date < minDate) return true;
+        }
     }
     
     // Check max date
     if (props.max_date) {
-        const maxDate = new Date(props.max_date);
-        maxDate.setHours(0, 0, 0, 0);
-        if (date > maxDate) return true;
+        const maxDate = parseRelativeDate(props.max_date);
+        if (maxDate) {
+            maxDate.setHours(0, 0, 0, 0);
+            if (date > maxDate) return true;
+        }
     }
     
     return false;
@@ -445,7 +483,7 @@ defineExpose({ focus: () => input.value?.focus() });
             <!-- Datepicker Dropdown -->
             <div 
                 v-show="isOpen"
-                class="absolute z-50 mt-1 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 p-4 w-72"
+                class="absolute z-50 mt-1 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 p-4 max-w-72"
             >
                 <!-- Header with navigation -->
                 <div class="flex items-center justify-between mb-4">
