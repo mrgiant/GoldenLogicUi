@@ -16,6 +16,7 @@ import GlDropdown   from './components/GeneralComponents/GlDropdown.vue';
 import GLButton   from './components/GeneralComponents/GLButton.vue';
 import GlMultiSelectDropdown   from './components/GeneralComponents/GlMultiSelectDropdown.vue';
 
+import GlDatePicker   from './components/GeneralComponents/GlDatePicker.vue';
 
 
 const provide=ref("");
@@ -76,6 +77,19 @@ const onChange = (value) => {
 
  
     <div class="mb-4">
+
+
+    <GlDatePicker
+    v-model="selectedDate"
+    label_name="Birth Date"
+    field_name="birth_date"
+    date_format="DD/MM/YYYY"
+    :is_required="true"
+    placeholder="Select your birth date"
+    min_date="1900-01-01"
+    :max_date="new Date().toISOString().split('T')[0]"
+    locale="en"
+/>
 
 
       <GLButton tag="button"  :is_loading="true" button_type="red"
