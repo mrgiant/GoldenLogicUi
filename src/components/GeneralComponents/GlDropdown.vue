@@ -327,7 +327,7 @@ const handleTabPressInput = (event) => {
 };
 
 /** Fetch Data (Handles Both Scroll Directions) */
-const fetchData = async (direction = "down", hasSelectedValue = false) => {
+const fetchData = async (direction = "down") => {
   if (isLoading.value) return;
 
   isLoading.value = true;
@@ -402,10 +402,7 @@ const fetchData = async (direction = "down", hasSelectedValue = false) => {
 
    
 
-    if (hasSelectedValue) {
-      searchFilter.value = "";
-      filteredOptions.value = [];
-    }
+    
   } catch (error) {
     console.error("Error fetching data:", error);
   }
@@ -759,9 +756,12 @@ watch(
     if (newVal) {
       selected.value = props.modelValue;
       if (props.api_url) {
-        if (isSelectedOption.value) {
+        if (isSelectedOption.value===false) {
+          
+          fetchData("down");
+        } else {
           selected.value = convertedOptionDefault();
-        } 
+        }
 
         //selected.value = convertedOptionDefaultApi();
       } else {
