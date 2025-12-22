@@ -341,7 +341,7 @@ const fetchData = async (direction = "down", hasSelectedValue = false) => {
 
     if (!data || !data.data) {
       isLoading.value = false;
-      filteredOptions.value.push(...[]);
+      filteredOptions.value = [];
       return;
     }
 
@@ -371,8 +371,10 @@ const fetchData = async (direction = "down", hasSelectedValue = false) => {
 
     const defaultOption = convertedOptionDefault();
 
+    
+
     // 2. Ensure we actually have a selected value to check
-    if (defaultOption && defaultOption.value) {
+    if (defaultOption) {
         
         // 3. Check if this item already exists in the currently loaded options
         // (Assuming 'value' is your unique ID key)
@@ -757,12 +759,9 @@ watch(
     if (newVal) {
       selected.value = props.modelValue;
       if (props.api_url) {
-        if (isSelectedOption.value == false) {
-          searchFilter.value = selected.value;
-          fetchData("down", true);
-        } else {
+        if (isSelectedOption.value) {
           selected.value = convertedOptionDefault();
-        }
+        } 
 
         //selected.value = convertedOptionDefaultApi();
       } else {
