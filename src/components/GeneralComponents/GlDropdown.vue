@@ -391,7 +391,7 @@ const fetchData = async (direction = "down") => {
         // 5. Sync the v-model / internal selected state
         selected.value = defaultOption;
 
-        console.log("Default option added:", defaultOption);
+        
     }
 
 
@@ -749,14 +749,35 @@ watch(selected, (newVal) => {
   }
 });
 
+
+
 watch(
+
+  () => props.api_url,
+  (newVal) => {
+    
+    if (newVal) {
+      
+      page.value = 1;
+     lastPage.value = null;
+     firstPage.value = 1;
+     filteredOptions.value = [];
+      fetchData("down");
+      
+    } 
+  },
+  { immediate: true, deep: true }
+);
+
+watch(
+
   () => props.modelValue,
   (newVal) => {
     //searchFilter.value = "";
     if (newVal) {
       selected.value = props.modelValue;
       if (props.api_url) {
-        if (isSelectedOption.value===false) {
+        if (isSelectedOption.value===false ) {
           
           fetchData("down");
         } else {

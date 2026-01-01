@@ -154,27 +154,11 @@ const dayNames = computed(() => {
     return days;
 });
 
-
-
 // Format date based on user preference
 const formatDate = (date) => {
     if (!date) return "";
     
-    let d;
-    
-    // 1. If it's a string, try to parse it using our custom format first
-    // This ensures we can read the value we just emitted (e.g., "DD-MM-YYYY")
-    if (typeof date === 'string') {
-        d = parseDate(date);
-    }
-
-    // 2. If custom parsing failed (or it wasn't a string), fallback to standard Date parsing
-    // This handles cases where modelValue might be an ISO string (e.g., "2023-12-25") or a Date object
-    if (!d || isNaN(d.getTime())) {
-        d = new Date(date);
-    }
-    
-    // 3. If still invalid, return empty
+    const d = new Date(date);
     if (isNaN(d.getTime())) return "";
     
     const year = d.getFullYear();
@@ -197,8 +181,6 @@ const formatDate = (date) => {
             return `${year}-${month}-${day}`;
     }
 };
-
-
 
 // Parse date from formatted string
 const parseDate = (dateStr) => {
@@ -235,14 +217,9 @@ const parseDate = (dateStr) => {
     return isNaN(date.getTime()) ? null : date;
 };
 
-// Proxy value for input (always formatted)
-const proxyValue = computed({
-    get() {
-        return formatDate(props.modelValue);
-    },
-    set(newValue) {
-        emit("update:modelValue", newValue);
-    }
+// Display value
+const displayValue = computed(() => {
+    return formatDate(props.modelValue);
 });
 
 // Calendar days generation
@@ -364,29 +341,6 @@ const nextYear = () => {
     currentYear.value++;
 };
 
-
-// Translations for button labels
-const translations = {
-    en: {
-        clear: 'Clear',
-        today: 'Today',
-    },
-    ar: {
-        clear: 'مسح',
-        today: 'اليوم',
-    },
-};
-
-const getLocale = () => {
-    // Only support 'ar' and 'en' for now
-    return props.locale && props.locale.startsWith('ar') ? 'ar' : 'en';
-};
-
-const t = (key) => {
-    const locale = getLocale();
-    return translations[locale][key] || translations['en'][key] || key;
-};
-
 // Go to today
 const goToToday = () => {
     const today = new Date();
@@ -440,7 +394,7 @@ defineExpose({ focus: () => input.value?.focus() });
         <label v-if="label_name" class="gl-label-form">{{ label_name }}</label>
 
         <p class="mt-1 text-gray-900 dark:text-white">
-            {{ proxyValue }}
+            {{ displayValue }}
         </p>
 
         <hr class="opacity-100! bg-gray-200 border-0 dark:bg-gray-700" />
@@ -465,7 +419,7 @@ defineExpose({ focus: () => input.value?.focus() });
                 <div class="relative w-full">
                     <input 
                         type="text"
-                        
+                        readonly
                         class="rtl:text-right rounded-none! cursor-pointer" 
                         :required="is_required"
                         :name="field_name" 
@@ -477,7 +431,7 @@ defineExpose({ focus: () => input.value?.focus() });
                             'border-e-0! rounded-s-lg!': inputGroupType == 'append',
                             'border-s-0! rounded-e-lg!': inputGroupType == 'prepend'
                         }" 
-                        v-model="proxyValue"
+                        :value="displayValue"
                         @click="toggleDatepicker"
                         @blur="$emit('blur-sm', $event)"
                         ref="input" 
@@ -501,7 +455,7 @@ defineExpose({ focus: () => input.value?.focus() });
             <div v-if="inputGroupType==''" class="relative">
                 <input 
                     type="text"
-                    
+                    readonly
                     class="rtl:text-right cursor-pointer pe-10"
                     :required="is_required" 
                     :name="field_name" 
@@ -511,7 +465,7 @@ defineExpose({ focus: () => input.value?.focus() });
                         'gl-input-form-invalid': error_message !== '',
                         [input_class]: input_class && input_class !== ''
                     }" 
-                    v-model="proxyValue"
+                    :value="displayValue"
                     @click="toggleDatepicker"
                     @blur="$emit('blur-sm', $event)"
                     ref="input" 
@@ -618,14 +572,14 @@ defineExpose({ focus: () => input.value?.focus() });
                         @click="clearDate"
                         class="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
                     >
-                        {{ t('clear') }}
+                        Clear
                     </button>
                     <button 
                         type="button"
                         @click="goToToday"
                         class="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium"
                     >
-                        {{ t('today') }}
+                        Today
                     </button>
                 </div>
             </div>
