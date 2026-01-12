@@ -77,6 +77,13 @@ const props = defineProps({
         default: () => [],
     },
 
+    // Disable specific dates (array of date strings in any supported format or Date objects)
+    // Example: ["2026-01-15", "2026-02-20", "25-12-2026"]
+    disabled_dates: {
+        type: Array,
+        default: () => [],
+    },
+
     // Locale for month/day names
     locale: {
         type: String,
@@ -235,15 +242,47 @@ const parseDate = (dateStr) => {
     return isNaN(date.getTime()) ? null : date;
 };
 
-// Proxy value for input (always formatted)
-const proxyValue = computed({
-    get() {
-        return formatDate(props.modelValue);
-    },
-    set(newValue) {
-        emit("update:modelValue", newValue);
+// Local display value for text input
+const displayValue = ref("");
+
+// Sync displayValue when modelValue changes externally
+watch(() => props.modelValue, (newVal) => {
+    displayValue.value = formatDate(newVal);
+}, { immediate: true });
+
+// Handle direct text input
+const handleInput = (event) => {
+    const inputValue = event.target.value;
+    displayValue.value = inputValue;
+    
+    // Try to parse the input as a date
+    const parsedDate = parseDate(inputValue);
+    if (parsedDate && !isNaN(parsedDate.getTime()) && !isDateDisabled(parsedDate)) {
+        const formattedDate = formatDate(parsedDate);
+        emit("update:modelValue", formattedDate);
+        emit("change", formattedDate);
+    } else if (inputValue === "") {
+        // Allow clearing the input
+        emit("update:modelValue", "");
+        emit("change", "");
     }
-});
+};
+
+// Handle blur to validate and format the input
+const handleBlur = (event) => {
+    const inputValue = displayValue.value;
+    const parsedDate = parseDate(inputValue);
+    
+    if (parsedDate && !isNaN(parsedDate.getTime()) && !isDateDisabled(parsedDate)) {
+        // Format the valid date
+        displayValue.value = formatDate(parsedDate);
+    } else if (inputValue !== "") {
+        // Revert to the last valid value if invalid
+        displayValue.value = formatDate(props.modelValue);
+    }
+    
+    emit("blur-sm", event);
+};
 
 // Calendar days generation
 const calendarDays = computed(() => {
@@ -291,6 +330,34 @@ const isDateDisabled = (date) => {
     // Check disabled days of week
     if (props.disabled_days.includes(date.getDay())) {
         return true;
+    }
+    
+    // Check disabled specific dates
+    if (props.disabled_dates && props.disabled_dates.length > 0) {
+        const dateToCheck = new Date(date);
+        dateToCheck.setHours(0, 0, 0, 0);
+        
+        for (const disabledDate of props.disabled_dates) {
+            let parsedDisabledDate;
+            
+            // Try to parse using custom format first
+            if (typeof disabledDate === 'string') {
+                parsedDisabledDate = parseDate(disabledDate);
+                // Fallback to standard Date parsing if custom parsing failed
+                if (!parsedDisabledDate || isNaN(parsedDisabledDate.getTime())) {
+                    parsedDisabledDate = new Date(disabledDate);
+                }
+            } else if (disabledDate instanceof Date) {
+                parsedDisabledDate = disabledDate;
+            }
+            
+            if (parsedDisabledDate && !isNaN(parsedDisabledDate.getTime())) {
+                parsedDisabledDate.setHours(0, 0, 0, 0);
+                if (dateToCheck.getTime() === parsedDisabledDate.getTime()) {
+                    return true;
+                }
+            }
+        }
     }
     
     // Check min date
@@ -440,7 +507,7 @@ defineExpose({ focus: () => input.value?.focus() });
         <label v-if="label_name" class="gl-label-form">{{ label_name }}</label>
 
         <p class="mt-1 text-gray-900 dark:text-white">
-            {{ proxyValue }}
+            {{ displayValue }}
         </p>
 
         <hr class="opacity-100! bg-gray-200 border-0 dark:bg-gray-700" />
@@ -466,7 +533,7 @@ defineExpose({ focus: () => input.value?.focus() });
                     <input 
                         type="text"
                         
-                        class="rtl:text-right rounded-none! cursor-pointer" 
+                        class="rtl:text-right rounded-none!" 
                         :required="is_required"
                         :name="field_name" 
                         :id="field_name"
@@ -477,15 +544,15 @@ defineExpose({ focus: () => input.value?.focus() });
                             'border-e-0! rounded-s-lg!': inputGroupType == 'append',
                             'border-s-0! rounded-e-lg!': inputGroupType == 'prepend'
                         }" 
-                        v-model="proxyValue"
-                        @click="toggleDatepicker"
-                        @blur="$emit('blur-sm', $event)"
+                        :value="displayValue"
+                        @input="handleInput"
+                        @blur="handleBlur"
                         ref="input" 
                         :placeholder="placeholder" 
                     />
                     
                     <!-- Calendar Icon -->
-                    <div class="absolute inset-y-0 end-0 flex items-center pe-3 pointer-events-none">
+                    <div class="absolute inset-y-0 end-0 flex items-center pe-3 cursor-pointer" @click="toggleDatepicker">
                         <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
                             <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z"/>
                         </svg>
@@ -502,7 +569,7 @@ defineExpose({ focus: () => input.value?.focus() });
                 <input 
                     type="text"
                     
-                    class="rtl:text-right cursor-pointer pe-10"
+                    class="rtl:text-right pe-10"
                     :required="is_required" 
                     :name="field_name" 
                     :id="field_name" 
@@ -511,15 +578,15 @@ defineExpose({ focus: () => input.value?.focus() });
                         'gl-input-form-invalid': error_message !== '',
                         [input_class]: input_class && input_class !== ''
                     }" 
-                    v-model="proxyValue"
-                    @click="toggleDatepicker"
-                    @blur="$emit('blur-sm', $event)"
+                    :value="displayValue"
+                    @input="handleInput"
+                    @blur="handleBlur"
                     ref="input" 
                     :placeholder="placeholder" 
                 />
                 
                 <!-- Calendar Icon -->
-                <div class="absolute inset-y-0 end-0 flex items-center pe-3 pointer-events-none">
+                <div class="absolute inset-y-0 end-0 flex items-center pe-3 cursor-pointer" @click="toggleDatepicker">
                     <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
                         <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z"/>
                     </svg>
@@ -600,8 +667,8 @@ defineExpose({ focus: () => input.value?.focus() });
                             {
                                 'text-gray-400 dark:text-gray-600': !dayObj.currentMonth,
                                 'text-gray-900 dark:text-white': dayObj.currentMonth && !isDateSelected(dayObj.date) && !isDateDisabled(dayObj.date),
-                                'bg-blue-600 text-white hover:bg-blue-700': isDateSelected(dayObj.date),
-                                'ring-2 ring-blue-600 ring-offset-1 dark:ring-offset-gray-800': isToday(dayObj.date) && !isDateSelected(dayObj.date),
+                                'bg-primary dark:bg-primaryDark text-white hover:bg-primary/90 dark:hover:bg-primaryDark/90': isDateSelected(dayObj.date),
+                                'ring-2 ring-primary dark:ring-primaryDark ring-offset-1 dark:ring-offset-gray-800': isToday(dayObj.date) && !isDateSelected(dayObj.date),
                                 'hover:bg-gray-100 dark:hover:bg-gray-700': !isDateSelected(dayObj.date) && !isDateDisabled(dayObj.date),
                                 'opacity-50 cursor-not-allowed': isDateDisabled(dayObj.date),
                             }
@@ -623,7 +690,7 @@ defineExpose({ focus: () => input.value?.focus() });
                     <button 
                         type="button"
                         @click="goToToday"
-                        class="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium"
+                        class="text-sm text-primary dark:text-primaryDark hover:text-primary/80 dark:hover:text-primaryDark/80 font-medium"
                     >
                         {{ t('today') }}
                     </button>
