@@ -1,12 +1,11 @@
 
 
-@import "tailwindcss" source(none);
+@import "tailwindcss";
 
 
 
 
 @source not "../src/components/";
-/*@config '../tailwind.config.js'; */
 
 
 @custom-variant dark (&:where(.dark, .dark *));
