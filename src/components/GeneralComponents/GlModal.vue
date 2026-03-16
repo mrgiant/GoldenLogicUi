@@ -106,7 +106,7 @@ watch(
 
 
       <div
-        class="pointer-events-auto relative flex max-h-[100%] w-full flex-col  text-current shadow-4 outline-hidden bg-white border rounded-xl dark:bg-gray-900 dark:border-gray-800">
+        class="pointer-events-auto relative flex max-h-full w-full flex-col  text-current shadow-4 outline-hidden bg-white border rounded-xl dark:bg-gray-900 dark:border-gray-800">
         <div class="flex items-center justify-between shrink-0 pt-3 pb-3 pl-3 pr-3  ">
           <!-- Modal title -->
           <h5 class="text-xl font-medium leading-normal text-surface dark:text-white">

@@ -173,7 +173,7 @@ export default {
     },
 
     has_multiple_file: {
-      show: Boolean,
+      type: Boolean,
       default: false,
     },
 

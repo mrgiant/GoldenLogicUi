@@ -47,6 +47,11 @@ export default {
             default: "i18n_selector",
         },
 
+        selectorClass: {
+            type: String,
+            default: "gl-multilanguage",
+        },
+
 
     },
 
@@ -83,7 +88,7 @@ export default {
                     this.default_language = response.data.default_language;
 
                     
-                    this.$refs.language_selector.classList.add('gl-multilanguage');
+                    this.$refs.language_selector.classList.add(this.selectorClass);
 
 
                     // this.is_loading = false;

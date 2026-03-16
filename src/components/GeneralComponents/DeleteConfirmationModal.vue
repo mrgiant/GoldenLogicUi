@@ -1,6 +1,6 @@
 <template>
   <!-- Modal for delete confirmation -->
-  <div v-if="isOpen" class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog"
+  <div v-if="isOpen" class="fixed inset-0 z-99999 overflow-y-auto" aria-labelledby="modal-title" role="dialog"
     aria-modal="true">
     <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:p-0">
       <!-- Modal overlay -->

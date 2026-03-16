@@ -66,6 +66,7 @@ const emit = defineEmits(["update:modelValue","update:modelValueTranslate","keyd
 
 const input = ref(null);
 const input_translate = ref(null);
+const output_translate = ref(null);
 
 const InputTranslateChanged = () => {
 
@@ -90,7 +91,12 @@ input.value.focus();
 if(props.modelValue)
   {
      emit('update:modelValue', props.modelValue);
-     input.value.value=props.modelValue;
+
+     if(input.value)
+     {
+      input.value.value=props.modelValue;
+     }
+    
 
 
 
@@ -105,7 +111,11 @@ if(props.modelValue)
    
     
      emit('update:modelValueTranslate', props.modelValueTranslate);
-     input_translate.value.value=props.modelValueTranslate;
+
+     if(input_translate.value)
+     {
+      input_translate.value.value=props.modelValueTranslate;
+     }
 
 
 
@@ -149,12 +159,29 @@ if(props.modelValue)
    */
 
 
-   input.value.classList.add('gl-multilanguage');
+   if(input.value)
+   {
+     input.value.classList.add('gl-multilanguage');
+   }
+
+   if(output_translate.value)
+   {
+   
+     output_translate.value.classList.add('gl-multilanguage');
+   }
+
+
+
 
 
 
 
 });
+
+
+
+
+
 
 defineExpose({ focus: () => input.value.focus() });
 </script>
@@ -169,7 +196,7 @@ defineExpose({ focus: () => input.value.focus() });
       :name="field_name + '_i18n'"
       :id="field_name + '_i18n'"
       ref="input_translate"
-      v-model="inputTranslateValue"
+     
 
 
     />
@@ -179,7 +206,7 @@ defineExpose({ focus: () => input.value.focus() });
 
 
 
-    <p :id="field_name" class="mb-4 text-base text-gray-900 input_tr_show dark:text-white">{{ model_value }}</p>
+    <p  ref="output_translate" :id="field_name" class="mb-4 text-base text-gray-900 input_tr_show dark:text-white">{{ model_value }}</p>
 
     <hr class="opacity-100! bg-gray-200 border-0 dark:bg-gray-700">
   </div>
