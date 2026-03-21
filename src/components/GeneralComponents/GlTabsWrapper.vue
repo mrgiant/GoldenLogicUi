@@ -76,6 +76,8 @@ const handleTabChange = (newTitle) => {
 
 // Method to programmatically change tabs
 const setActiveTab = (title) => {
+
+    if (typeof title !== 'string') return;
   const tab = tabs.value.find((tab) => tab.title === title);
   if (tab) {
     selectedTitle.value = title;
@@ -89,7 +91,7 @@ defineExpose({
 
 const updateTabFromHash = () => {
   const hash = decodeURIComponent(window.location.hash.replace('#', ''));
-
+   
   const tab = tabs.value.find((tab) => slugify(tab.title) === hash);
   if (tab) {
     selectedTitle.value = tab.title;
