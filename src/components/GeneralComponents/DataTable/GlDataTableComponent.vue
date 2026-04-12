@@ -42,19 +42,36 @@
     </div>
 
 
-    <div class="flex flex-wrap mb-3">
-      <gl-button @click="delayedPrint" tag="button" :is_loading="isLoadinPrint" button_type="default"
-        :has_border_reduced="false" classes="rounded-s-lg">
-        {{ language?.print ?? "Print" }}
-      </gl-button>
-
-
-      <gl-button @click="exportToExcel" tag="button" button_type="default" :has_border_reduced="false"
-        classes="rounded-e-lg">
-        {{ language?.excel ?? "Excel" }}
-      </gl-button>
-
-      </div>
+    <!-- Print / Excel buttons -->
+            <div class="flex flex-wrap mb-3">
+                <gl-button
+                    @click="delayedPrint"
+                    tag="button"
+                    :is_loading="isLoadingPrint"
+                    button_type="light"
+                    :has_border_reduced="false"
+                    classes="rounded-s-lg"
+                    svg_icon='<svg  aria-hidden="true" xmlns="http://www.w3.org/2000/svg"  fill="none" viewBox="0 0 24 24">
+                 <path stroke="currentColor" stroke-linejoin="round" stroke-width="2" d="M16.444 18H19a1 1 0 0 0 1-1v-5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1h2.556M17 11V5a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v6h10ZM7 15h10v4a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1v-4Z"/>
+                 </svg>'
+                >
+                    Print
+                </gl-button>
+                <gl-button
+                    @click="exportToExcel"
+                    tag="button"
+                    button_type="light"
+                    :has_border_reduced="false"
+                    classes="rounded-e-lg"
+                     svg_icon='<svg  aria-hidden="true" xmlns="http://www.w3.org/2000/svg"  fill="none" viewBox="0 0 24 24">
+                 <path stroke="currentColor" stroke-linejoin="round" stroke-width="2" d="M10 3v4a1 1 0 0 1-1 1H5m14-4v16a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V7.914a1 1 0 0 1 .293-.707l3.914-3.914A1 1 0 0 1 9.914 3H18a1 1 0 0 1 1 1Z"/>
+                 </svg>
+                  '
+                >
+                   
+                    Excel
+                </gl-button>
+            </div>
 
     <div :id="'print_' + Random_string" class="overflow-auto rounded-lg dark:text-gray-400 dark:bg-gray-800">
       <table :id="'table' + Random_string"
@@ -68,7 +85,7 @@
               v-for="(column, index) in columns"
               :key="index"
               @click="sort(column.field_name, column.sortable)"
-              class="w-full px-4 py-2 lg:w-2/12 print:w-2/12! print:border-[1px]!"
+              class="w-full px-4 py-2 lg:w-2/12 print:w-2/12! print:border!"
             >
 
 
@@ -213,120 +230,53 @@
          v-if="paginatedData.length > 0"
       class="flex items-center justify-between px-4 py-3 bg-white border-gray-200 sm:px-6 dark:text-gray-400 dark:bg-gray-800"
      >
-      <div class="flex justify-between flex-1 sm:hidden">
-        <a
-          href="#"
-          
-          v-on:click.prevent="previousPage"
-          :disabled="currentPage === 1"
-          class="relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
-          >Previous</a
-        >
-        <a
-          href="#"
-          v-on:click.prevent="nextPage"
-          :disabled="currentPage === totalPages"
-          class="relative inline-flex items-center px-4 py-2 ml-3 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
-          >Next</a
-        >
-      </div>
+      
 
-      <div class="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
-        <div>
-          <p class="text-sm text-gray-700 dark:text-gray-400">
-            Showing
-            <span class="font-medium">{{ firstItemIndex }}</span>
-            to
-            <span class="font-medium">{{ lastItemIndex }}</span>
-            of
-            <span class="font-medium">{{ filteredData.length }}</span>
-            entries
-          </p>
-        </div>
-        <div>
-          <nav aria-label="Page navigation">
-            <ul class="flex items-center h-8 -space-x-px text-sm">
-              <li>
-                <a
-                  href="#"
-                  v-on:click.prevent="previousPage"
-                  :disabled="currentPage === 1"
-                  class="flex items-center justify-center h-8 px-3 leading-tight text-gray-500 bg-white border border-gray-300 ms-0 border-e-0 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-                >
-                  <span class="sr-only">Previous</span>
-                  <svg
-                    class="w-2.5 h-2.5 rtl:rotate-180"
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 6 10"
-                  >
-                    <path
-                      stroke="currentColor"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M5 1 1 5l4 4"
-                    />
-                  </svg>
-                </a>
-              </li>
+        <div class="flex flex-col items-center w-full gap-2">
+                    <p class="text-sm text-gray-700 dark:text-gray-400">
+                        Showing
+                        <span class="font-semibold text-gray-900 dark:text-white">{{ firstItemIndex }}</span>
+                        to
+                        <span class="font-semibold text-gray-900 dark:text-white">{{ lastItemIndex }}</span>
+                        of
+                        <span class="font-semibold text-gray-900 dark:text-white">{{ filteredData.length }}</span>
+                        entries
+                    </p>
+                    <nav aria-label="Page navigation">
+                        <ul class="flex items-center h-8 -space-x-px text-sm">
+                            <li>
+                                <a href="#" @click.prevent="previousPage" class="flex items-center justify-center h-8 px-3 leading-tight text-gray-500 bg-white border border-gray-300 ms-0 border-e-0 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                                    <span class="sr-only">Previous</span>
+                                    <svg class="w-2.5 h-2.5 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 1 1 5l4 4"/>
+                                    </svg>
+                                </a>
+                            </li>
 
-              <template
-                v-for="pageNumber in displayedPageNumbers"
-                :key="pageNumber"
-              >
-                <li>
-                  <a
-                    href="#"
-                    v-on:click.prevent="goToPage(pageNumber)"
-                    v-if="currentPage !== pageNumber"
-                    class="flex items-center justify-center h-8 px-3 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-                    >{{ pageNumber }}</a
-                  >
-                </li>
+                            <template v-for="pageNumber in displayedPageNumbers" :key="pageNumber">
+                                <li>
+                                    <a
+                                        href="#"
+                                        @click.prevent="goToPage(pageNumber)"
+                                        :class="currentPage === pageNumber
+                                            ? 'z-10 flex items-center justify-center h-8 px-3 leading-tight text-blue-600 border border-blue-300 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white'
+                                            : 'flex items-center justify-center h-8 px-3 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white'"
+                                        :aria-current="currentPage === pageNumber ? 'page' : undefined"
+                                    >{{ pageNumber }}</a>
+                                </li>
+                            </template>
 
-                <li>
-                  <a
-                    href="#"
-                    v-on:click.prevent="goToPage(pageNumber)"
-                    v-if="currentPage === pageNumber"
-                    aria-current="page"
-                    class="z-10 flex items-center justify-center h-8 px-3 leading-tight text-blue-600 border border-blue-300 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white"
-                    >{{ pageNumber }}</a
-                  >
-                </li>
-              </template>
-
-              <li>
-                <a
-                  href="#"
-                  v-on:click.prevent="nextPage"
-                  :disabled="currentPage === totalPages"
-                  class="flex items-center justify-center h-8 px-3 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-                >
-                  <span class="sr-only">Next</span>
-                  <svg
-                    class="w-2.5 h-2.5 rtl:rotate-180"
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 6 10"
-                  >
-                    <path
-                      stroke="currentColor"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="m1 9 4-4-4-4"
-                    />
-                  </svg>
-                </a>
-              </li>
-            </ul>
-          </nav>
-        </div>
-      </div>
+                            <li>
+                                <a href="#" @click.prevent="nextPage" class="flex items-center justify-center h-8 px-3 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                                    <span class="sr-only">Next</span>
+                                    <svg class="w-2.5 h-2.5 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
+                                    </svg>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
     </div>
   </div>
 </template>

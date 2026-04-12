@@ -88,7 +88,7 @@
 
 
       <gl-button @click="exportToExcel" tag="button" button_type="light" :has_border_reduced="false"
-        :classes="!enable_select_deselect_delete ? 'rounded-lg lg:rounded-e-lg!' : 'rounded-lg lg:rounded-none!'"
+        
         svg_icon='<svg  aria-hidden="true" xmlns="http://www.w3.org/2000/svg"  fill="none" viewBox="0 0 24 24">
                  <path stroke="currentColor" stroke-linejoin="round" stroke-width="2" d="M10 3v4a1 1 0 0 1-1 1H5m14-4v16a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V7.914a1 1 0 0 1 .293-.707l3.914-3.914A1 1 0 0 1 9.914 3H18a1 1 0 0 1 1 1Z"/>
                  </svg>
@@ -109,8 +109,7 @@
    <div  v-click-outside="closeColumnVisibilityDropdown">
 
 
-  
-<button v-on:click="toggleColumnVisibilityDropdown"   class="h-[2.5rem] text-gray-900 bg-white border border-gray-300  hover:bg-gray-100 focus:ring-4 focus:ring-gray-100        dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700  focus:outline-none  font-medium  text-sm px-3 py-2 text-center inline-flex items-center  rounded-lg lg:rounded-none!" type="button"><svg class="w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"  fill="none" viewBox="0 0 24 24">
+<button :class="!enable_select_deselect_delete || !enable_delete ? 'rounded-lg lg:rounded-e-lg!' : 'rounded-lg lg:rounded-none!'" v-on:click="toggleColumnVisibilityDropdown"   class="h-10 text-gray-900 bg-white border border-gray-300  hover:bg-gray-100         dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600   font-medium  text-sm px-3 py-2 text-center inline-flex items-center  rounded-lg lg:rounded-none!" type="button"><svg class="w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"  fill="none" viewBox="0 0 24 24">
   <path stroke="currentColor" stroke-width="2" d="M21 12c0 1.2-4.03 6-9 6s-9-4.8-9-6c0-1.2 4.03-6 9-6s9 4.8 9 6Z"/>
   <path stroke="currentColor" stroke-width="2" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/>
 </svg>
@@ -143,7 +142,7 @@ Column visibility <svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http:/
 
 
 
-      <gl-button v-if="enable_select_deselect_delete" tag="button" @click="deleteSelected" button_type="red"
+      <gl-button v-if="enable_select_deselect_delete && enable_delete" tag="button" @click="deleteSelected" button_type="red"
         :has_border_reduced="false" classes="rounded-lg lg:rounded-none lg:rounded-e-lg!" :is_disabled="checkedIds.length <= 0"
         
         svg_icon='<svg  aria-hidden="true" xmlns="http://www.w3.org/2000/svg"  fill="none" viewBox="0 0 24 24">
@@ -163,7 +162,7 @@ Column visibility <svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http:/
 
             <th v-for="(column, index) in visibleColumns" :key="index"
               @click="updateSortColumn(column.field_name, column.sortable)"
-              class="w-full px-4 py-2 lg:w-2/12 print:w-2/12! print:border-[1px]!">
+              class="w-full px-4 py-2 lg:w-2/12 print:w-2/12! print:border!">
               <div class="inline-flex items-center justify-center gap-1">
               <span>{{ column.field_label }}</span>
               <span v-if="sortField === column.field_name" class="print:hidden!">
@@ -227,7 +226,7 @@ Column visibility <svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http:/
 
            
             <td v-if="enable_select_deselect_delete"
-              class="print:hidden! text-center rounded-t-lg lg:rounded-t-none! print:rounded-t-none! text-pretty before:content-[attr(data-label)] before:font-bold dark:before:text-gray-400 lg:before:content-[''] print:before:content-['']! flex flex-col justify-between gap-2 lg:table-cell py-4 px-5 lg:py-3 lg:px-4 print:py-3! print:px-4! border-[1px]! dark:border-gray-700"
+              class="print:hidden! text-center rounded-t-lg lg:rounded-t-none! print:rounded-t-none! text-pretty before:content-[attr(data-label)] before:font-bold dark:before:text-gray-400 lg:before:content-[''] print:before:content-['']! flex flex-col justify-between gap-2 lg:table-cell py-4 px-5 lg:py-3 lg:px-4 print:py-3! print:px-4! border! dark:border-gray-700"
               data-label="">
               <input :checked="checkedIds.includes(item.id)" @change="toggleCheck(item.id)" type="checkbox" value=""
                 class="w-4 h-4 rounded-sm" />
@@ -235,7 +234,7 @@ Column visibility <svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http:/
 
             <td v-for="(column, colIndex) in visibleColumns" :style="column?.style" :key="colIndex"
               :data-label="column.field_label"
-              class="text-pretty before:content-[attr(data-label)] before:font-bold lg:before:content-none print:before:content-none! flex flex-col justify-between gap-2 lg:table-cell print:table-cell! py-4 px-5 lg:py-3 lg:px-4 print:py-3! print:px-4! border-[1px]! dark:border-gray-700"
+              class="text-pretty before:content-[attr(data-label)] before:font-bold lg:before:content-none print:before:content-none! flex flex-col justify-between gap-2 lg:table-cell print:table-cell! py-4 px-5 lg:py-3 lg:px-4 print:py-3! print:px-4! border! dark:border-gray-700"
               :class="{
                 /* 'rounded-t-lg lg:rounded-t-none': colIndex === 0,*/
                 'rounded-b-lg lg:rounded-b-none!':
@@ -247,7 +246,7 @@ Column visibility <svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http:/
                 : 'overflow-auto'" class=" td_overflow_auto max-h-40 max-w-100">
                 <component v-if="column.tdComp" :language="language" :is="forDynCompIs(column.tdComp)" :row="item"
                   :field="column.field_name" :xprops="xprops" :tdProps="column.tdProps" @deleteAction="GetItemLists()"
-                  @editAction="editAction(item)" @generalAction="generalAction(item)">
+                  @editAction="editAction(item)" @generalAction="generalAction(item)" @generalAction1="generalAction1(item)" @generalAction2="generalAction2(item)">
                 </component>
                 <template v-else>
                   {{ item[column.field_name] }}
@@ -309,6 +308,14 @@ export default {
       required: false,
       default: true,
     },
+
+    enable_delete: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
+
+    
 
 
     data: Array,
@@ -381,7 +388,7 @@ export default {
       page: 1,
     };
   },
-  emits: ["editAction", "generalAction"],
+  emits: ["editAction", "generalAction","generalAction1","generalAction2","checkedIdsAction"],
   computed: {
     columns1() {
       return this.columns;
@@ -493,10 +500,10 @@ export default {
 
         this.isLoading = true;
 
-
-
+        
+        /*
         for (const id of this.checkedIds) {
-          //try {
+         
           await axios
             .delete(`${this.xprops.route}/${id}`)
             .then(() => {
@@ -509,6 +516,19 @@ export default {
             });
 
         }
+
+        */
+
+
+        const results = await Promise.allSettled(
+             this.checkedIds.map(id => axios.delete(`${this.xprops.route}/${id}`))
+        );
+
+         results.forEach((result, index) => {
+         if (result.status === 'rejected') {
+             console.log(`Error deleting ID ${this.checkedIds[index]}:`, result.reason);
+           }
+        });
 
 
 
@@ -532,10 +552,12 @@ export default {
 
     toggleSelectAll() {
       this.checkedIds = this.itemLists.data.map((item) => item.id);
+      this.$emit('checkedIdsAction', this.checkedIds);
     },
 
     toggleDeselectAll() {
       this.checkedIds = [];
+      this.$emit('checkedIdsAction', this.checkedIds);
     },
 
     toggleCheck(id) {
@@ -544,6 +566,8 @@ export default {
       } else {
         this.checkedIds.push(id);
       }
+
+      this.$emit('checkedIdsAction', this.checkedIds);
     },
 
     editAction(data) {
@@ -553,6 +577,18 @@ export default {
     generalAction(data) {
       this.$emit("generalAction", data);
     },
+    generalAction1(data) {
+      this.$emit("generalAction1", data);
+    },
+    generalAction2(data) {
+      this.$emit("generalAction2", data);
+    },
+
+
+   
+    
+
+    
     forDynCompIs(component) {
       return typeof component === "object" ? component : null;
     },
@@ -706,7 +742,8 @@ export default {
         this.GetItemLists();
       },
       deep: true,
-    },
+    }
+
   },
   directives: {
     print,

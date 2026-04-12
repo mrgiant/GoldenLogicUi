@@ -18,10 +18,7 @@ const props = defineProps({
     type: String,
     default: "",
   },
-  model_value: {
-    type: [String,Number],
-    default: "",
-  },
+ 
 
   modelValue: {
     type: [String,Number],
@@ -100,7 +97,7 @@ defineExpose({ focus: () => input.value.focus() });
 
 
 
-    <p :id="field_name" class="mb-4 text-base text-gray-900 input_tr_show dark:text-white">{{ model_value }}</p>
+    <p :id="field_name" class="mb-4 text-base text-gray-900 input_tr_show dark:text-white">{{ modelValue }}</p>
 
     <hr class="opacity-100! bg-gray-200 border-0 dark:bg-gray-700">
   </div>

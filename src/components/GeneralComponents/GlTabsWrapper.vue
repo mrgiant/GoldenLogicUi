@@ -40,8 +40,8 @@
 </template>
 
 <script setup>
-import { ref, provide, watch } from 'vue';
-import { defineProps, defineEmits, useSlots,onMounted,onBeforeUnmount } from 'vue';
+
+import { defineProps, defineEmits, useSlots,onMounted,onBeforeUnmount,Comment,ref, provide, watch } from 'vue';
 
 const props = defineProps({
   autoFlexTabs: {
@@ -56,7 +56,17 @@ const props = defineProps({
 const emit = defineEmits(['TabChange']);
 const slots = useSlots();
 
-const tabs = ref(slots.default().map((tab) => tab.props));
+//const tabs = ref(slots.default().map((tab) => tab.props));
+
+// Filter out Comment vnodes (produced by v-if=false) before reading props
+const tabs = ref(
+    (slots.default?.() ?? [])
+        .filter(vnode => vnode.type !== Comment && vnode.props !== null)
+        .map(vnode => vnode.props)
+);
+
+
+
 const selectedTitle = ref("");
 
 provide('selectedTitle', selectedTitle);
