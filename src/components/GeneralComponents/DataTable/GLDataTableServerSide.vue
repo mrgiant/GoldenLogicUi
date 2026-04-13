@@ -279,7 +279,9 @@ import GlToast from "/src/Stores/toast.js";
 //import print from "vue3-print-nb";
 import * as XLSX from 'xlsx';
 
-import print from '/src/print/print.js';
+//import print from '/src/print/print.js';
+
+import print from "vue3-print-nb";
 
 export default {
   components: {
