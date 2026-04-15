@@ -104,79 +104,91 @@ export default class {
 
 print (ifrmae) {
   var _this = this;
-  let iframe = document.getElementById(this.settings.id) || ifrmae.f;
-  let iframeWin = document.getElementById(this.settings.id).contentWindow || ifrmae.f.contentWindow;
-  
-  var _loaded = function () {
+  var iframe = document.getElementById(this.settings.id) || ifrmae.f;
+  var _triggered = false;
+
+  var _firstLoad = function () {
+    if (_triggered) return;
+    _triggered = true;
+
     _this.settings.openCallback();
-    
-    // Check if mobile device
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-    
-    if (isMobile) {
-      // Mobile: Use different approach
-      try {
-        // Get the iframe content
-        const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-        const printContent = iframeDoc.documentElement.outerHTML;
-        
-        // Store current body content
-        const originalContent = document.body.innerHTML;
-        const originalTitle = document.title;
-        
-        // Replace body with print content
-        document.body.innerHTML = printContent;
-        document.title = _this.settings.popTitle || document.title;
-        
-        // Trigger print
-        window.print();
 
+    var ua = navigator.userAgent;
+    var isMobileOrTablet = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua)
+      || (/Android/i.test(ua) && !/Mobile/i.test(ua));
 
-         // Force reload after print to restore the app
-        setTimeout(function() {
-          _this.settings.closeCallback();
-          location.reload();
-        }, 100);
+    if (!isMobileOrTablet) {
+      // Desktop: synchronous print — iframe is safe to remove immediately after.
+      iframe.contentWindow.focus();
+      iframe.contentWindow.print();
+      try { iframe.remove(); } catch (e) {}
+      _this.settings.closeCallback();
+      _this.removeCanvasImg();
+      return;
+    }
 
+    // Mobile / tablet:
+    // Problem 1 — iframeWin.print() without a real URL falls through to the
+    //             parent window on iOS Safari / Android Chrome → prints entire page.
+    // Problem 2 — mobile print() is async; removing iframe before the dialog
+    //             renders it causes a white screen.
+    // Solution  — serialize HTML to a Blob URL (gives iframe a real origin),
+    //             expand iframe to full screen, call print(), then wait for
+    //             afterprint before cleanup so the dialog has the content.
+    try {
+      var iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+      var html = '<!DOCTYPE html>' + iframeDoc.documentElement.outerHTML;
+      var blob    = new Blob([html], { type: 'text/html;charset=utf-8' });
+      var blobUrl = URL.createObjectURL(blob);
 
+      // Expand so mobile browser fully renders the iframe before printing.
+      iframe.style.position   = 'fixed';
+      iframe.style.top        = '0';
+      iframe.style.left       = '0';
+      iframe.style.width      = '100vw';
+      iframe.style.height     = '100vh';
+      iframe.style.zIndex     = '99999';
+      iframe.style.border     = '0';
+      iframe.style.background = '#fff';
 
-        
-        // Restore original content after print dialog closes
-        // Use setTimeout to allow print dialog to open first
+      iframe.onload = function () {
+        iframe.onload = null;
 
-        /*
-        setTimeout(function() {
-          document.body.innerHTML = originalContent;
-          document.title = originalTitle;
-          iframe.remove();
+        var iframeWin = iframe.contentWindow;
+
+        function cleanup () {
+          clearTimeout(safetyTimer);
+          iframeWin.removeEventListener('afterprint', onAfterPrint);
+          try { URL.revokeObjectURL(blobUrl); } catch (e) {}
+          try { iframe.remove(); } catch (e) {}
           _this.settings.closeCallback();
           _this.removeCanvasImg();
-        }, 100);
+        }
 
-        */
-        
-      } catch (e) {
-        console.error('Mobile print error:', e);
-        // Fallback to iframe print
+        // Wait for afterprint so the dialog has the iframe content before we remove it.
+        function onAfterPrint () { cleanup(); }
+        iframeWin.addEventListener('afterprint', onAfterPrint);
+
+        // Safety net: some Android WebViews never fire afterprint.
+        var safetyTimer = setTimeout(cleanup, 60000);
+
         iframeWin.focus();
         iframeWin.print();
-        iframe.remove();
-        _this.settings.closeCallback();
-        _this.removeCanvasImg();
-      }
-    } else {
-      // Desktop: Use iframe print
-      iframeWin.focus();
-      iframeWin.print();
-      iframe.remove();
+      };
+
+      iframe.src = blobUrl;
+
+    } catch (e) {
+      console.error('Print error:', e);
+      try { iframe.remove(); } catch (ex) {}
       _this.settings.closeCallback();
       _this.removeCanvasImg();
     }
-  }
-  
+  };
+
   _this.settings.beforeOpenCallback();
   _this.addEvent(iframe, 'load', function () {
-    _loaded();
+    _firstLoad();
   });
 }
 
@@ -225,28 +237,16 @@ print (ifrmae) {
         extraHead += m;
       });
     }
-    // 复制所有link标签
-    [].forEach.call(document.querySelectorAll('link'), function (item) {
-      if (item.href.indexOf('.css') >= 0) {
-        links += `<link type="text/css" rel="stylesheet" href="${item.href}" >`;
+    // Copy all <link rel="stylesheet"> tags by reference (no rule iteration — fast for large CSS)
+    document.querySelectorAll('link[rel="stylesheet"]').forEach(function (item) {
+      if (item.href) {
+        links += `<link type="text/css" rel="stylesheet" href="${item.href}">`;
       }
     });
-    // 循环获取style标签的样式
-    let domStyle = document.styleSheets;
-    if (domStyle && domStyle.length > 0) {
-      for (let i = 0; i < domStyle.length; i++) {
-        try {
-          if (domStyle[i].cssRules || domStyle[i].rules) {
-            let rules = domStyle[i].cssRules || domStyle[i].rules;
-            for (let b = 0; b < rules.length; b++) {
-              style += rules[b].cssText;
-            }
-          }
-        } catch (e) {
-          console.log(domStyle[i].href + e);
-        }
-      }
-    }
+    // Clone all <style> tags directly — avoids iterating cssRules which is O(n rules) and very slow
+    document.querySelectorAll('style').forEach(function (item) {
+      style += item.textContent || '';
+    });
 
     if (this.settings.extraCss) {
       this.settings.extraCss.replace(/([^,\s]+)/g, (m) => {
