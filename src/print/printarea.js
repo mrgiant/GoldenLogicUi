@@ -118,7 +118,7 @@ print (ifrmae) {
       || (/Android/i.test(ua) && !/Mobile/i.test(ua));
 
     if (!isMobileOrTablet) {
-      // Desktop: synchronous print — iframe is safe to remove immediately after.
+      // Desktop: iframeWin.print() is scoped to the iframe — works reliably.
       iframe.contentWindow.focus();
       iframe.contentWindow.print();
       try { iframe.remove(); } catch (e) {}
@@ -128,58 +128,67 @@ print (ifrmae) {
     }
 
     // Mobile / tablet:
-    // Problem 1 — iframeWin.print() without a real URL falls through to the
-    //             parent window on iOS Safari / Android Chrome → prints entire page.
-    // Problem 2 — mobile print() is async; removing iframe before the dialog
-    //             renders it causes a white screen.
-    // Solution  — serialize HTML to a Blob URL (gives iframe a real origin),
-    //             expand iframe to full screen, call print(), then wait for
-    //             afterprint before cleanup so the dialog has the content.
+    // All CSS tricks (visibility, display, @media print) are unreliable on
+    // Android Chrome because app styles fight back and because Android Chrome
+    // snapshots the page BEFORE the print dialog opens.
+    //
+    // iframeWin.print() on Android always triggers the PARENT window dialog.
+    //
+    // The only reliable fix: open a REAL new window (done synchronously in the
+    // click handler in print.js — before any async code — so popup blocker
+    // doesn't trigger), write the print HTML into it, then print that window.
+
+    var pw = _this.settings.mobileWindow;
+    if (!pw || pw.closed) {
+      // mobileWindow missing or closed — last resort fallback
+      console.warn('Print: mobile window unavailable, falling back to iframe print');
+      iframe.contentWindow.focus();
+      iframe.contentWindow.print();
+      try { iframe.remove(); } catch (e) {}
+      _this.settings.closeCallback();
+      _this.removeCanvasImg();
+      return;
+    }
+
     try {
       var iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
       var html = '<!DOCTYPE html>' + iframeDoc.documentElement.outerHTML;
-      var blob    = new Blob([html], { type: 'text/html;charset=utf-8' });
-      var blobUrl = URL.createObjectURL(blob);
 
-      // Expand so mobile browser fully renders the iframe before printing.
-      iframe.style.position   = 'fixed';
-      iframe.style.top        = '0';
-      iframe.style.left       = '0';
-      iframe.style.width      = '100vw';
-      iframe.style.height     = '100vh';
-      iframe.style.zIndex     = '99999';
-      iframe.style.border     = '0';
-      iframe.style.background = '#fff';
+      pw.document.open();
+      pw.document.write(html);
+      pw.document.close();
 
-      iframe.onload = function () {
-        iframe.onload = null;
-
-        var iframeWin = iframe.contentWindow;
-
-        function cleanup () {
-          clearTimeout(safetyTimer);
-          iframeWin.removeEventListener('afterprint', onAfterPrint);
-          try { URL.revokeObjectURL(blobUrl); } catch (e) {}
+      // Wait for the new window to finish loading before printing
+      pw.onload = function () {
+        pw.onload = null;
+        pw.focus();
+        pw.print();
+        // Close after a short delay so the print dialog has fully opened
+        setTimeout(function () {
+          try { pw.close(); } catch (e) {}
           try { iframe.remove(); } catch (e) {}
           _this.settings.closeCallback();
           _this.removeCanvasImg();
-        }
-
-        // Wait for afterprint so the dialog has the iframe content before we remove it.
-        function onAfterPrint () { cleanup(); }
-        iframeWin.addEventListener('afterprint', onAfterPrint);
-
-        // Safety net: some Android WebViews never fire afterprint.
-        var safetyTimer = setTimeout(cleanup, 60000);
-
-        iframeWin.focus();
-        iframeWin.print();
+        }, 500);
       };
 
-      iframe.src = blobUrl;
+      // Fallback: if onload never fires (already loaded)
+      setTimeout(function () {
+        if (pw && !pw.closed) {
+          pw.focus();
+          pw.print();
+          setTimeout(function () {
+            try { pw.close(); } catch (e) {}
+            try { iframe.remove(); } catch (e) {}
+            _this.settings.closeCallback();
+            _this.removeCanvasImg();
+          }, 500);
+        }
+      }, 1500);
 
     } catch (e) {
       console.error('Print error:', e);
+      try { pw && pw.close(); } catch (ex) {}
       try { iframe.remove(); } catch (ex) {}
       _this.settings.closeCallback();
       _this.removeCanvasImg();
