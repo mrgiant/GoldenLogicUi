@@ -107,97 +107,58 @@ print (ifrmae) {
   var iframe = document.getElementById(this.settings.id) || ifrmae.f;
   var _triggered = false;
 
-  var _firstLoad = function () {
+  var _loaded = function () {
     if (_triggered) return;
     _triggered = true;
 
     _this.settings.openCallback();
 
-    var ua = navigator.userAgent;
-    var isMobileOrTablet = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua)
-      || (/Android/i.test(ua) && !/Mobile/i.test(ua));
+    var iframeWin = iframe.contentWindow;
+    var _done = false;
 
-    if (!isMobileOrTablet) {
-      // Desktop: iframeWin.print() is scoped to the iframe — works reliably.
-      iframe.contentWindow.focus();
-      iframe.contentWindow.print();
-      try { iframe.remove(); } catch (e) {}
+    function _cleanUp () {
+      if (_done) return;
+      _done = true;
+      clearTimeout(_safetyTimer);
+      iframeWin.removeEventListener('afterprint', _cleanUp);
+      // Fallback: also remove window-level listeners
+      window.removeEventListener('focus', _onWindowFocus);
       _this.settings.closeCallback();
+      try { iframe.remove(); } catch (e) {}
       _this.removeCanvasImg();
-      return;
     }
 
-    // Mobile / tablet:
-    // All CSS tricks (visibility, display, @media print) are unreliable on
-    // Android Chrome because app styles fight back and because Android Chrome
-    // snapshots the page BEFORE the print dialog opens.
-    //
-    // iframeWin.print() on Android always triggers the PARENT window dialog.
-    //
-    // The only reliable fix: open a REAL new window (done synchronously in the
-    // click handler in print.js — before any async code — so popup blocker
-    // doesn't trigger), write the print HTML into it, then print that window.
+    // Primary: afterprint fires on the iframe's contentWindow when the print
+    // dialog closes (including after PDF save). This is the correct target —
+    // focus goes window → iframe → dialog → iframe, so window never gets focus.
+    iframeWin.addEventListener('afterprint', _cleanUp);
 
-    var pw = _this.settings.mobileWindow;
-    if (!pw || pw.closed) {
-      // mobileWindow missing or closed — last resort fallback
-      console.warn('Print: mobile window unavailable, falling back to iframe print');
-      iframe.contentWindow.focus();
-      iframe.contentWindow.print();
-      try { iframe.remove(); } catch (e) {}
-      _this.settings.closeCallback();
-      _this.removeCanvasImg();
-      return;
+    // Fallback 1: some browsers fire afterprint on the parent window instead
+    function _onWindowFocus () {
+      // Delay slightly so we don't fire before the dialog fully opens
+      setTimeout(_cleanUp, 300);
     }
+    window.addEventListener('focus', _onWindowFocus);
+
+    // Fallback 2: safety net if neither event fires (old Android WebView)
+    var _safetyTimer = setTimeout(_cleanUp, 60000);
 
     try {
-      var iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-      var html = '<!DOCTYPE html>' + iframeDoc.documentElement.outerHTML;
-
-      pw.document.open();
-      pw.document.write(html);
-      pw.document.close();
-
-      // Wait for the new window to finish loading before printing
-      pw.onload = function () {
-        pw.onload = null;
-        pw.focus();
-        pw.print();
-        // Close after a short delay so the print dialog has fully opened
-        setTimeout(function () {
-          try { pw.close(); } catch (e) {}
-          try { iframe.remove(); } catch (e) {}
-          _this.settings.closeCallback();
-          _this.removeCanvasImg();
-        }, 500);
-      };
-
-      // Fallback: if onload never fires (already loaded)
+      iframe.focus();
+      // 1000ms delay — gives mobile browsers time to fully render the iframe
+      // content before the print dialog opens (same as js/print.js).
       setTimeout(function () {
-        if (pw && !pw.closed) {
-          pw.focus();
-          pw.print();
-          setTimeout(function () {
-            try { pw.close(); } catch (e) {}
-            try { iframe.remove(); } catch (e) {}
-            _this.settings.closeCallback();
-            _this.removeCanvasImg();
-          }, 500);
-        }
-      }, 1500);
-
+        iframeWin.print();
+      }, 1000);
     } catch (e) {
       console.error('Print error:', e);
-      try { pw && pw.close(); } catch (ex) {}
-      try { iframe.remove(); } catch (ex) {}
-      _this.settings.closeCallback();
-      _this.removeCanvasImg();
+      _cleanUp();
     }
   };
 
   _this.settings.beforeOpenCallback();
   _this.addEvent(iframe, 'load', function () {
-    _firstLoad();
+    _loaded();
   });
 }
 
@@ -440,21 +401,41 @@ print (ifrmae) {
   }
   iframeBox (frameId, url) {
     let iframe = document.createElement('iframe');
-    iframe.style.border = '0px';
-    iframe.style.position = 'absolute';
-    iframe.style.width = '0px';
-    iframe.style.height = '0px';
-    iframe.style.right = '0px';
-    iframe.style.top = '0px';
+    let ua = navigator.userAgent;
+    let isMobileOrTablet = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua)
+      || (/Android/i.test(ua) && !/Mobile/i.test(ua));
+
+    if (isMobileOrTablet) {
+      // Android Chrome / iOS Safari refuse to scope contentWindow.print() to a
+      // zero-size iframe — they fall back to printing the parent window instead.
+      // Fix (same as js/init.js does for Firefox): give the iframe real dimensions
+      // but hide it visually with opacity:0 so the browser fully renders it.
+      iframe.setAttribute('style',
+        'width:1px;height:100px;position:fixed;left:0;top:0;opacity:0;border:0;margin:0;padding:0;'
+      );
+    } else {
+      iframe.style.border    = '0px';
+      iframe.style.position  = 'absolute';
+      iframe.style.width     = '0px';
+      iframe.style.height    = '0px';
+      iframe.style.right     = '0px';
+      iframe.style.top       = '0px';
+    }
+
     iframe.setAttribute('id', frameId);
-    iframe.setAttribute('src', url);
+
+    if (url) {
+      iframe.setAttribute('src', url);
+    } else {
+      // srcdoc gives the iframe a real about:srcdoc origin so contentWindow.print()
+      // is properly scoped on all browsers (timestamp src was a broken relative URL).
+      iframe.setAttribute('srcdoc', '<!DOCTYPE html><html><head></head><body></body></html>');
+    }
 
     return iframe
   }
   Iframe (url) {
     let frameId = this.settings.id;
-    // 局部打印 用当前的时间做ifrmae的url
-    url = !url ? new Date().getTime() : url
     let _this = this
 
     let iframe = this.iframeBox(frameId, url)

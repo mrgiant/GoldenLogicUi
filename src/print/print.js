@@ -21,10 +21,6 @@ const addEvent = (element, type, callback) => {
   }
 }
 
-const isMobileOrTablet = () =>
-  /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
-  || (/Android/i.test(navigator.userAgent) && !/Mobile/i.test(navigator.userAgent));
-
 export default {
   directiveName: 'print',
   mounted (el, binding, vnode) {
@@ -43,24 +39,13 @@ export default {
         window.print();
         return;
       }
-
-      // On mobile/tablet, window.open() MUST be called synchronously inside
-      // the click handler — Android Chrome blocks it if called from async code
-      // (e.g. inside an iframe load callback). We open the window here, pass
-      // it to Print, which writes the content and calls printWindow.print().
-      let mobileWindow = null;
-      if (isMobileOrTablet() && !binding.value.preview) {
-        mobileWindow = window.open('', '_blank');
-      }
-
-      localPrint(mobileWindow);
+      localPrint();
     });
 
-    const localPrint = (mobileWindow) => {
+    const localPrint = () => {
       new Print({
         ids: id,
         vue,
-        mobileWindow,                              // pre-opened window for mobile
         url: binding.value.url,
         standard: '',
         extraHead: binding.value.extraHead,
