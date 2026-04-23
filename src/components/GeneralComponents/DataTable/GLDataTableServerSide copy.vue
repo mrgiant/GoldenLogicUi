@@ -1,6 +1,6 @@
 <template>
   <DynamicConfirmation ref="ConfirmationDelete"></DynamicConfirmation>
-  <div class="p-0">
+<div class="p-0">
     <div class="flex flex-col flex-wrap gap-4 pb-4 xl:flex-row xl:items-center xl:justify-between">
       <div class="flex items-center gap-2">
         <span class="font-medium"> {{ language?.show ?? "Show" }} </span>
@@ -276,7 +276,7 @@ import DynamicConfirmation from "/src/components/GeneralComponents/DynamicConfir
 
 import GlToast from "/src/Stores/toast.js";
 import * as XLSX from 'xlsx';
-import print, { triggerPrint } from '/src/print/print.js';
+import { printJS } from '/src/print/printJS.js';
 
 export default {
   components: {
@@ -328,30 +328,6 @@ export default {
 
     return {
       Random_string: randomString,
-      printObj: {
-        id: "print_" + randomString,
-        popTitle: "",
-        extraHead: '<meta charset="UTF-8">,<meta name="viewport"content="width=device-width">,<meta http-equiv="X-UA-Compatible" content="ie=edge">',
-
-        beforeOpenCallback(vue) {
-
-
-        },
-        openCallback(vue) {
-
-          vue.isLoadinPrint = false;
-
-
-        },
-        closeCallback(vue) {
-
-         
-          vue.columnVisibility['action'] = true;
-
-          vue.isLoadinPrint = false;
-
-        }
-      },
       checkedIds: [],
       dynamicFilters: {},
       dynamicQueryString: {},
@@ -433,8 +409,13 @@ export default {
       this.columnVisibility['action'] = false;
       this.isLoadinPrint = true;
 
+      // On mobile, window.open() MUST be called synchronously inside the click
+      // handler — popup blockers reject it from async callbacks.
+      const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+      const mobileWin = isMobile ? window.open('', '_blank') : null;
+
       this.$nextTick(() => {
-        triggerPrint(this.printObj, this);
+        this.printTable(mobileWin);
       });
     },
 
@@ -678,7 +659,66 @@ export default {
 
       // Trigger the download of the Excel file
       XLSX.writeFile(wb, fileName);
+    },
 
+    printTable(mobileWin = null) {
+      const table = document.querySelector('#table' + this.Random_string);
+
+      const headers = Array.from(table.querySelectorAll('thead th'))
+        .map(th => th.innerText);
+
+      const headersToExclude = ['', 'action'];
+      const excludeIndices = headers
+        .map((header, index) => headersToExclude.includes(header) ? index : -1)
+        .filter(index => index !== -1);
+
+      // Build properties from visible headers (same exclude logic as exportToExcel)
+      const properties = headers
+        .filter((_, index) => !excludeIndices.includes(index))
+        .map(header => ({ field: header, displayName: header }));
+
+      // Build JSON rows from tbody
+      const data = Array.from(table.querySelectorAll('tbody tr')).map(tr => {
+        const cells = Array.from(tr.querySelectorAll('td')).map(td => td.innerText);
+        const filtered = cells.filter((_, index) => !excludeIndices.includes(index));
+        const row = {};
+        properties.forEach((prop, i) => { row[prop.field] = filtered[i] ?? ''; });
+        return row;
+      });
+
+      printJS({
+        printable: data,
+        type: 'json',
+        properties,
+        documentTitle: '',
+        repeatTableHeader: true,
+        gridHeaderStyle: 'font-weight:600;font-size:13px;color:#4b5563;background-color:#f9fafb;padding:10px 16px;border:1px solid #e5e7eb;text-align:left;white-space:nowrap;',
+        gridStyle: 'font-size:13px;color:#6b7280;padding:10px 16px;border:1px solid #e5e7eb;',
+        mobileWin,
+        onPrintDialogClose: () => {
+          this.isLoadinPrint = false;
+        },
+      });
+    },
+
+
+     printTableHTML(mobileWin = null) {
+      const table = document.querySelector('#table' + this.Random_string);
+
+      
+      printJS({
+        printable: 'table' + this.Random_string,
+        type: 'html',
+       // properties,
+        documentTitle: '',
+        repeatTableHeader: true,
+        gridHeaderStyle: 'font-weight:600;font-size:13px;color:#4b5563;background-color:#f9fafb;padding:10px 16px;border:1px solid #e5e7eb;text-align:left;white-space:nowrap;',
+        gridStyle: 'font-size:13px;color:#6b7280;padding:10px 16px;border:1px solid #e5e7eb;',
+        mobileWin,
+        onPrintDialogClose: () => {
+          this.isLoadinPrint = false;
+        },
+      });
     },
 
 
@@ -735,21 +775,15 @@ export default {
     }
 
   },
-  directives: {
-    print,
-  },
 };
 </script>
 
 <style scoped>
 @media print {
-  
+  @page {
+    size: A4 landscape;
 
-   @page {
-           /* size: A4 landscape; */
-            size: A4;
-            margin: 20px 20px 20px 20px; 
-        }
+  }
 
 
 
@@ -763,27 +797,9 @@ export default {
     page-break-inside: avoid;
   }
 
-  
-
   .td_overflow_auto {
     overflow: visible !important;
     max-height: none !important;
   }
-
-           tfoot { display: table-footer-group; }
-            .no-print { display: none !important; }
-            html, body { width: 210mm; height: 297mm; }
-             .page { page-break-after: always; }
-
-        td { white-space: normal !important; word-wrap: break-word; }
-        table { table-layout: fixed; }
-
-        td > div > div
-        {
-          white-space: normal !important; word-wrap: break-word !important;
-        }
-
-
-  
 }
 </style>

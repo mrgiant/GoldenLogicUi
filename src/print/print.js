@@ -20,58 +20,47 @@ const addEvent = (element, type, callback) => {
     element['on' + type] = callback;
   }
 }
+export function triggerPrint(value, vue) {
+  let id = '';
+  if (typeof value === 'string') {
+    id = value;
+  } else if (typeof value === 'object' && !!value.id) {
+    id = value.id;
+    let ids = id.replace(new RegExp("#", "g"), '');
+    let elsdom = document.getElementById(ids);
+    if (!elsdom) { console.log("id in Error"); return; }
+  } else {
+    window.print();
+    return;
+  }
+  new Print({
+    ids: id,
+    vue,
+    url: value.url,
+    standard: '',
+    extraHead: value.extraHead,
+    extraCss: value.extraCss,
+    zIndex: value.zIndex || 20002,
+    previewTitle: value.previewTitle || '打印预览',
+    previewPrintBtnLabel: value.previewPrintBtnLabel || '打印',
+    popTitle: value.popTitle,
+    preview: value.preview || false,
+    asyncUrl: value.asyncUrl,
+    previewBeforeOpenCallback() { value.previewBeforeOpenCallback && value.previewBeforeOpenCallback(vue) },
+    previewOpenCallback() { value.previewOpenCallback && value.previewOpenCallback(vue) },
+    openCallback() { value.openCallback && value.openCallback(vue) },
+    closeCallback() { value.closeCallback && value.closeCallback(vue) },
+    beforeOpenCallback() { value.beforeOpenCallback && value.beforeOpenCallback(vue) },
+  });
+}
 
 export default {
   directiveName: 'print',
-  mounted (el, binding, vnode) {
+  mounted (el, binding) {
     let vue = binding.instance;
-    let id = '';
 
     addEvent(el, 'click', () => {
-      if (typeof binding.value === 'string') {
-        id = binding.value;
-      } else if (typeof binding.value === 'object' && !!binding.value.id) {
-        id = binding.value.id;
-        let ids = id.replace(new RegExp("#", "g"), '');
-        let elsdom = document.getElementById(ids);
-        if (!elsdom) { console.log("id in Error"); id = ''; }
-      } else {
-        window.print();
-        return;
-      }
-      localPrint();
+      triggerPrint(binding.value, vue);
     });
-
-    const localPrint = () => {
-      new Print({
-        ids: id,
-        vue,
-        url: binding.value.url,
-        standard: '',
-        extraHead: binding.value.extraHead,
-        extraCss: binding.value.extraCss,
-        zIndex: binding.value.zIndex || 20002,
-        previewTitle: binding.value.previewTitle || '打印预览',
-        previewPrintBtnLabel: binding.value.previewPrintBtnLabel || '打印',
-        popTitle: binding.value.popTitle,
-        preview: binding.value.preview || false,
-        asyncUrl: binding.value.asyncUrl,
-        previewBeforeOpenCallback () {
-          binding.value.previewBeforeOpenCallback && binding.value.previewBeforeOpenCallback(vue)
-        },
-        previewOpenCallback () {
-          binding.value.previewOpenCallback && binding.value.previewOpenCallback(vue)
-        },
-        openCallback () {
-          binding.value.openCallback && binding.value.openCallback(vue)
-        },
-        closeCallback () {
-          binding.value.closeCallback && binding.value.closeCallback(vue)
-        },
-        beforeOpenCallback () {
-          binding.value.beforeOpenCallback && binding.value.beforeOpenCallback(vue)
-        }
-      });
-    };
   }
 };

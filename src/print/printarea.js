@@ -104,58 +104,76 @@ export default class {
 
 print (ifrmae) {
   var _this = this;
-  var iframe = document.getElementById(this.settings.id) || ifrmae.f;
-  var _triggered = false;
-
+  let iframe = document.getElementById(this.settings.id) || ifrmae.f;
+  let iframeWin = document.getElementById(this.settings.id).contentWindow || ifrmae.f.contentWindow;
+  
   var _loaded = function () {
-    if (_triggered) return;
-    _triggered = true;
-
     _this.settings.openCallback();
+    
+    // Check if mobile device
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    
+    if (isMobile) {
+      // Mobile: Use different approach
+      try {
+        // Get the iframe content
+        const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+        const printContent = iframeDoc.documentElement.outerHTML;
+        
+        // Store current body content
+        const originalContent = document.body.innerHTML;
+        const originalTitle = document.title;
+        
+        // Replace body with print content
+        document.body.innerHTML = printContent;
+        document.title = _this.settings.popTitle || document.title;
+        
+        // Trigger print
+        window.print();
 
-    var iframeWin = iframe.contentWindow;
-    var _done = false;
 
-    function _cleanUp () {
-      if (_done) return;
-      _done = true;
-      clearTimeout(_safetyTimer);
-      iframeWin.removeEventListener('afterprint', _cleanUp);
-      // Fallback: also remove window-level listeners
-      window.removeEventListener('focus', _onWindowFocus);
+         // Force reload after print to restore the app
+        setTimeout(function() {
+          _this.settings.closeCallback();
+          location.reload();
+        }, 100);
+
+
+
+        
+        // Restore original content after print dialog closes
+        // Use setTimeout to allow print dialog to open first
+
+        /*
+        setTimeout(function() {
+          document.body.innerHTML = originalContent;
+          document.title = originalTitle;
+          iframe.remove();
+          _this.settings.closeCallback();
+          _this.removeCanvasImg();
+        }, 100);
+
+        */
+        
+      } catch (e) {
+        console.error('Mobile print error:', e);
+        // Fallback to iframe print
+        iframeWin.focus();
+        iframeWin.print();
+        iframe.remove();
+        _this.settings.closeCallback();
+        _this.removeCanvasImg();
+      }
+    } else {
+      // Desktop: Use iframe print
+      iframeWin.focus();
+      iframeWin.print();
+      iframe.remove();
       _this.settings.closeCallback();
-      try { iframe.remove(); } catch (e) {}
       _this.removeCanvasImg();
     }
-
-    // Primary: afterprint fires on the iframe's contentWindow when the print
-    // dialog closes (including after PDF save). This is the correct target —
-    // focus goes window → iframe → dialog → iframe, so window never gets focus.
-    iframeWin.addEventListener('afterprint', _cleanUp);
-
-    // Fallback 1: some browsers fire afterprint on the parent window instead
-    function _onWindowFocus () {
-      // Delay slightly so we don't fire before the dialog fully opens
-      setTimeout(_cleanUp, 300);
-    }
-    window.addEventListener('focus', _onWindowFocus);
-
-    // Fallback 2: safety net if neither event fires (old Android WebView)
-    var _safetyTimer = setTimeout(_cleanUp, 60000);
-
-    try {
-      iframe.focus();
-      // 1000ms delay — gives mobile browsers time to fully render the iframe
-      // content before the print dialog opens (same as js/print.js).
-      setTimeout(function () {
-        iframeWin.print();
-      }, 1000);
-    } catch (e) {
-      console.error('Print error:', e);
-      _cleanUp();
-    }
-  };
-
+  }
+  
   _this.settings.beforeOpenCallback();
   _this.addEvent(iframe, 'load', function () {
     _loaded();
@@ -207,16 +225,28 @@ print (ifrmae) {
         extraHead += m;
       });
     }
-    // Copy all <link rel="stylesheet"> tags by reference (no rule iteration — fast for large CSS)
-    document.querySelectorAll('link[rel="stylesheet"]').forEach(function (item) {
-      if (item.href) {
-        links += `<link type="text/css" rel="stylesheet" href="${item.href}">`;
+    // 复制所有link标签
+    [].forEach.call(document.querySelectorAll('link'), function (item) {
+      if (item.href.indexOf('.css') >= 0) {
+        links += `<link type="text/css" rel="stylesheet" href="${item.href}" >`;
       }
     });
-    // Clone all <style> tags directly — avoids iterating cssRules which is O(n rules) and very slow
-    document.querySelectorAll('style').forEach(function (item) {
-      style += item.textContent || '';
-    });
+    // 循环获取style标签的样式
+    let domStyle = document.styleSheets;
+    if (domStyle && domStyle.length > 0) {
+      for (let i = 0; i < domStyle.length; i++) {
+        try {
+          if (domStyle[i].cssRules || domStyle[i].rules) {
+            let rules = domStyle[i].cssRules || domStyle[i].rules;
+            for (let b = 0; b < rules.length; b++) {
+              style += rules[b].cssText;
+            }
+          }
+        } catch (e) {
+          console.log(domStyle[i].href + e);
+        }
+      }
+    }
 
     if (this.settings.extraCss) {
       this.settings.extraCss.replace(/([^,\s]+)/g, (m) => {
@@ -401,41 +431,21 @@ print (ifrmae) {
   }
   iframeBox (frameId, url) {
     let iframe = document.createElement('iframe');
-    let ua = navigator.userAgent;
-    let isMobileOrTablet = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua)
-      || (/Android/i.test(ua) && !/Mobile/i.test(ua));
-
-    if (isMobileOrTablet) {
-      // Android Chrome / iOS Safari refuse to scope contentWindow.print() to a
-      // zero-size iframe — they fall back to printing the parent window instead.
-      // Fix (same as js/init.js does for Firefox): give the iframe real dimensions
-      // but hide it visually with opacity:0 so the browser fully renders it.
-      iframe.setAttribute('style',
-        'width:1px;height:100px;position:fixed;left:0;top:0;opacity:0;border:0;margin:0;padding:0;'
-      );
-    } else {
-      iframe.style.border    = '0px';
-      iframe.style.position  = 'absolute';
-      iframe.style.width     = '0px';
-      iframe.style.height    = '0px';
-      iframe.style.right     = '0px';
-      iframe.style.top       = '0px';
-    }
-
+    iframe.style.border = '0px';
+    iframe.style.position = 'absolute';
+    iframe.style.width = '0px';
+    iframe.style.height = '0px';
+    iframe.style.right = '0px';
+    iframe.style.top = '0px';
     iframe.setAttribute('id', frameId);
-
-    if (url) {
-      iframe.setAttribute('src', url);
-    } else {
-      // srcdoc gives the iframe a real about:srcdoc origin so contentWindow.print()
-      // is properly scoped on all browsers (timestamp src was a broken relative URL).
-      iframe.setAttribute('srcdoc', '<!DOCTYPE html><html><head></head><body></body></html>');
-    }
+    iframe.setAttribute('src', url);
 
     return iframe
   }
   Iframe (url) {
     let frameId = this.settings.id;
+    // 局部打印 用当前的时间做ifrmae的url
+    url = !url ? new Date().getTime() : url
     let _this = this
 
     let iframe = this.iframeBox(frameId, url)
