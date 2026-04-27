@@ -355,11 +355,7 @@ export default {
 
 <style scoped>
 @media print {
-  @page {
-    size: A4 landscape;
-
-  }
-
+   @page { size: auto; margin: 20px 20px 20px 20px;  }
 
 
 

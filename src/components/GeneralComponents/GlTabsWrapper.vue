@@ -52,6 +52,10 @@ const props = defineProps({
     type: String,
     default: '',
   },
+  activeTab: {
+    type: String,
+    default: '',
+  },
 });
 const emit = defineEmits(['TabChange']);
 const slots = useSlots();
@@ -120,9 +124,20 @@ watch(selectedTitle, (newTitle) => {
   handleTabChange(newTitle);
 });
 
+// Parent-driven updates via :activeTab prop
+watch(() => props.activeTab, (newTitle) => {
+  if (newTitle && newTitle !== selectedTitle.value) {
+    setActiveTab(newTitle);
+  }
+});
+
 
 onMounted(() => {
   updateTabFromHash();
+  // If hash didn't resolve a tab, fall back to the activeTab prop
+  if (!selectedTitle.value && props.activeTab) {
+    setActiveTab(props.activeTab);
+  }
   window.addEventListener('hashchange', updateTabFromHash);
 });
 
