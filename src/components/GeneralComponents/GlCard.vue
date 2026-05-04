@@ -1,9 +1,9 @@
 <template>
-  <div class="flex flex-col gap-9" :class="cardClass">
+  <div  :class="cardClass">
     <div
       class="bg-white border rounded-lg  shadow-default dark:bg-gray-900 dark:border-gray-700"
     >
-      <div class="px-3 py-4 border-b  dark:border-gray-700">
+      <div v-if="$slots.header" class="px-3 py-4 border-b  dark:border-gray-700">
         <h3 class="font-semibold text-black dark:text-white">
           <slot name="header"></slot>
         </h3>
