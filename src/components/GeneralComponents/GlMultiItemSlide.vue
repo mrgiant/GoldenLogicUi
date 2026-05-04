@@ -11,7 +11,7 @@
 
                
 
-                v-if="dotsNum > 0 && !hide_arrow && slider_arrows_indicators_position == 'arrows_outside_slider'">
+                v-if="dotsNum > 1 && !hide_arrow && slider_arrows_indicators_position == 'arrows_outside_slider'">
 
                 <div class="w-full">
 
@@ -43,7 +43,7 @@
                 <ul   class="flex duration-700 ease-in-out " :id="'slider_' + Random_string" :class="elements_to_show_prop==1 || this.elementsToShow==1 ?'':'gap-7'">
 
                     <div class="items-center justify-center hidden arrow_button xl:flex xxl:flex md:flex sm:flex"
-                        v-if=" dotsNum > 0 && !hide_arrow && slider_arrows_indicators_position == 'arrows_indicators_inside_slider'"  :class="direction_property == 'rtl' ? 'arrow_button_next':'arrow_button_prev'">
+                        v-if=" dotsNum > 1 && !hide_arrow && slider_arrows_indicators_position == 'arrows_indicators_inside_slider'"  :class="direction_property == 'rtl' ? 'arrow_button_next':'arrow_button_prev'">
 
                         <div class="w-full">
 
@@ -71,7 +71,7 @@
 
 
                     <div class="items-center justify-center hidden xl:flex xxl:flex md:flex sm:flex arrow_button"
-                        v-if="dotsNum > 0 && !hide_arrow && slider_arrows_indicators_position == 'arrows_indicators_inside_slider'" :class="direction_property == 'rtl' ? 'arrow_button_prev':'arrow_button_next'">
+                        v-if="dotsNum > 1 && !hide_arrow && slider_arrows_indicators_position == 'arrows_indicators_inside_slider'" :class="direction_property == 'rtl' ? 'arrow_button_prev':'arrow_button_next'">
                         <div class="w-full">
 
                             <button class="p-3 rounded-full shadow-lg arrow_button_styles" v-on:click.stop="next()">
@@ -97,7 +97,7 @@
                 </ul>
 
                 <div class="flex justify-center mb-1 space-x-1 " :class="sliderIndicatorsAction()"
-                    v-if="slider_arrows_indicators_position != 'arrows_indicators_below_slider'">
+                    v-if="dotsNum > 1 && slider_arrows_indicators_position != 'arrows_indicators_below_slider'">
 
                     <button role="button" class="gl-dot" v-for="i in dotsNum" :key="i" v-on:click="setDot(i)"
                         :class="{ 'active': currentDot == i }"><span></span></button>
@@ -106,7 +106,7 @@
 
 
                 <div class="flex justify-between pl-5 pr-5"
-                    v-if="slider_arrows_indicators_position == 'arrows_indicators_below_slider'">
+                    v-if="dotsNum > 1 && slider_arrows_indicators_position == 'arrows_indicators_below_slider'">
 
                     <div class="flex justify-center mb-1 space-x-1 " :class="sliderIndicatorsAction()">
 
@@ -117,7 +117,7 @@
 
 
 
-                    <div class="flex" v-if="dotsNum > 0" >
+                    <div class="flex">
 
                         <div class="flex items-center">
 
@@ -190,7 +190,7 @@
 
 
             <div class="items-center hidden w-2/12 xl:flex xxl:flex md:flex sm:flex arrow_button"
-                v-if="dotsNum > 0 && !hide_arrow && slider_arrows_indicators_position == 'arrows_outside_slider'">
+                v-if="dotsNum > 1 && !hide_arrow && slider_arrows_indicators_position == 'arrows_outside_slider'">
                 <div class="w-full">
 
                     <button class="p-3 ml-5 rounded-full shadow-lg arrow_button_styles" v-on:click="next()">
@@ -296,19 +296,12 @@ export default {
         });
     },
 
-    beforeDestroy() {
-        // Remove resize event listener
-        window.removeEventListener("resize", this.resizeHandler);
-        // Clear auto play timer
-        this.stopAutoPlay();
-    },
-
     beforeUnmount() {
-        // Disconnect the observer when the component is destroyed
+        window.removeEventListener("resize", this.resizeHandler);
         if (this.mutationObserver) {
             this.mutationObserver.disconnect();
+            this.mutationObserver = null;
         }
-        // Clear auto play timer
         this.stopAutoPlay();
     },
 

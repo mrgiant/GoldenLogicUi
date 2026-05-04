@@ -1,7 +1,7 @@
 <template>
     <div
         v-if="notification.show"
-        class="fixed right-0 z-50 flex items-center p-4 m-5 mb-4 rounded-lg shadow-lg"
+        class="fixed right-0 z-999999 flex items-center p-4 m-5 mb-4 rounded-lg shadow-lg"
         :class="alertClasses"
         role="alert"
     >

@@ -207,6 +207,7 @@
 <script setup>
 import {
   ref,
+  shallowRef,
   watch,
   defineProps,
   defineEmits,
@@ -310,9 +311,8 @@ const props = defineProps({
 });
 
 const emit = defineEmits(["update:modelValue", "selected", "selectionChanged"]);
-const input_search = ref(null);
-const selected = ref({});
 
+const selected = ref({});
 const isSelectedOption = ref(false);
 
 const count = ref(0);
@@ -325,94 +325,78 @@ const page = ref(1);
 const lastPage = ref(null);
 const firstPage = ref(1);
 
-const filteredOptions = ref([]);
-const optionsValues = ref([]);
+// shallowRef avoids per-option deep reactivity proxies — large win for big lists
+const filteredOptions = shallowRef([]);
+const optionsValues = shallowRef([]);
 const customOptions = ref([]);
 
 const myDivDropDown = ref(null);
 const dropdownRef = ref(null);
 
+// ---------- leak guards / cancellation ----------
+let isUnmounted = false;
+let activeController = null;     // axios AbortController for in-flight pagination request
+let pendingFetchId = 0;          // generation counter — discard stale responses
+let searchDebounceTimer = null;
+
+const isAbortError = (err) =>
+  err?.name === "CanceledError" ||
+  err?.name === "AbortError" ||
+  (typeof axios !== "undefined" && axios.isCancel?.(err));
 
 
-
-
-const handleTabPressInput = (event) => {
-  console.log("Tab key pressed!", event.key);
-  if (event.key === "Tab") {
-    event.preventDefault(); // Prevent default tab behavior (optional)
-    console.log("Tab key pressed!");
-    showOptions();
-    // Call your method here
-  }
-};
-
-/** Fetch Data (Handles Both Scroll Directions) */
+/** Paginated fetch for server-side data, with cancellation + stale-response guard. */
 const fetchData = async (direction = "down") => {
-  if (isLoading.value) return;
+  if (isLoading.value || !props.api_url) return;
+
+  // Cancel any in-flight request before starting a new one
+  if (activeController) activeController.abort();
+  activeController = new AbortController();
+  const myFetchId = ++pendingFetchId;
 
   isLoading.value = true;
 
   try {
     const currentPage =
-      direction === "up" ? Math.max(page.value - 1, firstPage) : page.value;
+      direction === "up" ? Math.max(page.value - 1, firstPage.value) : page.value;
     const { data } = await axios.get(props.api_url, {
       params: { search: searchFilter.value, page: currentPage, per_page: 20 },
+      signal: activeController.signal,
     });
 
+    // Drop stale or post-unmount responses
+    if (isUnmounted || myFetchId !== pendingFetchId) return;
+
     if (!data || !data.data) {
-      isLoading.value = false;
       filteredOptions.value = [];
       return;
     }
 
-    let apiData = convertedDataOptions(data.data);
+    const apiData = convertedDataOptions(data.data);
 
     if (direction === "down") {
-      //filteredOptions.value=[];
-      filteredOptions.value.push(...apiData);
+      const next = filteredOptions.value.length
+        ? filteredOptions.value.concat(apiData)
+        : apiData;
+
+      // Re-pin a previously-resolved selection if it isn't on this page
+      const sel = selected.value;
+      if (
+        isObjectNotEmpty(sel) &&
+        sel.id !== undefined &&
+        sel.name &&
+        !next.some((o) => String(o.id) === String(sel.id))
+      ) {
+        next.unshift(sel);
+      }
+
+      filteredOptions.value = next;
       page.value++;
       lastPage.value = data.last_page;
-    } else if (direction === "up") {
-      // const prevHeight = dropdownRef.value?.scrollHeight || 0;
-      //filteredOptions.value.unshift(...apiData);
-      //filteredOptions.value.push(...apiData);
-      /*
-      page.value--;
-      await nextTick();
-      dropdownRef.value.scrollTop +=
-        dropdownRef.value.scrollHeight - prevHeight;
-        */
     }
 
     if (!lastPage.value) lastPage.value = data.last_page;
     if (!firstPage.value) firstPage.value = 1;
-
-    // to add the default selected value if not in the current list
-
-    const defaultOption = convertedOptionDefault();
-
-    
-
-    // 2. Ensure we actually have a selected value to check
-    if (defaultOption) {
-        
-        // 3. Check if this item already exists in the currently loaded options
-        // (Assuming 'value' is your unique ID key)
-        const existsInList = filteredOptions.value.some(
-            (option) => option.value === defaultOption.value
-        );
-
-        // 4. If it's NOT in the list, inject it manually
-        if (!existsInList) {
-            // We unshift (add to top) so the user sees their selection immediately
-            filteredOptions.value.unshift(defaultOption);
-        }
-
-        // 5. Sync the v-model / internal selected state
-        selected.value = defaultOption;
-
-        
-    }
 
 
 
@@ -424,28 +408,78 @@ const fetchData = async (direction = "down") => {
 
     
   } catch (error) {
+    if (isAbortError(error)) return;
     console.error("Error fetching data:", error);
+  } finally {
+    if (!isUnmounted && myFetchId === pendingFetchId) {
+      isLoading.value = false;
+      activeController = null;
+    }
   }
+};
 
-  isLoading.value = false;
+/** Fetch a single option by id via the existing `search` param. */
+const fetchOptionById = async (id) => {
+  if (!props.api_url || id === null || id === undefined || id === "") return null;
+  try {
+    const { data } = await axios.get(props.api_url, {
+      params: { search: id, per_page: 20 },
+    });
+    if (isUnmounted) return null;
+    const list = data?.data;
+    if (!list || !list.length) return null;
+    const idStr = String(id);
+    return (
+      convertedDataOptions(list).find((o) => String(o.id) === idStr) || null
+    );
+  } catch (error) {
+    if (isAbortError(error)) return null;
+    console.error("Error fetching option by id:", error);
+    return null;
+  }
+};
+
+/** Resolve modelValue to a full {id, name} object when using server-side data. */
+const resolveServerSelected = async (rawVal) => {
+  const id =
+    typeof rawVal === "object" && rawVal !== null ? rawVal.id : rawVal;
+  if (id === null || id === undefined || id === "") {
+    selected.value = {};
+    return;
+  }
+  const idStr = String(id);
+  const fromList = filteredOptions.value.find(
+    (item) => String(item.id) === idStr
+  );
+  if (fromList) {
+    selected.value = fromList;
+    return;
+  }
+  const fetched = await fetchOptionById(id);
+  if (isUnmounted) return;
+  if (fetched) {
+    selected.value = fetched;
+    if (!filteredOptions.value.some((o) => String(o.id) === String(fetched.id))) {
+      // shallowRef requires reassignment to trigger reactivity
+      filteredOptions.value = [fetched, ...filteredOptions.value];
+    }
+  } else if (props.allow_custom) {
+    selected.value = { id, name: id };
+  } else {
+    selected.value = { id, name: "" };
+  }
 };
 
 
 /** Infinite Scroll Handling */
 const handleScroll = (event) => {
-  if (!event.target) return;
-
-  const scrollTop = event.target.scrollTop;
-  const bottom =
-    event.target.scrollHeight - event.target.clientHeight <= scrollTop + 10;
-  const top = scrollTop <= 10;
-
-  if (bottom && page.value <= lastPage.value) {
+  const t = event.target;
+  if (!t) return;
+  if (
+    t.scrollHeight - t.clientHeight <= t.scrollTop + 10 &&
+    page.value <= lastPage.value
+  ) {
     fetchData("down");
-  }
-
-  if (top && page.value > firstPage.value) {
-    // fetchData("up");
   }
 };
 
@@ -474,36 +508,22 @@ const handleFocusChange = (event) => {
 };
 
 const showOptions = () => {
-  if (!props.show) {
-    if (optionsShown.value) {
-      optionsShown.value = false;
-
-      return;
-    }
-
-    searchFilter.value = "";
-    optionsShown.value = true;
-    if (props.api_url) {
-      if (filteredOptions.value.length === 0) {
-        fetchData("down");
-      }
-    }
-
-    nextTick(() => {
-    
-      //refs[props.field_name + "search" + uuid.value].focus();
-      var input_search_feild = document.getElementById(
-        `${props.field_name}search${uuid.value}`
-      );
-      if (input_search_feild) {
-        input_search_feild.focus();
-      }
-      // if(input_search.value)
-      //{
-      //   input_search.value.focus();
-      // }
-    });
+  if (props.show) return;
+  if (optionsShown.value) {
+    optionsShown.value = false;
+    return;
   }
+  searchFilter.value = "";
+  optionsShown.value = true;
+  if (props.api_url && filteredOptions.value.length === 0) {
+    fetchData("down");
+  }
+  nextTick(() => {
+    const el = document.getElementById(
+      `${props.field_name}search${uuid.value}`
+    );
+    if (el) el.focus();
+  });
 };
 
 const convertedOptionDefault = () => {
@@ -550,85 +570,68 @@ const convertedOptionDefault = () => {
 
 onMounted(() => {
   uuid.value = generateUUID();
-
-
   if (!props.show) {
-
-
-  
-
-
     document.body.addEventListener("click", clearData);
-   // document.addEventListener("keydown", preventEnterKey);
     document.addEventListener("focusin", handleFocusChange);
-    
   }
 });
 
 onBeforeUnmount(() => {
- 
-  
+  isUnmounted = true;
+  if (activeController) {
+    activeController.abort();
+    activeController = null;
+  }
+  if (searchDebounceTimer) {
+    clearTimeout(searchDebounceTimer);
+    searchDebounceTimer = null;
+  }
   document.body.removeEventListener("click", clearData);
- // document.removeEventListener("keydown", preventEnterKey);
   document.removeEventListener("focusin", handleFocusChange);
-  
 });
 
 function searchOptions() {
+  const all = optionsValues.value;
+  const max = props.maxItem;
+  const search = searchFilter.value;
+  if (!search) {
+    return all.length > max ? all.slice(0, max) : all;
+  }
+  const needle = search.toLowerCase();
   const filtered = [];
-  const safeSearch = searchFilter.value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  const regOption = new RegExp(safeSearch, "ig");
-  for (const option of optionsValues.value) {
-    const nameAsString = String(option.name);
-    if (searchFilter.value.length < 1 || nameAsString.match(regOption)) {
-      if (filtered.length < props.maxItem) filtered.push(option);
+  for (let i = 0, n = all.length; i < n && filtered.length < max; i++) {
+    const opt = all[i];
+    if (String(opt.name).toLowerCase().includes(needle)) {
+      filtered.push(opt);
     }
   }
   return filtered;
 }
 
 function handleKeyDown(e) {
-  const keysOfInterest = [
-    "ArrowLeft",
-    "ArrowUp",
-    "ArrowRight",
-    "ArrowDown",
-    "Enter",
-  ];
-  if (keysOfInterest.includes(e.key)) {
-    if (["ArrowUp", "ArrowDown"].includes(e.key)) {
-      e.preventDefault(); // Move this to prevent all keys of interest
-      
-    }
-
-    if (e.key === "ArrowDown" && props.posts === "") {
-      return;
-    }
-
-    selectPost(e.key);
-  } else {
-    // GetSearchSections();
+  switch (e.key) {
+    case "ArrowUp":
+    case "ArrowDown":
+      e.preventDefault();
+      selectPost(e.key);
+      break;
+    case "Enter":
+      selectPost(e.key);
+      break;
   }
 }
 
 function generateUUID() {
-  let dt = new Date().getTime();
-  const newUUID = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
-    /[xy]/g,
-    function (c) {
-      const r = (dt + Math.random() * 16) % 16 | 0;
-      dt = Math.floor(dt / 16);
-      return (c === "x" ? r : (r & 0x3) | 0x8).toString(16);
-    }
-  );
-  return newUUID;
+  if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
+    return crypto.randomUUID();
+  }
+  let dt = Date.now();
+  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
+    const r = (dt + Math.random() * 16) % 16 | 0;
+    dt = Math.floor(dt / 16);
+    return (c === "x" ? r : (r & 0x3) | 0x8).toString(16);
+  });
 }
-
-/*
-function isObjectNotEmpty(obj) {
-  return Object.keys(obj).length > 0;
-}
-*/
 
 function isObjectNotEmpty(obj) {
   return obj && typeof obj === "object" && Object.keys(obj).length > 0;
@@ -645,19 +648,6 @@ function clearData(e) {
     optionsShown.value = false;
   }
 }
-
-/*
-
-function scrollToElement(count) {
-  const elementId = `${count}${uuid.value}`;
-  const element = document.getElementById(elementId);
-  if (element) {
-    element.scrollIntoView();
-  }
-}
-
-*/
-
 
 function scrollToElement(count) {
   const elementId = `${count}${uuid.value}`;
@@ -697,35 +687,36 @@ function selectPost(key) {
   }
 }
 
-function convertedDataOptions(options) {
-  return options.map((option, index) => {
-    if (typeof option === "object") {
-      return option;
-    } else {
-      return { id: option, name: option };
-    }
-  });
+function convertedDataOptions(arr) {
+  const out = new Array(arr.length);
+  for (let i = 0; i < arr.length; i++) {
+    const opt = arr[i];
+    out[i] = typeof opt === "object" ? opt : { id: opt, name: opt };
+  }
+  return out;
 }
 
 function convertedOptions() {
-
-  return props.options.map((option, index) => {
-    if (typeof option === "object") {
-      return option;
-    } else {
-      return { id: option, name: option };
-    }
-  });
+  const arr = props.options;
+  const out = new Array(arr.length);
+  for (let i = 0; i < arr.length; i++) {
+    const opt = arr[i];
+    out[i] = typeof opt === "object" ? opt : { id: opt, name: opt };
+  }
+  return out;
 }
 
 function selectCustomOption() {
-  const customOption = { id: searchFilter.value, name: searchFilter.value };
-  if (!customOptions.value.find((o) => String(o.id) === String(customOption.id))) {
+  const v = searchFilter.value;
+  const customOption = { id: v, name: v };
+  const idStr = String(v);
+  if (!customOptions.value.some((o) => String(o.id) === idStr)) {
     customOptions.value.push(customOption);
   }
-  if (!filteredOptions.value.find((o) => String(o.id) === String(customOption.id))) {
-    filteredOptions.value.push(customOption);
-    optionsValues.value.push(customOption);
+  if (!filteredOptions.value.some((o) => String(o.id) === idStr)) {
+    // shallowRef requires reassignment to trigger reactivity
+    filteredOptions.value = [...filteredOptions.value, customOption];
+    optionsValues.value = [...optionsValues.value, customOption];
   }
   selectOption(customOption);
 }
@@ -755,8 +746,6 @@ function exit() {
     selected.value = {};
     searchFilter.value = "";
   }
-  //emit("selected", selected.value);
-  
 }
 
 
@@ -766,73 +755,68 @@ function exit() {
 
 
 
-watch(searchFilter, (newVal) => {
+// Client mode: filter immediately. Server mode: debounce so we don't fire one
+// request per keystroke (cancellation in fetchData also helps).
+watch(searchFilter, () => {
   if (!props.api_url) {
     filteredOptions.value = searchOptions();
-  } else {
+    if (filteredOptions.value.length === 0) selected.value = {};
+    return;
+  }
+  if (searchDebounceTimer) clearTimeout(searchDebounceTimer);
+  searchDebounceTimer = setTimeout(() => {
+    searchDebounceTimer = null;
+    if (isUnmounted) return;
     page.value = 1;
     lastPage.value = null;
     firstPage.value = 1;
     filteredOptions.value = [];
     fetchData("down");
-  }
-
-  if (filteredOptions.value.length === 0) {
-    selected.value = {};
-  }
+  }, 250);
 });
+
 watch(selected, (newVal) => {
-  if (isObjectNotEmpty(newVal)) {
-    if (newVal && newVal.id !== props.modelValue) {
-      emit("update:modelValue", newVal.id);
-    }
+  if (isObjectNotEmpty(newVal) && newVal.id !== props.modelValue) {
+    emit("update:modelValue", newVal.id);
   }
 });
 
-
-
+// api_url change: reset paging state but defer the actual fetch until the
+// dropdown is opened (showOptions handles it). Avoids a wasted request when
+// the dropdown is mounted but never opened.
 watch(
-
   () => props.api_url,
-  (newVal) => {
-    
-    if (newVal) {
-      
-      page.value = 1;
-     lastPage.value = null;
-     firstPage.value = 1;
-     filteredOptions.value = [];
-      fetchData("down");
-      
-    } 
+  () => {
+    if (activeController) {
+      activeController.abort();
+      activeController = null;
+    }
+    page.value = 1;
+    lastPage.value = null;
+    firstPage.value = 1;
+    filteredOptions.value = [];
   },
-  { immediate: true, deep: true }
+  { immediate: true }
 );
 
 watch(
-
   () => props.modelValue,
-  (newVal) => {
-    //searchFilter.value = "";
-    if (newVal) {
-      selected.value = props.modelValue;
-      if (props.api_url) {
-        if (isSelectedOption.value===false ) {
-          
-          fetchData("down");
-        } else {
-          selected.value = convertedOptionDefault();
-        }
-
-        //selected.value = convertedOptionDefaultApi();
+  async (newVal) => {
+    if (!newVal) {
+      selected.value = {};
+      return;
+    }
+    if (props.api_url) {
+      if (!isSelectedOption.value) {
+        await resolveServerSelected(newVal);
       } else {
         selected.value = convertedOptionDefault();
       }
     } else {
-      selected.value = {};
+      selected.value = convertedOptionDefault();
     }
   },
-  { immediate: true, deep: true }
+  { immediate: true }
 );
 
 watch(
@@ -840,19 +824,22 @@ watch(
   () => {
     if (!props.api_url) {
       const base = convertedOptions();
-      // merge custom options that aren't already in the list
-      const merged = [...base];
+      const seen = new Set(base.map((o) => String(o.id)));
+      const merged = base;
       for (const c of customOptions.value) {
-        if (!merged.find((o) => String(o.id) === String(c.id))) {
+        const cid = String(c.id);
+        if (!seen.has(cid)) {
           merged.push(c);
+          seen.add(cid);
         }
       }
-      filteredOptions.value = optionsValues.value = merged;
+      optionsValues.value = merged;
+      filteredOptions.value = merged;
+      selected.value = convertedOptionDefault();
     }
-
-    selected.value = convertedOptionDefault();
+    // In api_url mode the modelValue watch resolves selected — don't clobber it here.
   },
-  { immediate: true, deep: true }
+  { immediate: true }
 );
 </script>
 
