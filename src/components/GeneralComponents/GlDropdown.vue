@@ -42,8 +42,8 @@
               'gl-input-form': error_message == '',
               'gl-input-form-invalid': error_message !== '',
               [`showOptions${uuid}`]: true,
-              'pr-14': isObjectNotEmpty(selected) && has_cancel,
-              'pr-8': !(isObjectNotEmpty(selected) && has_cancel),
+              'pr-14!': isObjectNotEmpty(selected) && has_cancel,
+              'pr-8!': !(isObjectNotEmpty(selected) && has_cancel),
             }"
             class="truncate showOptions1"
             :value="selected?.name"
