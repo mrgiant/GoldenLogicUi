@@ -75,8 +75,21 @@
     </div>
 
     <div class="flex flex-wrap mb-3 gap-1 lg:gap-0!">
+
+
+        <gl-button v-if="enable_select_deselect_delete" @click="toggleSelectAll" tag="button" button_type="light"
+        :has_border_reduced="false" classes="rounded-lg lg:rounded-none lg:rounded-s-lg!">
+        {{ language?.select_all ?? "Select all" }}
+      </gl-button classes="rounded-lg lg:rounded-none!">
+      <gl-button v-if="enable_select_deselect_delete" @click="toggleDeselectAll" tag="button" button_type="light"
+        :has_border_reduced="false" classes="rounded-lg lg:rounded-none!">
+        {{ language?.deselect_all ?? "Deselect all" }}
+      </gl-button>
+
+
+
       <gl-button @click="delayedPrint" tag="button" :is_loading="isLoadinPrint" button_type="light"
-        :has_border_reduced="false" classes="rounded-lg lg:rounded-none lg:rounded-s-lg!"
+        :has_border_reduced="false" classes="rounded-lg lg:rounded-none"
         
         svg_icon='<svg  aria-hidden="true" xmlns="http://www.w3.org/2000/svg"  fill="none" viewBox="0 0 24 24">
                  <path stroke="currentColor" stroke-linejoin="round" stroke-width="2" d="M16.444 18H19a1 1 0 0 0 1-1v-5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1h2.556M17 11V5a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v6h10ZM7 15h10v4a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1v-4Z"/>
@@ -95,14 +108,7 @@
         {{ language?.excel ?? "Excel" }}
       </gl-button>
 
-      <gl-button v-if="enable_select_deselect_delete" @click="toggleSelectAll" tag="button" button_type="light"
-        :has_border_reduced="false" classes="rounded-lg lg:rounded-none!">
-        {{ language?.select_all ?? "Select all" }}
-      </gl-button classes="rounded-lg lg:rounded-none!">
-      <gl-button v-if="enable_select_deselect_delete" @click="toggleDeselectAll" tag="button" button_type="light"
-        :has_border_reduced="false" classes="rounded-lg lg:rounded-none!">
-        {{ language?.deselect_all ?? "Deselect all" }}
-      </gl-button>
+    
 
 
    <div  v-click-outside="closeColumnVisibilityDropdown">
