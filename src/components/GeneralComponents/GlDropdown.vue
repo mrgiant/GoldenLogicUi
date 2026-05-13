@@ -134,6 +134,17 @@
               ref="dropdownRef"
             >
               <div
+                v-if="allow_custom && searchFilter && !filteredOptions.find(o => String(o.name) === String(searchFilter))"
+                class="relative px-2 py-0.5 text-xs leading-4 text-gray-700 no-underline cursor-pointer dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white hover:rounded-sm"
+                @click="selectCustomOption()"
+                @mousedown="selectCustomOption()"
+              >
+                <div class="flex items-center py-2 pr-4">
+                  <span>{{ custom_option_label }} "{{ searchFilter }}"</span>
+                </div>
+              </div>
+
+              <div
                 v-if="filteredOptions.length"
                 class="relative px-2 py-0.5 text-xs leading-4 text-gray-700 no-underline cursor-pointer dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white hover:rounded-sm"
                 @click="selectOption(option)"
@@ -178,17 +189,6 @@
                 {{
                   no_results_found_placeholder
                 }}
-              </div>
-
-              <div
-                v-if="allow_custom && searchFilter && !filteredOptions.find(o => String(o.name) === String(searchFilter))"
-                class="relative px-2 py-0.5 text-xs leading-4 text-gray-700 no-underline cursor-pointer dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white hover:rounded-sm"
-                @click="selectCustomOption()"
-                @mousedown="selectCustomOption()"
-              >
-                <div class="flex items-center py-2 pr-4">
-                  <span>{{ custom_option_label }} "{{ searchFilter }}"</span>
-                </div>
               </div>
             </div>
           </div>
