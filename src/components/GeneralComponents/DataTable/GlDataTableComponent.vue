@@ -283,7 +283,8 @@
 
 <script>
 import print from "vue3-print-nb";
-import * as XLSX from 'xlsx';
+// xlsx is loaded on demand inside exportToExcel() to keep it out of the
+// eager bundle — see the dynamic import() below.
 export default {
   components: {},
   props: {
@@ -414,7 +415,10 @@ export default {
 
 
 
-     exportToExcel() {
+     async exportToExcel() {
+      const xlsxModule = await import('xlsx');
+      const XLSX = xlsxModule.default || xlsxModule;
+
       // Get the table element
       const table = document.querySelector('#table' + this.Random_string);
 

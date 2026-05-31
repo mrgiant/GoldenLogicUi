@@ -281,7 +281,8 @@ import GlButton from "/src/components/GeneralComponents/GlButton.vue";
 import DynamicConfirmation from "/src/components/GeneralComponents/DynamicConfirmation.vue";
 
 import GlToast from "/src/Stores/toast.js";
-import * as XLSX from 'xlsx';
+// xlsx is loaded on demand inside exportToExcel() to keep it out of the
+// eager bundle — see the dynamic import() below.
 import print, { triggerPrint } from '/src/print/print.js';
 
 export default {
@@ -638,7 +639,10 @@ export default {
     },
 
 
-    exportToExcel() {
+    async exportToExcel() {
+      const xlsxModule = await import('xlsx');
+      const XLSX = xlsxModule.default || xlsxModule;
+
       // Get the table element
       const table = document.querySelector('#table' + this.Random_string);
 

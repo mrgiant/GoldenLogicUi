@@ -17,15 +17,20 @@ export default defineConfig({
     },
     rollupOptions: {
       // make sure to externalize deps that shouldn't be bundled
-      // into your library
-      external: ['vue'],
+      // into your library.
+      // `xlsx` is kept external so the dynamic import() in the DataTable
+      // components stays a real dynamic import in the published bundle
+      // (a single-entry lib build would otherwise inline it), letting the
+      // consuming app code-split it into a lazily-loaded chunk.
+      external: ['vue', 'xlsx'],
       output: {
         // Provide global variables to use in the UMD build
         // for externalized deps
         globals: {
           vue: 'Vue',
+          xlsx: 'XLSX',
         },
       },
     },
   },
-})
+});
