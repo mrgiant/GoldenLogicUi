@@ -18,7 +18,7 @@
         v-else
         is="button"
         disabled
-        :class="` opacity-50 h-10 flex items-center justify-center focus:outline-hidden text-sm px-6  py-2   font-medium ${has_border_reduced ? 'rounded-xl':''}  ${buttonTypeClass} ${classes}`"
+        :class="` opacity-50 h-10 flex items-center justify-center focus:outline-hidden text-sm px-3  py-2   font-medium ${has_border_reduced ? 'rounded-xl':''}  ${buttonTypeClass} ${classes}`"
     >
         <svg
             aria-hidden="true"

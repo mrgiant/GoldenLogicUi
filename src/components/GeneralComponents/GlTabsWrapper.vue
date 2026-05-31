@@ -1,6 +1,6 @@
 <template>
 
-   
+
 
      <ul class="flex flex-row flex-wrap gap-2 pt-3 pb-4 mb-0 list-none text-gray-500 dark:text-gray-400" :class="tabsWrapperClass">
           <li
@@ -10,25 +10,30 @@
             class="-mb-px text-center"
             :class="{
               'flex-auto ': autoFlexTabs,
-             
+
             }"
           >
-                
+
 
             <a
-               :class="{' bg-gray-50 dark:bg-gray-900  hover:text-gray-900 hover:bg-gray-100  dark:hover:bg-gray-800 dark:hover:text-white border border-gray-300 dark:border-gray-800': selectedTitle != tab.title, 'text-white  bg-primary dark:bg-primaryDark': selectedTitle === tab.title}"
-              class="block px-5 py-3 text-xs font-bold leading-normal rounded-lg    tabs_buttons"
+               :class="{' bg-gray-50 dark:bg-gray-900  hover:text-gray-900 hover:bg-gray-100  dark:hover:bg-gray-800 dark:hover:text-white border border-gray-300 dark:border-gray-700 hover:border-primary dark:hover:border-primaryDark': selectedTitle != tab.title, 'text-white  bg-primary dark:bg-primaryDark': selectedTitle === tab.title}"
+              class="block px-5 py-3 text-xs font-bold leading-normal rounded-xl    tabs_buttons"
             >
-              <i v-if="tab.icon" :class="tab.icon" class="me-2 text-sm"></i>{{ tab.title }}
+              <span
+                v-if="tab.icon && isSvgIcon(tab.icon)"
+                class="inline-flex items-center justify-center me-2 align-middle"
+                v-html="tab.icon"
+              ></span>
+              <i v-else-if="tab.icon" :class="tab.icon" class="me-2 text-sm"></i>{{ tab.title }}
             </a>
           </li>
         </ul>
 
-       
+
 
     <div
       v-show="selectedTitle"
-      class="relative flex flex-col w-full min-w-0 mb-6 break-words  rounded-[20px]  border border-gray-200 dark:border-gray-800 "
+      class="relative flex flex-col w-full min-w-0 mb-6 wrap-break-word  rounded-[20px]  border border-gray-200 dark:border-gray-700 "
     >
       <div class="flex-auto px-4 py-5">
         <div class="tab-content tab-space">
@@ -69,6 +74,9 @@ const tabs = ref(
         .map(vnode => vnode.props)
 );
 
+const isSvgIcon = (val) =>
+  typeof val === 'string' && /<\s*(svg|path|g|circle|rect)\b/i.test(val);
+
 
 
 const selectedTitle = ref("");
@@ -105,7 +113,7 @@ defineExpose({
 
 const updateTabFromHash = () => {
   const hash = decodeURIComponent(window.location.hash.replace('#', ''));
-   
+
   const tab = tabs.value.find((tab) => slugify(tab.title) === hash);
   if (tab) {
     selectedTitle.value = tab.title;
@@ -115,7 +123,6 @@ const updateTabFromHash = () => {
     //emit('TabChange', tabs.value[0].title);
   }
 };
-
 
 
 
@@ -144,9 +151,6 @@ onMounted(() => {
 onBeforeUnmount(() => {
   window.removeEventListener('hashchange', updateTabFromHash);
 });
-
-
-
 
 
 
