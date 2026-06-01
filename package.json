@@ -3,7 +3,7 @@
   "description": "The most popular library of interactive components built with Vuejs && Tailwind CSS",
   "type": "module",
   "private": false,
-  "version": "1.2.337",
+  "version": "1.2.341",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/mrgiant/GoldenLogicUi.git"
@@ -13,15 +13,19 @@
   "files": [
     "dist"
   ],
-  "main": "./dist/golden-logic-ui.umd.cjs",
-  "module": "./dist/golden-logic-ui.js",
+  "main": "./dist/main.js",
+  "module": "./dist/main.js",
   "style": "./dist/golden-logic-ui.css",
+  "sideEffects": [
+    "**/*.css"
+  ],
   "exports": {
     ".": {
-      "import": "./dist/golden-logic-ui.js",
-      "require": "./dist/golden-logic-ui.umd.cjs"
+      "import": "./dist/main.js"
     },
-    "./dist/golden-logic-ui.css": "./dist/golden-logic-ui.css"
+    "./style.css": "./dist/golden-logic-ui.css",
+    "./dist/golden-logic-ui.css": "./dist/golden-logic-ui.css",
+    "./*": "./dist/*"
   },
   "scripts": {
     "dev": "vite",

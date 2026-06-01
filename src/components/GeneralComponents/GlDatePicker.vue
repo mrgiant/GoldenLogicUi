@@ -136,6 +136,12 @@ const parseRelativeDate = (dateStr) => {
         return date;
     }
     
+    // Try the component's configured date_format first (e.g. "DD-MM-YYYY"),
+    // so constraints passed as formatted strings (like the sibling date in a
+    // range picker) are interpreted correctly instead of via native parsing.
+    const customParsed = parseDate(dateStr);
+    if (customParsed) return customParsed;
+
     // Handle standard date format
     const date = new Date(dateStr);
     return isNaN(date.getTime()) ? null : date;
@@ -239,14 +245,27 @@ const parseDate = (dateStr) => {
     }
     
     const date = new Date(year, month, day);
-    return isNaN(date.getTime()) ? null : date;
+
+    // Strict validation to avoid JS Date auto-correction (e.g., 32nd day rolling to next month)
+    if (
+        isNaN(date.getTime()) ||
+        date.getFullYear() !== year ||
+        date.getMonth() !== month ||
+        date.getDate() !== day
+    ) {
+        return null;
+    }
+
+    return date;
 };
 
 // Local display value for text input
 const displayValue = ref("");
+const isInputFocused = ref(false);
 
 // Sync displayValue when modelValue changes externally
 watch(() => props.modelValue, (newVal) => {
+    if (isInputFocused.value) return;
     displayValue.value = formatDate(newVal);
 }, { immediate: true });
 
@@ -254,14 +273,8 @@ watch(() => props.modelValue, (newVal) => {
 const handleInput = (event) => {
     const inputValue = event.target.value;
     displayValue.value = inputValue;
-    
-    // Try to parse the input as a date
-    const parsedDate = parseDate(inputValue);
-    if (parsedDate && !isNaN(parsedDate.getTime()) && !isDateDisabled(parsedDate)) {
-        const formattedDate = formatDate(parsedDate);
-        emit("update:modelValue", formattedDate);
-        emit("change", formattedDate);
-    } else if (inputValue === "") {
+
+    if (inputValue === "") {
         // Allow clearing the input
         emit("update:modelValue", "");
         emit("change", "");
@@ -270,12 +283,15 @@ const handleInput = (event) => {
 
 // Handle blur to validate and format the input
 const handleBlur = (event) => {
+    isInputFocused.value = false;
     const inputValue = displayValue.value;
     const parsedDate = parseDate(inputValue);
     
     if (parsedDate && !isNaN(parsedDate.getTime()) && !isDateDisabled(parsedDate)) {
-        // Format the valid date
-        displayValue.value = formatDate(parsedDate);
+        const formattedDate = formatDate(parsedDate);
+        displayValue.value = formattedDate;
+        emit("update:modelValue", formattedDate);
+        emit("change", formattedDate);
     } else if (inputValue !== "") {
         // Revert to the last valid value if invalid
         displayValue.value = formatDate(props.modelValue);
@@ -464,9 +480,14 @@ const goToToday = () => {
 
 // Clear date
 const clearDate = () => {
+    displayValue.value = "";
     emit("update:modelValue", "");
     emit("change", "");
     isOpen.value = false;
+};
+
+const handleFocus = () => {
+    isInputFocused.value = true;
 };
 
 // Toggle datepicker
@@ -546,6 +567,7 @@ defineExpose({ focus: () => input.value?.focus() });
                         }" 
                         :value="displayValue"
                         @input="handleInput"
+                        @focus="handleFocus"
                         @blur="handleBlur"
                         ref="input" 
                         :placeholder="placeholder" 
@@ -580,6 +602,7 @@ defineExpose({ focus: () => input.value?.focus() });
                     }" 
                     :value="displayValue"
                     @input="handleInput"
+                    @focus="handleFocus"
                     @blur="handleBlur"
                     ref="input" 
                     :placeholder="placeholder" 
@@ -596,7 +619,7 @@ defineExpose({ focus: () => input.value?.focus() });
             <!-- Datepicker Dropdown -->
             <div 
                 v-show="isOpen"
-                class="absolute z-50 mt-1 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 p-4 max-w-72"
+                class="absolute z-50 mt-1 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 p-4 max-w-72 min-w-max"
             >
                 <!-- Header with navigation -->
                 <div class="flex items-center justify-between mb-4">

@@ -255,7 +255,7 @@ const endErrorMessage = computed(() => {
 
 <template>
     <!-- Show mode - display only -->
-    <div :class="field_name" v-if="show">
+    <div class="md:col-span-2" :class="field_name" v-if="show">
         <label v-if="label_name" class="gl-label-form">{{ label_name }}</label>
 
         <p class="mt-1 text-gray-900 dark:text-white">
@@ -266,7 +266,7 @@ const endErrorMessage = computed(() => {
     </div>
 
     <!-- Edit mode -->
-    <div :class="{
+    <div class="md:col-span-2" :class="{
         [field_name]: field_name && field_name !== '',
         [container_class]: container_class && container_class !== ''
     }" v-if="!show">
