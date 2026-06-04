@@ -841,7 +841,10 @@ watch(
     }
     // In api_url mode the modelValue watch resolves selected — don't clobber it here.
   },
-  { immediate: true }
+  // deep so the list still updates when options load late by mutating the SAME
+  // array in place (e.g. column.options.push(...)) — a reference-only watch
+  // would miss that and leave the dropdown list empty.
+  { immediate: true, deep: true }
 );
 </script>
 

@@ -619,7 +619,7 @@ defineExpose({ focus: () => input.value?.focus() });
             <!-- Datepicker Dropdown -->
             <div 
                 v-show="isOpen"
-                class="absolute z-50 mt-1 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 p-4 max-w-72 min-w-max"
+                class="absolute z-50 mt-1 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 p-4 w-full"
             >
                 <!-- Header with navigation -->
                 <div class="flex items-center justify-between mb-4">
