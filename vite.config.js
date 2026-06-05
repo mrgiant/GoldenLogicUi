@@ -23,7 +23,14 @@ export default defineConfig({
       // `xlsx` is kept external so the dynamic import() in the DataTable
       // components stays a real dynamic import in the published bundle,
       // letting the consuming app code-split it into a lazily-loaded chunk.
-      external: ['vue', 'xlsx'],
+      // TinyMCE is kept external for the same reason — but more critically,
+      // running its plugin/theme/model files through this lib build's
+      // preserveModules + CommonJS interop wraps each registration in a lazy
+      // initializer that never executes on a bare side-effect import, so
+      // nothing registers and TinyMCE falls back to 404-ing on theme.js /
+      // model.js / plugin.js at runtime. Externalizing lets the consuming
+      // app bundle TinyMCE normally, where the self-host imports work.
+      external: ['vue', 'xlsx', /^tinymce(\/|$)/],
       output: {
         // One chunk per source file (mirrors src/ layout under dist/),
         // so deep imports like `golden-logic-ui/components/.../GlButton.vue`

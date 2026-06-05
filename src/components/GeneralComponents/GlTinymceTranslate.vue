@@ -22,6 +22,7 @@ import 'tinymce/plugins/autolink/plugin';
 import 'tinymce/plugins/charmap/plugin';
 import 'tinymce/plugins/insertdatetime/plugin';
 import 'tinymce/plugins/visualblocks/plugin';
+import 'tinymce/plugins/help/plugin';
 
 
 const props = defineProps({
