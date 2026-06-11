@@ -136,10 +136,12 @@
                 :key="index"
                 :id="`${index + 1}${uuid}`"
               >
-                <div class="flex items-center py-2 pl-10 pr-4">
+                <div class="flex justify-between items-center py-2  pr-4">
+                 
+                  <span v-html="option.name || option.id || '-'"> </span>
                   <svg
                     v-if="selected?.id === option.id"
-                    class="absolute flex items-center shrink-0 w-4 h-4 text-green-500 left-2 dark:text-green-400"
+                    class="flex items-center shrink-0 w-4 h-4 text-green-500 left-2 dark:text-green-400"
                     aria-hidden="true"
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
@@ -154,7 +156,7 @@
                     />
                   </svg>
 
-                  <span v-html="option.name || option.id || '-'"> </span>
+                 
                 </div>
               </div>
             </div>

@@ -18,7 +18,9 @@ export { default as GlTextareaTranslate } from './components/GeneralComponents/G
 export { default as GlTextTranslate } from './components/GeneralComponents/GlTextTranslate.vue'
 export { default as GlTextInput } from './components/GeneralComponents/GlTextInput.vue'
 export { default as GlDatePicker } from './components/GeneralComponents/GlDatePicker.vue'
+export { default as GlDateTimePicker } from './components/GeneralComponents/GlDateTimePicker.vue'
 export { default as GlDateRangePicker } from './components/GeneralComponents/GlDateRangePicker.vue'
+export { default as GlDateTimeRangePicker } from './components/GeneralComponents/GlDateTimeRangePicker.vue'
 export { default as GlTextInputFile } from './components/GeneralComponents/GlTextInputFile.vue'
 export { default as GlTabsWrapper } from './components/GeneralComponents/GlTabsWrapper.vue'
 export { default as GlTab } from './components/GeneralComponents/GlTab.vue'
@@ -99,8 +101,8 @@ export { default as multilingual }  from'./multilingual.js';
 
 
 
-/*
 
+/*
 
 import { createApp } from 'vue'
 
@@ -108,7 +110,7 @@ import App from './App.vue'
 
 createApp(App).mount('#app')
 
-
 */
+
 
 

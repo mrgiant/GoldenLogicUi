@@ -161,10 +161,13 @@
 
 
 
-              <div class="flex items-center py-2  pr-4">
-                  <svg
+              <div class="flex justify-between items-center py-2">
+                 
+                 <span v-html="option.name || option.id || '-'"> </span>
+
+                   <svg
                     v-if="isOptionSelected(option.id)"
-                    class="absolute flex items-center shrink-0 w-4 h-4 text-green-500 ltr:right-2 rtl:left-2 dark:text-green-400"
+                    class="flex items-center shrink-0 w-4 h-4 text-green-500 ltr:right-2 rtl:left-2 dark:text-green-400"
                     aria-hidden="true"
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
@@ -179,7 +182,7 @@
                     />
                   </svg>
 
-                  <span v-html="option.name || option.id || '-'"> </span>
+                 
                 </div>
 
 

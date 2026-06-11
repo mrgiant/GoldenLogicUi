@@ -17,7 +17,11 @@ import GLButton   from './components/GeneralComponents/GLButton.vue';
 import GlMultiSelectDropdown   from './components/GeneralComponents/GlMultiSelectDropdown.vue';
 
 import GlDatePicker   from './components/GeneralComponents/GlDatePicker.vue';
+import GlDateTimePicker   from './components/GeneralComponents/GlDateTimePicker.vue';
 
+
+const selectedDate=ref("");
+const selectedDateTime=ref("");
 
 const provide=ref("");
 const code=ref("");
@@ -88,6 +92,17 @@ const onChange = (value) => {
     placeholder="Select your birth date"
     min_date="1900-01-01"
     :max_date="new Date().toISOString().split('T')[0]"
+    locale="en"
+/>
+
+    <GlDateTimePicker
+    v-model="selectedDateTime"
+    label_name="Appointment"
+    field_name="appointment_at"
+    date_format="DD/MM/YYYY"
+    :is_required="true"
+    placeholder="Select date & time"
+    :minute_step="5"
     locale="en"
 />
 
