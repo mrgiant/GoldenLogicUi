@@ -33,6 +33,17 @@ const props = defineProps({
         default: "",
     },
 
+    // Optional per-picker labels shown above the start / end fields
+    label_name_start: {
+        type: String,
+        default: "",
+    },
+
+    label_name_end: {
+        type: String,
+        default: "",
+    },
+
     description: {
         type: String,
         default: "",
@@ -40,12 +51,12 @@ const props = defineProps({
 
     placeholder_start: {
         type: String,
-        default: "Start date & time",
+        default: "",
     },
 
     placeholder_end: {
         type: String,
-        default: "End date & time",
+        default: "",
     },
 
     // Date format options
@@ -239,41 +250,32 @@ const validateDates = (startDate, endDate) => {
     return true;
 };
 
-// Handle start change
+// Handle start change. We surface a validation message for an invalid range
+// instead of destructively clearing the end the user already picked.
 const handleStartChange = (newValue) => {
     internalValue.value.start = newValue;
-
-    // If end exists and is before the new start, clear end
-    if (internalValue.value.end) {
-        const start = parseDateTime(newValue);
-        const end = parseDateTime(internalValue.value.end);
-
-        if (start && end && start > end) {
-            internalValue.value.end = '';
-        }
-    }
-
     validateDates(internalValue.value.start, internalValue.value.end);
     emitValue();
 };
 
-// Handle end change
+// Handle end change. Likewise, never wipe the start the user already chose —
+// just flag the range as invalid if start ends up after end.
 const handleEndChange = (newValue) => {
     internalValue.value.end = newValue;
-
-    // If start exists and is after the new end, clear start
-    if (internalValue.value.start) {
-        const start = parseDateTime(internalValue.value.start);
-        const end = parseDateTime(newValue);
-
-        if (start && end && start > end) {
-            internalValue.value.start = '';
-        }
-    }
-
     validateDates(internalValue.value.start, internalValue.value.end);
     emitValue();
 };
+
+// Time portions extracted from each side, used to seed the opposite picker's
+// default time so a same-day pick doesn't fall back to 12:00 AM (midnight).
+const extractTimePart = (value) => {
+    if (!value) return null;
+    const i = value.indexOf(' ');
+    return i === -1 ? null : value.slice(i + 1).trim();
+};
+
+const startTimePart = computed(() => extractTimePart(internalValue.value.start));
+const endTimePart = computed(() => extractTimePart(internalValue.value.end));
 
 // Emit the combined value
 const emitValue = () => {
@@ -284,7 +286,7 @@ const emitValue = () => {
 
 // Computed error state for start picker
 const startErrorMessage = computed(() => {
-    if (props.error_message) return props.error_message;
+    // if (props.error_message) return props.error_message;
     return '';
 });
 
@@ -327,10 +329,12 @@ const endErrorMessage = computed(() => {
                 <GlDateTimePicker
                     v-model="internalValue.start"
                     :field_name="field_name + '_start'"
+                    :label_name="label_name_start"
                     :is_required="is_required"
                     :placeholder="placeholder_start"
                     :date_format="date_format"
                     :minute_step="minute_step"
+                    :default_time="endTimePart"
                     :min_date="min_date_start"
                     :max_date="computedMaxDateStart"
                     :disabled_days="disabled_days"
@@ -351,10 +355,12 @@ const endErrorMessage = computed(() => {
                 <GlDateTimePicker
                     v-model="internalValue.end"
                     :field_name="field_name + '_end'"
+                    :label_name="label_name_end"
                     :is_required="is_required"
                     :placeholder="placeholder_end"
                     :date_format="date_format"
                     :minute_step="minute_step"
+                    :default_time="startTimePart"
                     :min_date="computedMinDateEnd"
                     :max_date="max_date_end"
                     :disabled_days="disabled_days"

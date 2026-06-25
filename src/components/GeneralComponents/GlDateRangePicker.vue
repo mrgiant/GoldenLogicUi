@@ -33,6 +33,17 @@ const props = defineProps({
         default: "",
     },
 
+    // Optional per-picker labels shown above the start / end fields
+    label_name_start: {
+        type: String,
+        default: "",
+    },
+
+    label_name_end: {
+        type: String,
+        default: "",
+    },
+
     description: {
         type: String,
         default: "",
@@ -40,12 +51,12 @@ const props = defineProps({
 
     placeholder_start: {
         type: String,
-        default: "Start date",
+        default: "",
     },
 
     placeholder_end: {
         type: String,
-        default: "End date",
+        default: "",
     },
 
     // Date format options
@@ -239,7 +250,7 @@ const emitValue = () => {
 
 // Computed error state for start picker
 const startErrorMessage = computed(() => {
-    if (props.error_message) return props.error_message;
+   // if (props.error_message) return props.error_message;
     return '';
 });
 
@@ -286,6 +297,7 @@ const endErrorMessage = computed(() => {
                 <GlDatePicker
                     v-model="internalValue.start"
                     :field_name="field_name + '_start'"
+                    :label_name="label_name_start"
                     :is_required="is_required"
                     :placeholder="placeholder_start"
                     :date_format="date_format"
@@ -309,6 +321,7 @@ const endErrorMessage = computed(() => {
                 <GlDatePicker
                     v-model="internalValue.end"
                     :field_name="field_name + '_end'"
+                    :label_name="label_name_end"
                     :is_required="is_required"
                     :placeholder="placeholder_end"
                     :date_format="date_format"

@@ -118,7 +118,7 @@
   <path stroke="currentColor" stroke-width="2" d="M21 12c0 1.2-4.03 6-9 6s-9-4.8-9-6c0-1.2 4.03-6 9-6s9 4.8 9 6Z"/>
   <path stroke="currentColor" stroke-width="2" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/>
 </svg>
-Column visibility <svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+ {{ language?.column_visibility ?? "Column visibility" }} <svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
 </svg>
 </button>
@@ -131,7 +131,7 @@ Column visibility <svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http:/
 
         <div class="flex items-center p-2 rounded-sm hover:bg-gray-100 dark:hover:bg-gray-600">
           <input :id="'cb_'+ column.field_name" type="checkbox"  v-model="columnVisibility[column.field_name]" class="w-4 h-4 rounded-sm  ">
-          <label :for="'cb_'+ column.field_name" class="w-full ms-2 text-sm font-medium text-gray-900 rounded-sm dark:text-gray-300">{{ column.field_name }}</label>
+          <label :for="'cb_'+ column.field_name" class="w-full ms-2 text-sm font-medium text-gray-900 rounded-sm dark:text-gray-300">{{ column.field_label }}</label>
         </div>
 
 

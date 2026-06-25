@@ -619,7 +619,7 @@ defineExpose({ focus: () => input.value?.focus() });
             <!-- Datepicker Dropdown -->
             <div 
                 v-show="isOpen"
-                class="absolute z-50 mt-1 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 p-4 w-full"
+                class="absolute z-50 mt-1 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 p-4 w-80 max-w-80"
             >
                 <!-- Header with navigation -->
                 <div class="flex items-center justify-between mb-4">
@@ -667,7 +667,7 @@ defineExpose({ focus: () => input.value?.focus() });
                 </div>
 
                 <!-- Day names header -->
-                <div class="grid grid-cols-7 gap-1 mb-2">
+                <div class="grid grid-cols-7 gap-2 mb-2">
                     <div 
                         v-for="day in dayNames" 
                         :key="day"
@@ -678,7 +678,7 @@ defineExpose({ focus: () => input.value?.focus() });
                 </div>
 
                 <!-- Calendar grid -->
-                <div class="grid grid-cols-7 gap-1">
+                <div class="grid grid-cols-7 gap-2">
                     <button
                         v-for="(dayObj, index) in calendarDays"
                         :key="index"
@@ -686,7 +686,7 @@ defineExpose({ focus: () => input.value?.focus() });
                         @click="selectDate(dayObj)"
                         :disabled="isDateDisabled(dayObj.date)"
                         :class="[
-                            'w-8 h-8 text-sm rounded-full flex items-center justify-center transition-colors',
+                            'w-7 h-7 text-sm rounded-full flex items-center justify-center transition-colors',
                             {
                                 'text-gray-400 dark:text-gray-600': !dayObj.currentMonth,
                                 'text-gray-900 dark:text-white': dayObj.currentMonth && !isDateSelected(dayObj.date) && !isDateDisabled(dayObj.date),

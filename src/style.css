@@ -180,18 +180,50 @@ input::-webkit-calendar-picker-indicator {
 }
 
 
-/*
+/* Custom scrollbars — themed for light and dark mode */
+
+/* Firefox */
+* {
+  scrollbar-width: auto !important;
+  scrollbar-color: #cbd5e1 transparent;
+}
+
+.dark * {
+  scrollbar-color: #4b5563 transparent;
+}
+
+/* WebKit (Chrome, Edge, Safari) */
 ::-webkit-scrollbar {
-  -webkit-appearance: none;
-  width: 12px;
+  width: 16px;
+  height: 16px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  border-radius: 4px;
-  background-color: rgba(0, 0, 0, .5);
-  box-shadow: 0 0 1px rgba(255, 255, 255, .5);
+  border-radius: 8px;
+  background-color: #cbd5e1;
+  border: 2px solid transparent;
+  background-clip: content-box;
 }
-  */
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #94a3b8;
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background-color: #4b5563;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background-color: #6b7280;
+}
 
 
 [type='date'],[type='time'],[type='datetime-local'],[type='month'] {

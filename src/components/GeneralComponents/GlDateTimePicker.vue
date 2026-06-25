@@ -64,6 +64,14 @@ const props = defineProps({
         default: 1,
     },
 
+    // Default time (e.g. "11:00 AM") used when a date is picked before any
+    // time has been chosen. Lets a range picker seed the end picker with the
+    // start time so a same-day selection isn't treated as earlier (midnight).
+    default_time: {
+        type: String,
+        default: null,
+    },
+
     // Min and max date constraints
     // Accepts: "YYYY-MM-DD" or relative: "+3m", "-1y", "+7d", "today"
     min_date: {
@@ -364,12 +372,38 @@ const syncTimeFromValue = (val) => {
     selectedMeridiem.value = meridiem;
 };
 
+// Seed the time selectors from default_time (e.g. "11:00 AM") when no value
+// has been chosen yet, so picking a date doesn't fall back to 12:00 AM.
+const seedDefaultTime = () => {
+    if (!props.default_time) return;
+    const match = String(props.default_time).trim().match(/^(\d{1,2}):(\d{2})\s*(AM|PM)?$/i);
+    if (!match) return;
+    const h = parseInt(match[1]);
+    const m = parseInt(match[2]);
+    const meridiem = match[3] ? match[3].toUpperCase() : null;
+    if (meridiem) {
+        selectedHour.value = h === 0 ? 12 : h;
+        selectedMeridiem.value = meridiem;
+    } else {
+        const conv = to12Hour(h);
+        selectedHour.value = conv.hour;
+        selectedMeridiem.value = conv.meridiem;
+    }
+    selectedMinute.value = m;
+};
+
 // Sync displayValue + time state when modelValue changes externally
 watch(() => props.modelValue, (newVal) => {
     if (isInputFocused.value) return;
     displayValue.value = formatDateTime(newVal);
-    syncTimeFromValue(newVal);
+    if (newVal) syncTimeFromValue(newVal);
+    else seedDefaultTime();
 }, { immediate: true });
+
+// Re-seed when the default changes (e.g. start time updated) while end is empty
+watch(() => props.default_time, () => {
+    if (!props.modelValue) seedDefaultTime();
+});
 
 // Handle direct text input
 const handleInput = (event) => {
@@ -817,7 +851,7 @@ defineExpose({ focus: () => input.value?.focus() });
             <!-- Datetime picker Dropdown -->
             <div
                 v-show="isOpen"
-                class="absolute z-50 mt-1 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 p-4 w-full"
+                class="absolute z-50 mt-1 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 p-4 w-80 max-w-80"
             >
                 <!-- Header with navigation -->
                 <div class="flex items-center justify-between mb-4">
@@ -865,7 +899,7 @@ defineExpose({ focus: () => input.value?.focus() });
                 </div>
 
                 <!-- Day names header -->
-                <div class="grid grid-cols-7 gap-1 mb-2">
+                <div class="grid grid-cols-7 gap-2 mb-2">
                     <div
                         v-for="day in dayNames"
                         :key="day"
@@ -876,7 +910,7 @@ defineExpose({ focus: () => input.value?.focus() });
                 </div>
 
                 <!-- Calendar grid -->
-                <div class="grid grid-cols-7 gap-1">
+                <div class="grid grid-cols-7 gap-2">
                     <button
                         v-for="(dayObj, index) in calendarDays"
                         :key="index"
@@ -884,7 +918,7 @@ defineExpose({ focus: () => input.value?.focus() });
                         @click="selectDate(dayObj)"
                         :disabled="isDateDisabled(dayObj.date)"
                         :class="[
-                            'w-8 h-8 text-sm rounded-full flex items-center justify-center transition-colors',
+                            'w-7 h-7 text-sm rounded-full flex items-center justify-center transition-colors',
                             {
                                 'text-gray-400 dark:text-gray-600': !dayObj.currentMonth,
                                 'text-gray-900 dark:text-white': dayObj.currentMonth && !isDateSelected(dayObj.date) && !isDateDisabled(dayObj.date),
