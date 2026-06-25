@@ -126,6 +126,12 @@ const props = defineProps({
 
 const emit = defineEmits(["update:modelValue", "change"]);
 
+// Whether per-field labels are shown above the start/end pickers. When they are,
+// the separator needs a top offset so it lines up with the inputs (not the labels).
+const hasFieldLabels = computed(
+    () => !!(props.label_name_start || props.label_name_end)
+);
+
 const validationMessage = ref('');
 
 const internalValue = ref({
@@ -323,7 +329,7 @@ const endErrorMessage = computed(() => {
             :for="field_name"
         >{{ label_name }}</label>
 
-        <div class="flex justify-between gap-2 flex-col md:flex-row items-center">
+        <div class="flex justify-between gap-2 flex-col md:flex-row items-center md:items-start">
             <!-- Start DateTime Picker -->
             <div class="w-full md:flex-1">
                 <GlDateTimePicker
@@ -346,7 +352,10 @@ const endErrorMessage = computed(() => {
             </div>
 
             <!-- Separator -->
-            <span class="text-gray-500 dark:text-gray-400 font-medium shrink-0 py-2 md:py-0">
+            <span
+                class="text-gray-500 dark:text-gray-400 font-medium shrink-0 py-2 md:py-0 md:flex md:items-center md:h-10"
+                :class="{ 'md:mt-7': hasFieldLabels }"
+            >
                 {{ separator }}
             </span>
 
