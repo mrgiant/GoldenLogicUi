@@ -95,7 +95,7 @@
 
                 </ul>
 
-                <div class="flex justify-center mb-1 space-x-1 " :class="sliderIndicatorsAction()"
+                <div class="flex justify-center mb-1 gap-1 " :class="sliderIndicatorsAction()"
                     v-if="!hide_indicators && slider_arrows_indicators_position != 'arrows_indicators_below_slider'">
 
                     <button role="button" class="gl-dot" v-for="i in dotsNum" :key="i" v-on:click="setDot(i)"
@@ -107,7 +107,7 @@
                 <div class="flex justify-between pl-5 pr-5"
                     v-if="!hide_indicators && slider_arrows_indicators_position == 'arrows_indicators_below_slider'">
 
-                    <div class="flex justify-center mb-1 space-x-1 " :class="sliderIndicatorsAction()">
+                    <div class="flex justify-center mb-1 gap-1 " :class="sliderIndicatorsAction()">
 
                         <button role="button" class="gl-dot" v-for="i in dotsNum" :key="i" v-on:click="setDot(i)"
                             :class="{ 'active': currentDot == i }"><span></span></button>
@@ -349,15 +349,8 @@ export default {
 
             var class_string = "";
 
-
-            if (this.direction_property == 'rtl') {
-
-
-                class_string += " space-x-reverse ";
-               // class_string += " slider_indicators ";
-
-            }
-
+            // Spacing uses `gap`, which is direction-agnostic, so RTL needs no
+            // `space-x-reverse` hack here.
 
             if (this.slider_arrows_indicators_position == 'arrows_indicators_inside_slider') {
                 class_string += " slider_indicators ";
@@ -625,8 +618,7 @@ export default {
 
            // slider.style.width = cards.length * cardwidth + "px";
 
-            slider.style.transition = "margin";
-            slider.style.transitionDuration = "1s";
+            slider.style.transition = "margin 1s";
 
             for (let index = 0; index < cards.length; index++) {
 
@@ -638,8 +630,8 @@ export default {
 
             }
 
-
-
+            // Keep the strip aligned with the current dot after width recalculation
+            this.applyOffset();
 
         },
 
@@ -649,25 +641,29 @@ export default {
 
 
         setDot(index) {
-
-
-            let slider = document.getElementById("slider_" + this.Random_string);
-
-
-            if (this.direction_property == "rtl") {
-
-                slider.style.marginRight = -this.dotsNavigation[index - 1] + 'px';
-
-
-            }
-            else {
-
-                slider.style.marginLeft = -this.dotsNavigation[index - 1] + 'px';
-
-            }
-
             this.currentDot = index;
+            this.applyOffset();
+        },
 
+        applyOffset() {
+            let slider = document.getElementById("slider_" + this.Random_string);
+            if (!slider) return;
+
+            // Shift the strip with a margin (NOT a transform): a transform would turn
+            // the <ul> into a containing block for the absolutely-positioned inside
+            // arrows that live inside it, anchoring them to the full-width strip
+            // instead of the visible container. Pick the margin side from the
+            // *actually-rendered* direction rather than the direction_property prop,
+            // since the prop can say "rtl" while the strip is still laid out LTR.
+            const isRtl = window.getComputedStyle(slider).direction === "rtl";
+            const offset = this.dotsNavigation[this.currentDot - 1] || 0;
+            if (isRtl) {
+                slider.style.marginLeft = "";
+                slider.style.marginRight = `${-offset}px`;
+            } else {
+                slider.style.marginRight = "";
+                slider.style.marginLeft = `${-offset}px`;
+            }
         }
 
     },

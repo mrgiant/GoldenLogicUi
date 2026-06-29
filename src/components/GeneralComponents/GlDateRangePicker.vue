@@ -214,17 +214,11 @@ const validateDates = (startDate, endDate) => {
 // Handle start date change
 const handleStartChange = (newValue) => {
     internalValue.value.start = newValue;
-    
-    // If end date exists and is before new start date, clear end date
-    if (internalValue.value.end) {
-        const start = parseDate(newValue);
-        const end = parseDate(internalValue.value.end);
-        
-        if (start && end && start > end) {
-            internalValue.value.end = '';
-        }
-    }
-    
+
+    // Always clear the end date when a new start date is selected so the
+    // user re-picks the end and the range validation resets.
+    internalValue.value.end = '';
+
     validateDates(internalValue.value.start, internalValue.value.end);
     emitValue();
 };

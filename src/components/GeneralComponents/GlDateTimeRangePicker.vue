@@ -256,10 +256,11 @@ const validateDates = (startDate, endDate) => {
     return true;
 };
 
-// Handle start change. We surface a validation message for an invalid range
-// instead of destructively clearing the end the user already picked.
+// Handle start change. Always clear the end the user previously picked so they
+// re-pick it against the new start and the range validation resets.
 const handleStartChange = (newValue) => {
     internalValue.value.start = newValue;
+    internalValue.value.end = '';
     validateDates(internalValue.value.start, internalValue.value.end);
     emitValue();
 };
