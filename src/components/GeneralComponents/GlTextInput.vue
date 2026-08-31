@@ -74,6 +74,11 @@ const props = defineProps({
         default: "",
     },
 
+    disabled: {
+        type: Boolean,
+        default: false,
+    },
+
 });
 
 const emit = defineEmits(["update:modelValue", "keydown", "blur-sm","keyup","input"]);
@@ -150,16 +155,17 @@ defineExpose({ focus: () => input.value.focus() });
             <div class="relative w-full">
 
                 <input :minlength="minlength" :maxlength="maxlength" class="rtl:text-right rounded-none!" :required="is_required"
-                    :name="field_name" :id="field_name" 
+                    :name="field_name" :id="field_name" :disabled="disabled"
 
 
-                    
+
                     :class="{
                         'gl-input-form': error_message == '',
                         'gl-input-form-invalid': error_message !== '',
                         [input_class]: input_class && input_class !== '',
                         'border-e-0! rounded-s-lg!': inputGroupType == 'append',
-                        'border-s-0! rounded-e-lg!': inputGroupType == 'prepend'
+                        'border-s-0! rounded-e-lg!': inputGroupType == 'prepend',
+                        'opacity-70 cursor-not-allowed bg-gray-100 dark:bg-gray-700': disabled
                     }" :type="type" v-model="proxyValue" @keydown="$emit('keydown', $event)" @keyup="$emit('keyup', $event)"    @blur="$emit('blur-sm', $event)" @input="$emit('input', $event)"
                     ref="input" :placeholder="placeholder" />
 
@@ -179,10 +185,11 @@ defineExpose({ focus: () => input.value.focus() });
 
 
         <input v-if="inputGroupType==''" :minlength="minlength" :maxlength="maxlength" class="rtl:text-right"
-            :required="is_required" :name="field_name" :id="field_name" :class="{
+            :required="is_required" :name="field_name" :id="field_name" :disabled="disabled" :class="{
                 'gl-input-form': error_message == '',
                 'gl-input-form-invalid': error_message !== '',
-                [input_class]: input_class && input_class !== ''
+                [input_class]: input_class && input_class !== '',
+                'opacity-70 cursor-not-allowed bg-gray-100 dark:bg-gray-700': disabled
 
             }" :type="type" v-model="proxyValue" @keydown="$emit('keydown', $event)" @keyup="$emit('keyup', $event)" @blur="$emit('blur-sm', $event)" @input="$emit('input', $event)"
             ref="input" :placeholder="placeholder" />
