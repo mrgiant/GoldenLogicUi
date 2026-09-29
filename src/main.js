@@ -21,6 +21,7 @@ export { default as GlDatePicker } from './components/GeneralComponents/GlDatePi
 export { default as GlDateTimePicker } from './components/GeneralComponents/GlDateTimePicker.vue'
 export { default as GlDateRangePicker } from './components/GeneralComponents/GlDateRangePicker.vue'
 export { default as GlDateTimeRangePicker } from './components/GeneralComponents/GlDateTimeRangePicker.vue'
+export { default as GlDateRangeCalendar } from './components/GeneralComponents/GlDateRangeCalendar.vue'
 export { default as GlTextInputFile } from './components/GeneralComponents/GlTextInputFile.vue'
 export { default as GlTabsWrapper } from './components/GeneralComponents/GlTabsWrapper.vue'
 export { default as GlTab } from './components/GeneralComponents/GlTab.vue'
@@ -93,6 +94,14 @@ export { default as ClickOutsideDirective }  from'./ClickOutsideDirective.js';
 export { default as Form }  from'./Form.js';
 
 export { default as multilingual }  from'./multilingual.js';
+
+// The shared language state the translate fields render from. Exported so an
+// app can read or set the editing language directly; the legacy multilingual
+// plugin above is kept only for backward compatibility and no longer finds
+// anything to bind to.
+export { glLocale, setGlLocales } from './localeStore.js';
+
+export { default as GlPrint, triggerPrint } from './print/print.js';
 
 
 

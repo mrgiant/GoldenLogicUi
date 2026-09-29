@@ -64,6 +64,11 @@ const initTinyMCE = async () => {
     content_css: false, // disable import of css
     
     images_upload_url: '/uploadImages',
+    // Keep uploaded/inserted URLs root-relative. TinyMCE otherwise rewrites
+    // them relative to the page hosting the editor, so an image uploaded from
+    // an admin route is stored as ../storage/... and breaks elsewhere.
+    relative_urls: false,
+    remove_script_host: true,
     setup(editor) {
       editorInstance = editor;
       editor.on('Change', () => {

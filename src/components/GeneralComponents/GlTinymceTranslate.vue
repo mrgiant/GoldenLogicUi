@@ -1,6 +1,8 @@
 
 <script setup>
-import { onMounted, ref, computed, nextTick, watch, onBeforeUnmount } from "vue";
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from "vue";
+import { glLocale } from "../../localeStore";
+import { useTranslations } from "../../useTranslations";
 import tinymce from 'tinymce';
 import 'tinymce/icons/default/icons';
 import 'tinymce/themes/silver/theme';
@@ -24,7 +26,16 @@ import 'tinymce/plugins/insertdatetime/plugin';
 import 'tinymce/plugins/visualblocks/plugin';
 import 'tinymce/plugins/help/plugin';
 
-
+/**
+ * A translatable rich-text field.
+ *
+ * Same design as GlTextTranslate — the per-locale content lives in component
+ * state, and the JSON contract with the backend is unchanged — with one
+ * addition: TinyMCE owns its own document, so the state is bridged into it
+ * explicitly. The editor's edits land in labels[current locale] as they
+ * happen, and switching locale writes the other language's content into the
+ * editor. The single source of truth is `labels`; the editor is a view.
+ */
 const props = defineProps({
   is_required: {
     type: Boolean,
@@ -41,26 +52,24 @@ const props = defineProps({
     default: "",
   },
   model_value: {
-    type: [String,Number],
+    type: [String, Number],
     default: null,
   },
 
   modelValue: {
-    type: [String,Number],
+    type: [String, Number],
     default: "",
   },
 
   model_value_translate: {
-    type: [String,Object],
+    type: [String, Object],
     default: null,
   },
 
   modelValueTranslate: {
-    type: [String,Object],
+    type: [String, Object],
     default: "",
   },
-
-
 
   type: {
     type: String,
@@ -92,21 +101,54 @@ const props = defineProps({
   },
 });
 
-
-const emit = defineEmits(["update:modelValue","update:modelValueTranslate","keydown"]);
+const emit = defineEmits(["update:modelValue", "update:modelValueTranslate", "keydown"]);
 
 const input = ref(null);
-const input_translate = ref(null);
 let editorInstance = null;
 
-const darkMode = ref(false);
+/** True while this component is writing into the editor, so the editor's
+ * resulting change events are not read back as the user typing. */
+let settingContent = false;
 
-// document.body.classList.contains("dark")
+const showEditorCurrentLocale = () => {
+  if (!editorInstance || !editorInstance.initialized) {
+    return;
+  }
 
+  if (editorInstance.getContent() === currentText.value) {
+    return;
+  }
 
+  settingContent = true;
+  editorInstance.setContent(currentText.value);
+  settingContent = false;
+};
 
+const { asJson, currentText, setCurrent } = useTranslations(
+  props,
+  emit,
+  showEditorCurrentLocale
+);
 
+const captureFromEditor = () => {
+  if (!editorInstance || settingContent || !glLocale.current) {
+    return;
+  }
 
+  const content = editorInstance.getContent();
+
+  if (currentText.value !== content) {
+    setCurrent(content);
+  }
+};
+
+/** The language switch: what used to be the DOM plugin's whole job. */
+watch(
+  () => glLocale.current,
+  () => {
+    showEditorCurrentLocale();
+  }
+);
 
 const initTinyMCE = async () => {
   await nextTick();
@@ -130,36 +172,27 @@ const initTinyMCE = async () => {
   'removeformat | help',
     skin: false, // disable import of skins
     content_css: false, // disable import of css
-    
+
     images_upload_url: '/uploadImages',
+    // Keep uploaded/inserted URLs root-relative. TinyMCE otherwise rewrites
+    // them relative to the page hosting the editor, so an image uploaded from
+    // an admin route is stored as ../storage/... and breaks elsewhere.
+    relative_urls: false,
+    remove_script_host: true,
     setup(editor) {
       editorInstance = editor;
-      editor.on('Change', () => {
-        emit("update:modelValue", editor.getContent());
-      });
+
+      // Change alone misses plain typing until focus leaves the editor; the
+      // old design papered over that by re-reading the editor at save time.
+      // With the state captured as it happens, nothing is left to collect.
+      editor.on('input change undo redo keyup', captureFromEditor);
+
       editor.on('init', () => {
-        editor.setContent(props.modelValue);
+        showEditorCurrentLocale();
       });
     },
   });
-
-  input.value.classList.add('gl-multilanguage');
 };
-
-
-const InputTranslateChanged = () => {
-
-
-if(input_translate.value)
-{
-
- emit('update:modelValueTranslate', input_translate.value.value);
-
-}
-
-
-};
-
 
 onMounted(initTinyMCE);
 
@@ -170,59 +203,16 @@ onBeforeUnmount(() => {
   }
 });
 
-onMounted(() => {
-
-
-  initTinyMCE();
-
-
-    
-
-
- 
-
-if(props.modelValue)
-  {
-     emit('update:modelValue', props.modelValue);
-     input.value.value=props.modelValue;
-
-
-
-
-  }
-
-  if(props.modelValueTranslate)
-  {
-   
-     emit('update:modelValueTranslate', props.modelValueTranslate);
-     input_translate.value.value=props.modelValueTranslate;
-
-
-
-  }
-
-
-
-
-
-});
-
-watch(() => props.modelValue, (newValue) => {
-  if (editorInstance && editorInstance.getContent() !== newValue) {
-    editorInstance.setContent(newValue);
-  }
-});
-
 const proxyValue = computed({
   get() {
-    return props.modelValue;
+    return currentText.value;
   },
   set(newValue) {
     emit("update:modelValue", newValue);
   },
 });
 
-defineExpose({ focus: () => input.value.focus() });
+defineExpose({ focus: () => input.value?.focus() });
 </script>
 
 <template>
@@ -231,21 +221,12 @@ defineExpose({ focus: () => input.value.focus() });
 
     <input
       type="hidden"
-      data-i18n="true"
       :name="field_name + '_i18n'"
       :id="field_name + '_i18n'"
-      ref="input_translate"
-      v-model="inputTranslateValue"
-
-
+      :value="asJson()"
     />
 
-
-
-
-
-
-    <p :id="field_name" class="mb-4 text-base text-gray-900 input_tr_show dark:text-white">{{ model_value }}</p>
+    <p :id="field_name" class="mb-4 text-base text-gray-900 gl-multilanguage input_tr_show dark:text-white">{{ proxyValue }}</p>
 
     <hr class="opacity-100! bg-gray-200 border-0 dark:bg-gray-700">
   </div>
@@ -263,29 +244,26 @@ defineExpose({ focus: () => input.value.focus() });
 
     <span
       class="language-label js-language-label bg-blue-100 text-blue-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-sm dark:bg-blue-900 dark:text-blue-300"
-    ></span>
+    >{{ glLocale.current }}</span>
 
     <input
       class="mb-4"
       type="hidden"
-      data-i18n="true"
       :name="field_name + '_i18n'"
       :id="field_name + '_i18n'"
-      @change="InputTranslateChanged"
-      ref="input_translate"
+      :value="asJson()"
     />
 
     <textarea
 
       :name="field_name"
       :id="field_name"
-      class="mt-4 tiny form-input-translation"
+      class="mt-4 tiny form-input-translation gl-multilanguage"
       :class="{
         ' gl-textarea-form': error_message == '',
         ' gl-textarea-form-invalid': error_message !== '',
       }"
       :type="type"
-      v-model="proxyValue"
       @keydown="$emit('keydown', $event)"
       ref="input"
       rows="4"
@@ -299,16 +277,3 @@ defineExpose({ focus: () => input.value.focus() });
     </small>
   </div>
 </template>
-
-
-
-
-
-
-
-
-
-
-
-
-

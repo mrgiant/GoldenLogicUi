@@ -7,11 +7,11 @@
       <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
       <!-- Modal content -->
       <div
-        class="inline-block relative overflow-hidden text-left align-bottom transition-all transform bg-white rounded-lg shadow-xl dark:bg-gray-800 sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+        class="inline-block relative overflow-hidden text-start align-bottom transition-all transform bg-white rounded-lg shadow-xl dark:bg-gray-800 sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
         <!-- Modal header -->
         <div class="px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
           <div class="sm:flex sm:items-start">
-            <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+            <div class="mt-3 text-center sm:mt-0 sm:ms-4 sm:text-start">
               <h3 class="text-lg font-medium leading-6">
                 {{ title }}
               </h3>
@@ -28,7 +28,7 @@
           class="flex gap-1 px-4 py-3 border-t border-gray-200 rounded-b dark:border-gray-600 sm:px-6 sm:flex-row-reverse">
 
 
-          <gl-button v-if="!isLoading" @click="confirmAction" tag="button" button_type="red">{{ okButton }}
+          <gl-button v-if="!isLoading" @click="confirmAction" tag="button" :button_type="okButtonType">{{ okButton }}
           </gl-button>
 
           <component v-else is="button" disabled
@@ -72,6 +72,7 @@ const props = defineProps({
 const title = ref("");
 const message = ref("");
 const okButton = ref("");
+const okButtonType = ref("red");
 const cancelButton = ref("Cancel");
 const isOpen = ref(false);
 const isLoading = ref(false);
@@ -84,12 +85,12 @@ const show = (opts = {}) => {
   title.value = opts.title;
   message.value = opts.message;
   okButton.value = opts.okButton;
-  if (opts.cancelButton) {
-    cancelButton.value = opts.cancelButton;
-  }
-  if (opts.hasLoading) {
-    hasLoading.value = opts.hasLoading;
-  }
+  okButtonType.value = opts.okButtonType || "red";
+  // One dialog serves every caller, so each option is set on every show()
+  // rather than only when passed: otherwise one caller's settings carry into
+  // the next. A leftover hasLoading would stop a plain dialog's OK closing it.
+  cancelButton.value = opts.cancelButton || "Cancel";
+  hasLoading.value = !!opts.hasLoading;
   // Once we set our config, we tell the popup modal to open
   isOpen.value = true;
   // Return promise so the caller can get results

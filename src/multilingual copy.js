@@ -50,7 +50,15 @@
 
       this._languageChangeHandler = this.selectLanguage.bind(this);
 
-      this.refreshLabels();
+
+      var js_language_labels =
+        this.element.querySelectorAll(".js-language-label");
+
+      if (js_language_labels) {
+        js_language_labels.forEach(function (label) {
+          label.textContent = this.locale;
+        }, this);
+      }
 
       this.langSelectors.forEach(function (btn) {
        // btn.addEventListener("change", _this.selectLanguage.bind(_this));
@@ -179,82 +187,19 @@
 
       this.locale = lang;
 
-      this.refreshLabels();
-    },
+      var js_language_labels =
+        this.element.querySelectorAll(".js-language-label");
 
-    /**
-     * Stamp the active language onto every field's badge.
-     *
-     * The badge sits beside each translatable field, so it is created and
-     * destroyed with that field — a field re-rendered after the plugin started
-     * arrives with an empty badge. Setting them is therefore not something that
-     * can happen once at setup; it has to be repeatable.
-     */
-    refreshLabels: function () {
-      if (!this.element) {
-        return;
+      if (js_language_labels) {
+        js_language_labels.forEach(function (label) {
+          label.textContent = lang;
+        }, this);
       }
-
-      var labels = this.element.querySelectorAll(".js-language-label");
-
-      labels.forEach(function (label) {
-        label.textContent = this.locale;
-      }, this);
-    },
-
-    /**
-     * Re-read the translatable inputs from the container.
-     *
-     * The inputs are held as elements, so anything that mounts or unmounts them
-     * — a tab that renders behind v-if, a repeater row, a modal reopening —
-     * leaves this plugin holding nodes that are no longer in the document.
-     * Rather than tearing the instance down and building another one against a
-     * counted number of elements, callers can point it at whatever is on screen
-     * now.
-     *
-     * Returns false when there is nothing to bind to, exactly as init() does.
-     */
-    rescan: function () {
-      if (!this.element) {
-        return false;
-      }
-
-      this.transInputs = this.element.querySelectorAll(
-        this.settings.transInputs
-      );
-
-      if (this.transInputs.length === 0) {
-        return false;
-      }
-
-      // Keep the language already in use. Re-reading it from the selector is
-      // only a fallback: a field that has just been re-rendered must adopt the
-      // language the form is on, not reset the form to whatever the radios
-      // happen to say.
-      this.locale = this.returnLocale() || this.locale;
-
-      this.refresh();
-
-      // The badges belong to the fields, so a rebuilt field brings a blank one.
-      this.refreshLabels();
-
-      return true;
     },
 
     prepareData: function () {
       var _this = this;
-
-      if (!this.transInputs) {
-        return;
-      }
-
       this.transInputs.forEach(function (inp) {
-        // An input whose panel was destroyed cannot be read from, and must not
-        // stop the rest of the form being collected.
-        if (!inp || !inp.isConnected) {
-          return;
-        }
-
         _this.updateInputCache(inp);
 
         var event = new Event("change");
@@ -265,41 +210,24 @@
     updateInputCache: function (inp) {
       var _this = this;
       var inpUsr = inp.dataset.inpUsr;
-      var usrElement = document.getElementById(inpUsr);
 
-      // The visible half of the field is reached by id, so it is gone whenever
-      // the markup around it was re-rendered. Reading .value off null is what
-      // this used to do, and it threw before anything could be saved.
-      if (!usrElement) {
-        return;
-      }
-
-      var $_val = usrElement.value;
+      var $_val = document.getElementById(inpUsr).value;
       var $_data = {}; // Create new data
 
-      if (usrElement.classList.contains("tiny")) {
-        var $_mce = tinymce.get(usrElement.name);
-
-        // The editor is torn down with its element; without it there is nothing
-        // newer than what is already cached.
-        if (!$_mce) {
-          return;
-        }
-
+      if (document.getElementById(inpUsr).classList.contains("tiny")) {
+        var $_mce = tinymce.get(document.getElementById(inpUsr).name);
         $_val = $_mce.getContent();
       }
 
-      if (usrElement.classList.contains("CodeEditor")) {
-        // The editor's own DOM is built after mount, so it is missing both
-        // before it has initialised and after its container was re-rendered.
-        let cmContent = usrElement.querySelector(".cm-content");
-        let editorView = cmContent && cmContent.cmView && cmContent.cmView.view;
+      if (document.getElementById(inpUsr).classList.contains("CodeEditor")) {
+        //let cmEditorElement = document.querySelector(".cm-editor") // Or whatever query you need
+        let cmEditorElement = document.getElementById(inpUsr);
+        let editorView =
+          cmEditorElement.querySelector(".cm-content").cmView.view;
 
-        if (!editorView) {
-          return;
-        }
+        let editorValue = editorView.state.doc.toString();
 
-        $_val = editorView.state.doc.toString();
+        $_val = editorValue;
       }
 
       /*
@@ -328,13 +256,6 @@
     loadLang: function (inp, lang) {
       var inpUsr = inp.dataset.inpUsr;
       var _val = inp.dataset[lang];
-
-      // Same reason as updateInputCache: the visible half is found by id, and
-      // is gone whenever its markup was re-rendered. Switching language must
-      // not throw because one field on a hidden panel no longer exists.
-      if (!document.getElementById(inpUsr)) {
-        return;
-      }
 
       if (!this.settings.editing) {
         if (this.settings.type === "tiny") {

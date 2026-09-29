@@ -1,7 +1,28 @@
 
 <script setup>
-import { onMounted, ref, watch } from "vue";
+import { ref } from "vue";
+import { glLocale } from "../../localeStore";
+import { useTranslations } from "../../useTranslations";
 
+/**
+ * A translatable text field, self-contained.
+ *
+ * The translations live here, in component state, keyed by locale. The visible
+ * input is a plain binding onto the entry for the language the shared selector
+ * has chosen — switching language is a re-render, not a DOM walk.
+ *
+ * The previous implementation delegated all of this to a plugin that scanned
+ * the document for hidden inputs and mirrored values into dataset attributes.
+ * Because it held DOM nodes, any field that was unmounted and remounted — a
+ * tab rendered behind v-if, a repeater row — detached from it silently, and
+ * text was lost. Holding the state in Vue makes that whole class of failure
+ * impossible: the DOM can come and go, the object stays.
+ *
+ * The contract is unchanged. `modelValueTranslate` still carries the JSON the
+ * backend's prepareTranslations() parses ({"en":"...","ar":"..."}), a hidden
+ * input still renders it under `field_name + '_i18n'` for native form posts,
+ * and `modelValue` still tracks what is typed.
+ */
 const props = defineProps({
   is_required: {
     type: Boolean,
@@ -18,20 +39,15 @@ const props = defineProps({
     default: "",
   },
 
-
   modelValue: {
-    type: [String,Number],
+    type: [String, Number],
     default: "",
   },
-
- 
 
   modelValueTranslate: {
-    type: [String,Object],
+    type: [String, Object],
     default: "",
   },
-
-
 
   type: {
     type: String,
@@ -63,107 +79,19 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(["update:modelValue","update:modelValueTranslate","keydown"]);
+const emit = defineEmits(["update:modelValue", "update:modelValueTranslate", "keydown"]);
 
 const input = ref(null);
-const input_translate = ref(null);
-const output_translate = ref(null);
 
+const { asJson, currentText, setCurrent } = useTranslations(props, emit);
 
+const onInput = (event) => {
+  // What the plain v-model sees is the text on screen, exactly as before; the
+  // backend derives the canonical default-locale value from the JSON.
+  setCurrent(event.target.value);
+};
 
-     const InputTranslateChanged = () => {
-
-
-       if(input_translate.value)
-       {
-       
-        emit('update:modelValueTranslate', input_translate.value.value);
-
-       }
-
-       
-    };
-
-
-
-
-onMounted(() => {
-
-
-    if (input.value !== null && input.value.hasAttribute('autofocus')) {
-    input.value.focus();
-  }
-
-  if(props.modelValue)
-  {
-    
-      emit('update:modelValue', props.modelValue);
-      if(input.value)
-      {
-        input.value.value=props.modelValue;
-      }
-       
-    
-
-
-
-
-  }
-
-  if(props.modelValueTranslate)
-  {
-    // emit('update:modelValueTranslate', props.model_value_translate);
-    // input_translate.value.value=props.model_value_translate;
-
-   
-    
-     emit('update:modelValueTranslate', props.modelValueTranslate);
-
-     if(input_translate.value)
-     {
-      input_translate.value.value=props.modelValueTranslate;
-     }
-     
-
-
-
-  }
-
-
-
-  if(input.value)
-   {
-     input.value.classList.add('gl-multilanguage');
-   }
-
-   if(output_translate.value)
-   {
-   
-     output_translate.value.classList.add('gl-multilanguage');
-   }
-
-
-
-
-  
-
-
-
-      
-
-
-
-
-});
-
-
- 
-  
-
-
-
-
-defineExpose({ focus: () => input.value.focus() });
+defineExpose({ focus: () => input.value?.focus() });
 </script>
 
 <template>
@@ -172,21 +100,14 @@ defineExpose({ focus: () => input.value.focus() });
 
     <input
       type="hidden"
-      data-i18n="true"
       :name="field_name + '_i18n'"
       :id="field_name + '_i18n'"
-      ref="input_translate"
-     
-     
-
-
+      :value="asJson()"
     />
 
-
-
-
-
-    <p ref="output_translate" :id="field_name" class="mb-4 text-base text-gray-900 input_tr_show dark:text-white">{{ model_value }}</p>
+    <!-- gl-multilanguage kept for the consuming apps' loading logic, which
+         counts elements carrying it before revealing a modal. -->
+    <p :id="field_name" class="mb-4 text-base text-gray-900 gl-multilanguage input_tr_show dark:text-white">{{ currentText }}</p>
 
     <hr class="opacity-100! bg-gray-200 border-0 dark:bg-gray-700">
   </div>
@@ -202,32 +123,32 @@ defineExpose({ focus: () => input.value.focus() });
       >{{ label_name }}</label
     >
 
+    <!-- The badge naming the language being typed. Rendered from the store, so
+         it can never go stale or blank however often the field remounts. -->
     <span
       class="language-label js-language-label bg-blue-100 text-blue-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-sm dark:bg-blue-900 dark:text-blue-300"
-    ></span>
+    >{{ glLocale.current }}</span>
 
     <input
       class="mb-4"
       type="hidden"
-      data-i18n="true"
       :name="field_name + '_i18n'"
       :id="field_name + '_i18n'"
-      @change="InputTranslateChanged"
-      ref="input_translate"
+      :value="asJson()"
     />
 
     <input
       :required="is_required"
       :name="field_name"
       :id="field_name"
-      class="mt-2 form-input-translation "
+      class="mt-2 form-input-translation gl-multilanguage"
       :class="{
         ' gl-input-form': error_message == '',
         ' gl-input-form-invalid': error_message !== '',
       }"
       :type="type"
-
-      @input="$emit('update:modelValue', $event.target.value)"
+      :value="currentText"
+      @input="onInput"
       @keydown="$emit('keydown', $event)"
       ref="input"
     />
@@ -239,14 +160,3 @@ defineExpose({ focus: () => input.value.focus() });
     </small>
   </div>
 </template>
-
-
-
-
-
-
-
-
-
-
-

@@ -1,7 +1,15 @@
 
 <script setup>
-import { onMounted, ref } from "vue";
+import { ref } from "vue";
+import { glLocale } from "../../localeStore";
+import { useTranslations } from "../../useTranslations";
 
+/**
+ * A translatable textarea. Same design as GlTextTranslate: the per-locale text
+ * lives in component state, the visible control renders the entry for the
+ * language the shared selector has chosen, and the JSON contract with the
+ * backend is unchanged. See GlTextTranslate for the full rationale.
+ */
 const props = defineProps({
   is_required: {
     type: Boolean,
@@ -17,19 +25,16 @@ const props = defineProps({
     type: String,
     default: "",
   },
+
   modelValue: {
-    type: [String,Number],
+    type: [String, Number],
     default: "",
   },
-
- 
 
   modelValueTranslate: {
-    type: [String,Object],
+    type: [String, Object],
     default: "",
   },
-
-
 
   type: {
     type: String,
@@ -61,129 +66,17 @@ const props = defineProps({
   },
 });
 
-
-const emit = defineEmits(["update:modelValue","update:modelValueTranslate","keydown"]);
+const emit = defineEmits(["update:modelValue", "update:modelValueTranslate", "keydown"]);
 
 const input = ref(null);
-const input_translate = ref(null);
-const output_translate = ref(null);
 
-const InputTranslateChanged = () => {
+const { asJson, currentText, setCurrent } = useTranslations(props, emit);
 
-
-if(input_translate.value)
-{
-
- emit('update:modelValueTranslate', input_translate.value.value);
-
-}
-
-
+const onInput = (event) => {
+  setCurrent(event.target.value);
 };
 
-onMounted(() => {
-
-
-if (input.value !== null && input.value.hasAttribute('autofocus')) {
-input.value.focus();
-}
-
-if(props.modelValue)
-  {
-     emit('update:modelValue', props.modelValue);
-
-     if(input.value)
-     {
-      input.value.value=props.modelValue;
-     }
-    
-
-
-
-
-  }
-
-  if(props.modelValueTranslate)
-  {
-    // emit('update:modelValueTranslate', props.model_value_translate);
-    // input_translate.value.value=props.model_value_translate;
-
-   
-    
-     emit('update:modelValueTranslate', props.modelValueTranslate);
-
-     if(input_translate.value)
-     {
-      input_translate.value.value=props.modelValueTranslate;
-     }
-
-
-
-  }
-
-
-  /*
-
-  if(props.translatable && !props.modelValueTranslate)
- {
-    axios
-
-    .get(`/admin/get_field_translations`, {
-      params: {
-        model: props.translatable.model,
-        row_id: props.translatable.row_id,
-        field: props.translatable.field
-    }
-
-
-
-            })
-    .then((response) => {
-
-
-
-          input_translate.value.value=JSON.stringify(response.data);
-          emit('update:modelValueTranslate', JSON.stringify(response.data));
-
-
-
-
-
-    })
-    .catch((error) => {
-        // handle error
-        console.log(error);
-    });
-   }
-
-   */
-
-
-   if(input.value)
-   {
-     input.value.classList.add('gl-multilanguage');
-   }
-
-   if(output_translate.value)
-   {
-   
-     output_translate.value.classList.add('gl-multilanguage');
-   }
-
-
-
-
-
-
-
-});
-
-
-
-
-
-
-defineExpose({ focus: () => input.value.focus() });
+defineExpose({ focus: () => input.value?.focus() });
 </script>
 
 <template>
@@ -192,21 +85,12 @@ defineExpose({ focus: () => input.value.focus() });
 
     <input
       type="hidden"
-      data-i18n="true"
       :name="field_name + '_i18n'"
       :id="field_name + '_i18n'"
-      ref="input_translate"
-     
-
-
+      :value="asJson()"
     />
 
-
-
-
-
-
-    <p  ref="output_translate" :id="field_name" class="mb-4 text-base text-gray-900 input_tr_show dark:text-white">{{ model_value }}</p>
+    <p :id="field_name" class="mb-4 text-base text-gray-900 gl-multilanguage input_tr_show dark:text-white">{{ currentText }}</p>
 
     <hr class="opacity-100! bg-gray-200 border-0 dark:bg-gray-700">
   </div>
@@ -224,20 +108,18 @@ defineExpose({ focus: () => input.value.focus() });
 
     <span
       class="language-label js-language-label bg-blue-100 text-blue-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-sm dark:bg-blue-900 dark:text-blue-300"
-    ></span>
+    >{{ glLocale.current }}</span>
 
     <input
       class="mb-4"
       type="hidden"
-      data-i18n="true"
       :name="field_name + '_i18n'"
       :id="field_name + '_i18n'"
-      @change="InputTranslateChanged"
-      ref="input_translate"
+      :value="asJson()"
     />
 
     <textarea
-      class="mt-4 form-input-translation"
+      class="mt-4 form-input-translation gl-multilanguage"
       :required="is_required"
       :name="field_name"
       :id="field_name"
@@ -245,13 +127,12 @@ defineExpose({ focus: () => input.value.focus() });
         ' gl-textarea-form': error_message == '',
         ' gl-textarea-form-invalid': error_message !== '',
       }"
-      :type="type"
-      @input="$emit('update:modelValue', $event.target.value)"
+      :value="currentText"
+      @input="onInput"
       @keydown="$emit('keydown', $event)"
       ref="input"
       rows="4"
-    >
-   </textarea>
+    ></textarea>
 
     <span class="gl-span-form-error">{{ error_message }}</span>
 
@@ -260,14 +141,3 @@ defineExpose({ focus: () => input.value.focus() });
     </small>
   </div>
 </template>
-
-
-
-
-
-
-
-
-
-
-

@@ -89,10 +89,29 @@ const slugify = (text) => {
 };
 
 
+// Set while this component is the one writing the hash.
+//
+// Assigning window.location.hash makes the browser fire hashchange on a later
+// task, and this component listens for it — so its own write came back in as if
+// somebody had navigated, and TabChange was emitted a second time, late. Work
+// that a consumer ties to the event (flushing an input before its panel
+// unmounts, re-binding a plugin) then ran against a DOM that had already moved
+// on.
+let writingHash = false;
+
 const handleTabChange = (newTitle) => {
 
  const slug = slugify(newTitle);
-  window.location.hash = encodeURIComponent(slug);
+  const nextHash = encodeURIComponent(slug);
+
+  // Only flag when a hashchange is actually coming: assigning the value it
+  // already holds fires nothing, and a flag left standing would swallow the
+  // next genuine navigation instead.
+  if (window.location.hash.replace('#', '') !== nextHash) {
+    writingHash = true;
+    window.location.hash = nextHash;
+  }
+
   emit('TabChange', newTitle);
 };
 
@@ -112,6 +131,13 @@ defineExpose({
 
 
 const updateTabFromHash = () => {
+  // Our own write, echoing back. The tab is already the one in the hash, so
+  // there is nothing to do and re-entering here would emit TabChange twice.
+  if (writingHash) {
+    writingHash = false;
+    return;
+  }
+
   const hash = decodeURIComponent(window.location.hash.replace('#', ''));
 
   const tab = tabs.value.find((tab) => slugify(tab.title) === hash);

@@ -126,8 +126,20 @@ const deleteAction = () => {
             });
         })
         .catch((error) => {
-            // handle error
-            console.log(error);
+            // Previously this only logged. A refused delete — a permission
+            // check, a foreign key, a rule like "you cannot delete your own
+            // account" — left the confirmation dialog open with no explanation
+            // on screen, so the action looked like it had simply hung.
+            closeDeleteModal();
+
+            GlToast.methods.add({
+                message:
+                    error.response?.data?.message ??
+                    props.language?.delete_failed ??
+                    'That item could not be deleted.',
+                type: "error",
+                duration: 5000,
+            });
         });
 };
 </script>

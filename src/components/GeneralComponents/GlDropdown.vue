@@ -331,6 +331,8 @@ const firstPage = ref(1);
 
 // shallowRef avoids per-option deep reactivity proxies — large win for big lists
 const filteredOptions = shallowRef([]);
+/** Whether the list has been fetched as a list, rather than holding only a resolved selection. */
+const listLoaded = ref(false);
 const optionsValues = shallowRef([]);
 const customOptions = ref([]);
 
@@ -373,6 +375,7 @@ const fetchData = async (direction = "down") => {
 
     if (!data || !data.data) {
       filteredOptions.value = [];
+      listLoaded.value = false;
       return;
     }
 
@@ -397,6 +400,7 @@ const fetchData = async (direction = "down") => {
       filteredOptions.value = next;
       page.value++;
       lastPage.value = data.last_page;
+      listLoaded.value = true;
     }
 
     if (!lastPage.value) lastPage.value = data.last_page;
@@ -519,7 +523,13 @@ const showOptions = () => {
   }
   searchFilter.value = "";
   optionsShown.value = true;
-  if (props.api_url && filteredOptions.value.length === 0) {
+  // A saved value is resolved into the list on its own; opening must still
+  // show the whole first page, not just that one entry.
+  if (props.api_url && (!listLoaded.value || filteredOptions.value.length === 0)) {
+    page.value = 1;
+    lastPage.value = null;
+    filteredOptions.value = [];
+    listLoaded.value = false;
     fetchData("down");
   }
   nextTick(() => {
@@ -775,6 +785,7 @@ watch(searchFilter, () => {
     lastPage.value = null;
     firstPage.value = 1;
     filteredOptions.value = [];
+    listLoaded.value = false;
     fetchData("down");
   }, 250);
 });
@@ -799,6 +810,7 @@ watch(
     lastPage.value = null;
     firstPage.value = 1;
     filteredOptions.value = [];
+    listLoaded.value = false;
   },
   { immediate: true }
 );

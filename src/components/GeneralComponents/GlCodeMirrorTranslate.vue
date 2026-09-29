@@ -3,20 +3,16 @@
     <h3 class="font-bold ptext-lg dark:text-white">{{ label_name }}</h3>
     <p
       :id="field_name"
-      class="mb-4 text-base text-gray-900 input_tr_show dark:text-white"
+      class="mb-4 text-base text-gray-900 gl-multilanguage input_tr_show dark:text-white"
     >
-      {{ model_value }}
+      {{ currentText }}
     </p>
 
     <input
       type="hidden"
-      data-i18n="true"
       :name="field_name + '_i18n'"
       :id="field_name + '_i18n'"
-      ref="input_translate"
-      v-model="inputTranslateValue"
-
-
+      :value="asJson()"
     />
     <hr class="opacity-100! bg-gray-200 border-0 dark:bg-gray-700" />
   </div>
@@ -34,25 +30,19 @@
 
     <span
       class="language-label js-language-label bg-blue-100 text-blue-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-sm dark:bg-blue-900 dark:text-blue-300"
-    ></span>
-
+    >{{ glLocale.current }}</span>
 
     <input
       class="mb-4"
       type="hidden"
-      data-i18n="true"
       :name="field_name + '_i18n'"
       :id="field_name + '_i18n'"
-      @change="InputTranslateChanged"
-      ref="input_translate"
+      :value="asJson()"
     />
-
-
-
 
     <div
       ref="editor"
-      class="CodeEditor custom-editor form-input-translation"
+      class="CodeEditor custom-editor form-input-translation gl-multilanguage"
       :class="{
         'gl-input-form': error_message == '',
         'gl-input-form-invalid ': error_message !== '',
@@ -71,6 +61,7 @@
 
 <script setup>
 import {
+  computed,
   ref,
   onMounted,
   watch,
@@ -78,6 +69,8 @@ import {
   defineEmits,
   onUnmounted,
 } from "vue";
+import { glLocale } from "../../localeStore";
+import { useTranslations } from "../../useTranslations";
 import { EditorState, StateEffect } from "@codemirror/state";
 import { EditorView, keymap } from "@codemirror/view";
 import { lineNumbers, highlightActiveLineGutter } from "@codemirror/view";
@@ -90,7 +83,15 @@ import { oneDark } from "@codemirror/theme-one-dark";
 
 import { autocompletion } from "@codemirror/autocomplete";
 
-// Define props
+/**
+ * A translatable code field.
+ *
+ * Same design as GlTextTranslate — per-locale text in component state, JSON
+ * contract unchanged — with CodeMirror bridged the way GlTinymceTranslate
+ * bridges TinyMCE: the editor's edits land in labels[current locale] as they
+ * happen, and switching locale rewrites the editor's document. `labels` is the
+ * single source of truth; the editor is a view of one language at a time.
+ */
 const props = defineProps({
   modelValue: {
     type: String,
@@ -133,14 +134,60 @@ const props = defineProps({
 });
 
 // Define emits
-const emit = defineEmits(["update:modelValue", "change"]);
+const emit = defineEmits(["update:modelValue", "update:modelValueTranslate", "change"]);
 
 // Reference to the editor DOM element
 const editor = ref(null);
-const input_translate = ref(null);
 
 // Reference to the EditorView instance
 let editorView = null;
+
+/** True while this component rewrites the document, so the resulting update
+ * event is not read back as the user typing. */
+let settingContent = false;
+
+const showEditorCurrentLocale = () => {
+  if (!editorView) {
+    return;
+  }
+
+  const inEditor = editorView.state.doc.toString();
+
+  if (inEditor === currentText.value) {
+    return;
+  }
+
+  settingContent = true;
+  editorView.dispatch({
+    changes: { from: 0, to: inEditor.length, insert: currentText.value },
+  });
+  settingContent = false;
+};
+
+const { asJson, currentText, setCurrent } = useTranslations(
+  props,
+  emit,
+  showEditorCurrentLocale
+);
+
+const captureFromEditor = (content) => {
+  if (settingContent || !glLocale.current) {
+    return;
+  }
+
+  if (currentText.value !== content) {
+    setCurrent(content);
+    emit("change", content);
+  }
+};
+
+/** The language switch: what used to be the DOM plugin's whole job. */
+watch(
+  () => glLocale.current,
+  () => {
+    showEditorCurrentLocale();
+  }
+);
 
 // Function to get language extension
 const getLanguageExtension = (language) => {
@@ -151,7 +198,7 @@ const getLanguageExtension = (language) => {
     case "html":
       return html();
 
-    
+
 
     // Add more languages here
     default:
@@ -166,7 +213,7 @@ const getThemeExtension = (theme) => {
       return oneDark;
 
     default:
-     
+
       return document.body.classList.contains("dark") ?  oneDark : [];
   }
 };
@@ -182,54 +229,34 @@ const getHighlightActiveLineExtension = (highlight) => {
   return highlight ? [highlightActiveLineGutter()] : [];
 };
 
-
-
-const InputTranslateChanged = () => {
-
-
-if(input_translate.value)
-{
-
- emit('update:modelValueTranslate', input_translate.value.value);
-
-}
-
-
-};
-
-
-
+const buildExtensions = (language, theme, showLineNumbersOpt, highlightActiveLineOpt) => [
+  ...getLineNumbersExtension(showLineNumbersOpt),
+  ...getHighlightActiveLineExtension(highlightActiveLineOpt),
+  highlightActiveLineGutter(),
+  keymap.of(defaultKeymap),
+  getLanguageExtension(language),
+  ...getThemeExtension(theme),
+  autocompletion(),
+  EditorView.updateListener.of((v) => {
+    if (v.docChanged) {
+      captureFromEditor(v.state.doc.toString());
+    }
+  }),
+  EditorView.lineWrapping,
+];
 
 onMounted(() => {
-
-
-
-  
-
-
-
 
   if (editor.value) {
     // Initialize EditorState
     const state = EditorState.create({
-      doc: props.modelValue,
-      extensions: [
-        ...getLineNumbersExtension(props.showLineNumbers),
-        ...getHighlightActiveLineExtension(props.highlightActiveLine),
-        highlightActiveLineGutter(), //
-        keymap.of(defaultKeymap),
-        getLanguageExtension(props.language),
-        ...getThemeExtension(props.theme),
-        autocompletion(),
-        EditorView.updateListener.of((v) => {
-          if (v.docChanged) {
-            const newValue = v.state.doc.toString();
-            emit("update:modelValue", newValue);
-            emit("change", newValue);
-          }
-        }),
-        EditorView.lineWrapping,
-      ],
+      doc: currentText.value,
+      extensions: buildExtensions(
+        props.language,
+        props.theme,
+        props.showLineNumbers,
+        props.highlightActiveLine
+      ),
     });
 
     // Initialize EditorView
@@ -239,46 +266,7 @@ onMounted(() => {
     });
   }
 
-
-  if(props.modelValueTranslate)
-  {
-    
-    
-     emit('update:modelValueTranslate', props.modelValueTranslate);
-     input_translate.value.value=props.modelValueTranslate;
-
-
-
-  }
-
-
-  editor.value.classList.add('gl-multilanguage');
-
-
-
-
-
-
 });
-
-// Watch for external changes to modelValue
-watch(
-  () => props.modelValue,
-  (newVal) => {
-    if (editorView) {
-      const currentValue = editorView.state.doc.toString();
-      if (newVal !== currentValue) {
-        editorView.dispatch({
-          changes: {
-            from: 0,
-            to: currentValue.length,
-            insert: newVal,
-          },
-        });
-      }
-    }
-  }
-);
 
 // Watch for language, theme, showLineNumbers, and highlightActiveLine changes
 watch(
@@ -286,23 +274,9 @@ watch(
   ([newLang, newTheme, newShowLineNumbers, newHighlightActiveLine]) => {
     if (editorView) {
       editorView.dispatch({
-        effects: StateEffect.reconfigure.of([
-          ...getLineNumbersExtension(newShowLineNumbers),
-          ...getHighlightActiveLineExtension(newHighlightActiveLine),
-          highlightActiveLineGutter(), // Ensure it's included if highlightActiveLine is true
-          keymap.of([...defaultKeymap]),
-          getLanguageExtension(newLang),
-          ...getThemeExtension(newTheme),
-          autocompletion(),
-          EditorView.updateListener.of((v) => {
-            if (v.docChanged) {
-              const newValue = v.state.doc.toString();
-              emit('update:modelValue', newValue);
-              emit('change', newValue);
-            }
-          }),
-          EditorView.lineWrapping,
-        ]),
+        effects: StateEffect.reconfigure.of(
+          buildExtensions(newLang, newTheme, newShowLineNumbers, newHighlightActiveLine)
+        ),
       });
     }
   }
