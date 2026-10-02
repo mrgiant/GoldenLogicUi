@@ -16,7 +16,7 @@
                 {{ title }}
               </h3>
               <div class="mt-2">
-                <p class="text-sm">
+                <p class="text-sm whitespace-pre-line">
                   {{ message }}
                 </p>
               </div>

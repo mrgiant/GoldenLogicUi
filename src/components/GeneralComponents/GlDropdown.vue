@@ -822,6 +822,12 @@ watch(
       selected.value = {};
       return;
     }
+    // Set from outside (not picked here): forget the old pick so the new value shows.
+    const newId = typeof newVal === "object" ? newVal.id : newVal;
+    if (isObjectNotEmpty(selected.value) && String(selected.value.id) !== String(newId)) {
+      selected.value = {};
+      isSelectedOption.value = false;
+    }
     if (props.api_url) {
       if (!isSelectedOption.value) {
         await resolveServerSelected(newVal);

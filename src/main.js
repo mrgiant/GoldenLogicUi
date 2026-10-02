@@ -21,6 +21,7 @@ export { default as GlDatePicker } from './components/GeneralComponents/GlDatePi
 export { default as GlDateTimePicker } from './components/GeneralComponents/GlDateTimePicker.vue'
 export { default as GlDateRangePicker } from './components/GeneralComponents/GlDateRangePicker.vue'
 export { default as GlDateTimeRangePicker } from './components/GeneralComponents/GlDateTimeRangePicker.vue'
+export { default as GlTimeRangePicker } from './components/GeneralComponents/GlTimeRangePicker.vue'
 export { default as GlDateRangeCalendar } from './components/GeneralComponents/GlDateRangeCalendar.vue'
 export { default as GlTextInputFile } from './components/GeneralComponents/GlTextInputFile.vue'
 export { default as GlTabsWrapper } from './components/GeneralComponents/GlTabsWrapper.vue'
