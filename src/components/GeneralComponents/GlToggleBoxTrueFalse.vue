@@ -115,8 +115,10 @@ const proxyValue = computed({
     <div class=" flex justify-between items-center" v-if="has_label_up">
         <label  class="gl-label-form">{{ label_name }}</label>
     </div>
-    <li class="flex justify-between p-2 -mb-px border border-gray-200 rounded-lg no-underlin dark:border-gray-600 dark:focus:border-primaryDark">
-      {{ label_name }}
+    <li class="flex p-2 -mb-px border border-gray-200 rounded-lg no-underlin dark:border-gray-600 dark:focus:border-primaryDark"
+     :class="has_label_up ? 'justify-end':'justify-between'"
+    >
+      {{ has_label_up ? "" : label_name }}
 
       <label class="relative inline-flex items-center cursor-pointer">
         <input

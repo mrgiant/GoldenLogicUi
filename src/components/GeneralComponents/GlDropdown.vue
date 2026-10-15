@@ -44,10 +44,13 @@
               [`showOptions${uuid}`]: true,
               'pr-14!': isObjectNotEmpty(selected) && has_cancel,
               'pr-8!': !(isObjectNotEmpty(selected) && has_cancel),
+              'opacity-70 cursor-not-allowed': disabled,
+              [input_class]: input_class !== '',
             }"
             class="truncate showOptions1"
             :value="selected?.name"
             :placeholder="placeholder"
+            :disabled="disabled"
             autocomplete="off"
             readonly
           />
@@ -100,6 +103,7 @@
           <!-- Dropdown Menu -->
           <div
             class="text-gray-700 bg-white border dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200  absolute w-full z-999999999 rounded-md mt-1 pt-1"
+            :class="options_class"
             v-show="optionsShown"
             
           >
@@ -158,7 +162,11 @@
               >
                 <div class="flex justify-between items-center py-2">
                   
-                   <span v-html="option.name || option.id || '-'"> </span>
+                   <span class="min-w-0">
+                     <span v-html="option.name || option.id || '-'"> </span>
+                     <!-- Extra words shown only in the list, never in the field, e.g. a country's full name beside its code. -->
+                     <span v-if="option.hint" class="ms-2 text-gray-500 dark:text-gray-400">{{ option.hint }}</span>
+                   </span>
                   <svg
                     v-if="selected?.id === option.id"
                     class="flex items-center shrink-0 w-4 h-4 text-green-500 ltr:right-2 rtl:left-2 dark:text-green-400"
@@ -311,6 +319,23 @@ const props = defineProps({
   custom_option_label: {
     type: String,
     default: "Use:",
+  },
+
+  /** Extra classes on the field itself, e.g. to square a corner when it sits against another field. */
+  input_class: {
+    type: String,
+    default: "",
+  },
+
+  /** Extra classes on the open list, e.g. a minimum width wider than a narrow field. */
+  options_class: {
+    type: String,
+    default: "",
+  },
+
+  disabled: {
+    type: Boolean,
+    default: false,
   },
 });
 
@@ -516,7 +541,7 @@ const handleFocusChange = (event) => {
 };
 
 const showOptions = () => {
-  if (props.show) return;
+  if (props.show || props.disabled) return;
   if (optionsShown.value) {
     optionsShown.value = false;
     return;
@@ -615,7 +640,8 @@ function searchOptions() {
   const filtered = [];
   for (let i = 0, n = all.length; i < n && filtered.length < max; i++) {
     const opt = all[i];
-    if (String(opt.name).toLowerCase().includes(needle)) {
+    // An option may carry extra words to search by (opt.keywords) beyond its shown name.
+    if (String(opt.name).toLowerCase().includes(needle) || String(opt.keywords ?? "").toLowerCase().includes(needle)) {
       filtered.push(opt);
     }
   }

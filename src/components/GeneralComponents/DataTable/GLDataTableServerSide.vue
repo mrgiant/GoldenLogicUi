@@ -225,7 +225,21 @@
             </td>
           </tr>
 
-          <tr v-if="!isLoading" v-for="(item, index) in itemLists.data" :key="index"
+          <tr v-if="!isLoading && error">
+            <td :colspan="columns.length + (enable_select_deselect_delete ? 1 : 0)" class="px-5 py-6 border! dark:border-gray-700">
+              <div role="alert" class="flex flex-col items-center justify-center gap-3 text-center">
+                <p class="text-sm font-medium text-red-700 dark:text-red-400">
+                  {{ language?.failed_to_load_data ?? "Could not load the data." }}
+                </p>
+                <p v-if="errorMessage" class="text-xs text-gray-500 dark:text-gray-400">{{ errorMessage }}</p>
+                <gl-button tag="button" button_type="light" @click="retry">
+                  {{ language?.retry ?? "Retry" }}
+                </gl-button>
+              </div>
+            </td>
+          </tr>
+
+          <tr v-if="!isLoading && !error" v-for="(item, index) in itemLists.data" :key="index"
             class="text-gray-500   dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-200">
             <!-- remove  md:flex-row from  below td to be the text below lable if want in line add it -->
 
@@ -250,8 +264,13 @@
                 ? ''
                 : 'overflow-auto'" class=" td_overflow_auto max-h-40 max-w-100">
                 <component v-if="column.tdComp" :language="language" :is="forDynCompIs(column.tdComp)" :row="item"
-                  :field="column.field_name" :xprops="xprops" :tdProps="column.tdProps" @deleteAction="GetItemLists()"
-                  @editAction="editAction(item)" @generalAction="generalAction(item)" @generalAction1="generalAction1(item)" @generalAction2="generalAction2(item)">
+                  :field="column.field_name" :xprops="xprops" :tdProps="column.tdProps"
+                  @deleteAction="(payload) => { GetItemLists(); cellAction('deleteAction', item, payload, column) }"
+                  @editAction="(payload) => { editAction(item); cellAction('editAction', item, payload, column) }"
+                  @generalAction="(payload) => { generalAction(item); cellAction('generalAction', item, payload, column) }"
+                  @generalAction1="(payload) => { generalAction1(item); cellAction('generalAction1', item, payload, column) }"
+                  @generalAction2="(payload) => { generalAction2(item); cellAction('generalAction2', item, payload, column) }"
+                  @cellAction="(action, payload) => cellAction(action, item, payload, column)">
                 </component>
                 <template v-else>
                   {{ item[column.field_name] }}
@@ -390,9 +409,16 @@ export default {
       pageOptions: [5, 10, 20, 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000],
       perPage: 5,
       page: 1,
+
+      // Set when the last data request failed; cleared by the next success.
+      error: false,
+      errorMessage: "",
+      requestSequence: 0,
+      applyingState: false,
+      lastStateSignature: "",
     };
   },
-  emits: ["editAction", "generalAction","generalAction1","generalAction2","checkedIdsAction"],
+  emits: ["editAction", "generalAction","generalAction1","generalAction2","checkedIdsAction","cell-action","error","state-change"],
   computed: {
     columns1() {
       return this.columns;
@@ -418,7 +444,13 @@ export default {
       return this.columns.filter(col => this.columnVisibility[col.field_name]);
 
 
-      
+
+    },
+
+    hiddenColumnNames() {
+      return this.columns
+        .filter((col) => this.columnVisibility[col.field_name] === false)
+        .map((col) => col.field_name);
     }
 
 
@@ -603,16 +635,112 @@ export default {
         ...this.dynamicQueryString,
       };
 
+      this.emitStateChange();
+
+      // Only the latest request may update the table, so a slow earlier
+      // response can't overwrite the result of a newer search or filter.
+      const requestId = ++this.requestSequence;
+
       axios
         .get(this.xprops.route_get_data, { params })
         .then((response) => {
+          if (requestId !== this.requestSequence) {
+            return;
+          }
           this.itemLists = response.data;
+          this.error = false;
+          this.errorMessage = "";
           this.isLoading = false;
         })
         .catch((error) => {
-          console.error(error);
+          if (requestId !== this.requestSequence) {
+            return;
+          }
+          this.error = true;
+          this.errorMessage = error?.response?.data?.message || error?.message || "";
           this.isLoading = false;
+          this.$emit("error", error);
         });
+    },
+
+    retry() {
+      this.GetItemLists(this.page);
+    },
+
+    // Every cell event, with whatever the cell sent along. Cells can also emit
+    // their own named actions: emit('cellAction', 'restart', payload).
+    cellAction(action, row, payload, column) {
+      this.$emit("cell-action", { action, row, payload, field: column?.field_name });
+    },
+
+    /**
+     * The table's current view, for saved views or URL sync:
+     * { search, filters, sort, direction, perPage, page, hiddenColumns }.
+     */
+    getState() {
+      return {
+        search: this.search ?? "",
+        filters: JSON.parse(JSON.stringify(this.dynamicFilters || {})),
+        sort: this.sortField ?? "",
+        direction: this.sortOrder ?? "desc",
+        perPage: this.perPage,
+        page: this.page,
+        hiddenColumns: [...this.hiddenColumnNames],
+      };
+    },
+
+    /**
+     * Apply a (partial) state from getState() and reload once. Keys that are
+     * left out keep their current value.
+     */
+    setState(state = {}) {
+      if (!state || typeof state !== "object") {
+        return;
+      }
+
+      // Hold back the perPage / filter watchers so the changes below cause
+      // one request instead of one per field.
+      this.applyingState = true;
+
+      if ("search" in state) {
+        this.search = state.search ?? "";
+      }
+      if ("filters" in state) {
+        this.dynamicFilters = { ...(state.filters || {}) };
+      }
+      if (state.sort) {
+        this.sortField = state.sort;
+      }
+      if (state.direction === "asc" || state.direction === "desc") {
+        this.sortOrder = state.direction;
+      }
+      if (state.perPage) {
+        this.perPage = Number(state.perPage) || this.perPage;
+      }
+      if (Array.isArray(state.hiddenColumns)) {
+        this.columns.forEach((col) => {
+          this.columnVisibility[col.field_name] = !state.hiddenColumns.includes(col.field_name);
+        });
+      }
+
+      const page = Number(state.page) > 0 ? Number(state.page) : 1;
+
+      this.$nextTick(() => {
+        this.applyingState = false;
+        this.GetItemLists(page);
+      });
+    },
+
+    emitStateChange() {
+      if (this.isLoadinPrint) {
+        return;
+      }
+      const state = this.getState();
+      const signature = JSON.stringify(state);
+      if (signature !== this.lastStateSignature) {
+        this.lastStateSignature = signature;
+        this.$emit("state-change", state);
+      }
     },
 
     updateSortColumn(column, sortable) {
@@ -724,6 +852,9 @@ export default {
     },
 
     perPage(value) {
+      if (this.applyingState) {
+        return;
+      }
       this.page = 1;
 
       this.perPage = value;
@@ -738,10 +869,19 @@ export default {
 
     dynamicFilters: {
       handler(newFilters) {
+        if (this.applyingState) {
+          return;
+        }
 
         this.GetItemLists();
       },
       deep: true,
+    },
+
+    hiddenColumnNames() {
+      if (this.isMounted) {
+        this.emitStateChange();
+      }
     }
 
   },

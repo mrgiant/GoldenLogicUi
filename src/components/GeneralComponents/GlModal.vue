@@ -1,5 +1,6 @@
 <script setup>
 import { onMounted, ref, watch, computed } from "vue";
+import { useGlFocusTrap, nextGlId } from "./useGlFocusTrap.js";
 
 const props = defineProps({
 
@@ -42,9 +43,24 @@ const props = defineProps({
     type: String,
     default: "p-4",
   },
+
+  // Escape closes the modal (emits closeModal). Set false for a modal that
+  // must only close through its own buttons.
+  close_on_escape: {
+    type: Boolean,
+    default: true,
+  },
 });
 
 const emit = defineEmits(["closeModal"]);
+
+const dialogPanel = ref(null);
+const titleId = nextGlId("gl-modal-title");
+
+useGlFocusTrap(dialogPanel, () => props.is_open, {
+  closeOnEscape: () => props.close_on_escape,
+  onEscape: () => closeModal(),
+});
 
 const addOverflowStyles = () => {
   document.documentElement.style.overflow = "hidden";
@@ -105,11 +121,11 @@ watch(
 
 
 
-      <div
+      <div ref="dialogPanel" role="dialog" aria-modal="true" :aria-labelledby="title ? titleId : undefined" tabindex="-1"
         class="pointer-events-auto relative flex max-h-full w-full flex-col  text-current shadow-4 outline-hidden bg-white border rounded-xl dark:bg-gray-900 dark:border-gray-800">
         <div class="flex items-center justify-between shrink-0 pt-3 pb-3 pl-3 pr-3  ">
           <!-- Modal title -->
-          <h5 class="text-xl font-medium leading-normal text-surface dark:text-white">
+          <h5 :id="titleId" class="text-xl font-medium leading-normal text-surface dark:text-white">
             {{ title }}
           </h5>
 

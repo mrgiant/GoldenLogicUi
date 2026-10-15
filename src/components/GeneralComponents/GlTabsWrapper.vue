@@ -2,10 +2,11 @@
 
 
 
-     <ul class="flex flex-row flex-wrap gap-2 pt-3 pb-4 mb-0 list-none text-gray-500 dark:text-gray-400" :class="tabsWrapperClass">
+     <ul ref="tabList" role="tablist" class="flex flex-row flex-wrap gap-2 pt-3 pb-4 mb-0 list-none text-gray-500 dark:text-gray-400" :class="tabsWrapperClass">
           <li
-            v-for="tab in tabs"
+            v-for="(tab, index) in tabs"
             :key="tab.title"
+            role="presentation"
             @click="selectedTitle = tab.title"
             class="-mb-px text-center"
             :class="{
@@ -16,6 +17,12 @@
 
 
             <a
+               :id="tabId(index)"
+               role="tab"
+               :aria-selected="selectedTitle === tab.title ? 'true' : 'false'"
+               :aria-controls="panelId"
+               :tabindex="isTabFocusable(tab, index) ? 0 : -1"
+               @keydown="onTabKeydown($event, index)"
                :class="{' bg-gray-50 dark:bg-gray-900  hover:text-gray-900 hover:bg-gray-100  dark:hover:bg-gray-800 dark:hover:text-white border border-gray-300 dark:border-gray-700 hover:border-primary dark:hover:border-primaryDark': selectedTitle != tab.title, 'text-white  bg-primary dark:bg-primaryDark': selectedTitle === tab.title}"
               class="block px-5 py-3 text-xs font-bold leading-normal rounded-xl    tabs_buttons"
             >
@@ -36,7 +43,13 @@
       class="relative flex flex-col w-full min-w-0 mb-6 wrap-break-word  rounded-[20px]  border border-gray-200 dark:border-gray-700 "
     >
       <div class="flex-auto px-4 py-5">
-        <div class="tab-content tab-space">
+        <div
+          :id="panelId"
+          role="tabpanel"
+          :aria-labelledby="selectedIndex >= 0 ? tabId(selectedIndex) : undefined"
+          tabindex="0"
+          class="tab-content tab-space"
+        >
           <slot />
         </div>
       </div>
@@ -46,7 +59,8 @@
 
 <script setup>
 
-import { defineProps, defineEmits, useSlots,onMounted,onBeforeUnmount,Comment,ref, provide, watch } from 'vue';
+import { defineProps, defineEmits, useSlots,onMounted,onBeforeUnmount,Comment,ref, provide, watch, computed } from 'vue';
+import { nextGlId } from './useGlFocusTrap.js';
 
 const props = defineProps({
   autoFlexTabs: {
@@ -82,6 +96,52 @@ const isSvgIcon = (val) =>
 const selectedTitle = ref("");
 
 provide('selectedTitle', selectedTitle);
+
+// ARIA wiring: one tabpanel, labelled by whichever tab is selected.
+const uid = nextGlId("gl-tabs");
+const panelId = `${uid}-panel`;
+const tabId = (index) => `${uid}-tab-${index}`;
+const tabList = ref(null);
+
+const selectedIndex = computed(() => tabs.value.findIndex((tab) => tab.title === selectedTitle.value));
+
+// Roving tabindex: only the selected tab (or the first one when none is
+// selected yet) is in the page tab order; arrows move between the others.
+const isTabFocusable = (tab, index) =>
+  selectedIndex.value >= 0 ? tab.title === selectedTitle.value : index === 0;
+
+const focusTab = (index) => {
+  const tab = tabs.value[index];
+  if (!tab) return;
+  selectedTitle.value = tab.title;
+  document.getElementById(tabId(index))?.focus();
+};
+
+const onTabKeydown = (event, index) => {
+  const count = tabs.value.length;
+  if (count === 0) return;
+
+  const isRtl = tabList.value ? getComputedStyle(tabList.value).direction === 'rtl' : false;
+  const next = isRtl ? 'ArrowLeft' : 'ArrowRight';
+  const previous = isRtl ? 'ArrowRight' : 'ArrowLeft';
+
+  let target = null;
+  if (event.key === next) {
+    target = (index + 1) % count;
+  } else if (event.key === previous) {
+    target = (index - 1 + count) % count;
+  } else if (event.key === 'Home') {
+    target = 0;
+  } else if (event.key === 'End') {
+    target = count - 1;
+  } else if (event.key === 'Enter' || event.key === ' ') {
+    target = index;
+  }
+
+  if (target === null) return;
+  event.preventDefault();
+  focusTab(target);
+};
 
 // Utility to convert titles to slugs
 const slugify = (text) => {

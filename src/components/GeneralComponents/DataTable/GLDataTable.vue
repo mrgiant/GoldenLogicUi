@@ -120,7 +120,8 @@
 
               }"
               >
-              <p class="text-pretty" v-html="item[colIndex]"></p>
+              <p v-if="escape_html" class="text-pretty">{{ item[colIndex] }}</p>
+              <p v-else class="text-pretty" v-html="item[colIndex]"></p>
             </td>
           </tr>
         </tbody>
@@ -197,6 +198,12 @@ export default {
       type: Object,
       required: false,
       default: () => { },
+    },
+    // Render cell values as plain text instead of HTML. Off by default for
+    // backward compatibility; turn it on for any table showing untrusted text.
+    escape_html: {
+      type: Boolean,
+      default: false,
     },
   },
   data() {

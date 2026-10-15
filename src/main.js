@@ -17,6 +17,8 @@ export { default as GlTextareaTranslate } from './components/GeneralComponents/G
 
 export { default as GlTextTranslate } from './components/GeneralComponents/GlTextTranslate.vue'
 export { default as GlTextInput } from './components/GeneralComponents/GlTextInput.vue'
+export { default as GlPhoneInput } from './components/GeneralComponents/GlPhoneInput.vue'
+export { PHONE_COUNTRIES, PHONE_PREFERRED, PHONE_CODE_DEFAULTS } from './components/GeneralComponents/phoneCountries.js'
 export { default as GlDatePicker } from './components/GeneralComponents/GlDatePicker.vue'
 export { default as GlDateTimePicker } from './components/GeneralComponents/GlDateTimePicker.vue'
 export { default as GlDateRangePicker } from './components/GeneralComponents/GlDateRangePicker.vue'
@@ -87,6 +89,10 @@ export { default as GlCodeCopy }  from'./components/GeneralComponents/GlCodeCopy
 export { default as GlTextCopy }  from'./components/GeneralComponents/GlTextCopy.vue';
 export { default as GlStatusRunningSuccessFailed }  from'./components/GeneralComponents/StatusRunningSuccessFailed.vue';
 export { default as GlStatusConnectingConnectedDisconnected }  from'./components/GeneralComponents/StatusConnectingConnectedDisconnected.vue';
+export { default as GlStatusBadge } from './components/GeneralComponents/GlStatusBadge.vue';
+export { STATES as GL_STATUS_STATES, resolveStatus as resolveGlStatus, statusState as glStatusState, worstState as glWorstState } from './components/GeneralComponents/glStatusMap.js';
+export { default as GlLogViewer } from './components/GeneralComponents/GlLogViewer.vue';
+export { useGlFocusTrap } from './components/GeneralComponents/useGlFocusTrap.js';
 
 
 

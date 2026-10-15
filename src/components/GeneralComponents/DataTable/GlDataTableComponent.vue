@@ -211,13 +211,16 @@
                   :field="column.field_name"
                   :xprops="xprops"
                   :tdProps="column.tdProps"
-                  @editAction="editAction(item)"
-                  @generalAction="generalAction(item)"
+                  @editAction="(payload) => { editAction(item); cellAction('editAction', item, payload, column) }"
+                  @generalAction="(payload) => { generalAction(item); cellAction('generalAction', item, payload, column) }"
+                  @deleteAction="(payload) => cellAction('deleteAction', item, payload, column)"
+                  @cellAction="(action, payload) => cellAction(action, item, payload, column)"
                 >
                 </component>
                 <template v-else>
-                  <p class="text-pretty" v-html="item[column.field_name]"></p>
-                 
+                  <p v-if="isEscapedColumn(column)" class="text-pretty">{{ item[column.field_name] }}</p>
+                  <p v-else class="text-pretty" v-html="item[column.field_name]"></p>
+
                 </template>
               </div>
             </td>
@@ -297,7 +300,14 @@ export default {
       required: false,
       default: () => { },
     },
-    
+    // Render plain (non-tdComp) cells as text instead of HTML. Off by default
+    // for backward compatibility. A column can opt out either way with
+    // `html: false` (always escape) or `html: true` (always render HTML).
+    escape_html: {
+      type: Boolean,
+      default: false,
+    },
+
   },
   data() {
      const randomString = this.generateRandomString(6);
@@ -345,7 +355,7 @@ export default {
       maxDisplayedPages: 10, // Set the maximum number of displayed pagination buttons
     };
   },
-  emits: ['editAction','generalAction','deleteAction'],
+  emits: ['editAction','generalAction','deleteAction','cell-action'],
 
   computed: {
 
@@ -511,9 +521,21 @@ export default {
   
 
   generalAction(data) {
-  
+
   this.$emit("generalAction",data);
 },
+
+  // Every cell event, with whatever the cell sent along. Cells can also emit
+  // their own named actions: emit('cellAction', 'restart', payload).
+  cellAction(action, row, payload, column) {
+    this.$emit("cell-action", { action, row, payload, field: column?.field_name });
+  },
+
+  isEscapedColumn(column) {
+    if (column?.html === false) return true;
+    if (column?.html === true) return false;
+    return this.escape_html;
+  },
   forDynCompIs(component) {
     return typeof component === "object" ? component : null;
   },

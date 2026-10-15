@@ -376,21 +376,27 @@ const isDateDisabled = (date) => {
         }
     }
     
+    // Compare by date only for min/max constraints. The limits are taken at
+    // midnight, and the "Today" button passes the current moment, so without
+    // this a max_date of "today" refused today itself.
+    const dayOnly = new Date(date);
+    dayOnly.setHours(0, 0, 0, 0);
+
     // Check min date
     if (props.min_date) {
         const minDate = parseRelativeDate(props.min_date);
         if (minDate) {
             minDate.setHours(0, 0, 0, 0);
-            if (date < minDate) return true;
+            if (dayOnly < minDate) return true;
         }
     }
-    
+
     // Check max date
     if (props.max_date) {
         const maxDate = parseRelativeDate(props.max_date);
         if (maxDate) {
             maxDate.setHours(0, 0, 0, 0);
-            if (date > maxDate) return true;
+            if (dayOnly > maxDate) return true;
         }
     }
     
