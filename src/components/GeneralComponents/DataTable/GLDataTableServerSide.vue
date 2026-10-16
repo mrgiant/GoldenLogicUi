@@ -44,7 +44,7 @@
 
         <GlDateRangePicker v-if="column.type == 'date_range'" :is_required="false" :show="false"
           v-model="dynamicFilters[column.field_name]" :field_name="column.field_name"
-          :label_name="column.field_label">
+          :label_name="column.field_label" :date_format="column.date_format || 'YYYY-MM-DD'">
         </GlDateRangePicker>
 
 
