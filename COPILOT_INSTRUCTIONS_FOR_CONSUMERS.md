@@ -215,7 +215,7 @@ const categories = [
 | `description` | String | `""` | Helper text |
 | `show` | Boolean | `false` | Read-only display mode |
 | `hide_search` | Boolean | `false` | Hide search input |
-| `api_url` | String | `""` | API URL for remote data fetching |
+| `api_url` | String | `""` | API URL for remote data fetching. The server receives `search`, `page` and `per_page` for the list, and `id` (plus `search`) when the dropdown resolves a preset value; answer `id` with that one row so the selection shows whatever the search ranking is. Responds with Laravel-style pagination (`data`, `last_page`). |
 | `defaultValue` | String, Number | `""` | Default selected value |
 | `maxItem` | Number | `10000` | Maximum items to display |
 

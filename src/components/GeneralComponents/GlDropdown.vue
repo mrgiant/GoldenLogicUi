@@ -376,9 +376,14 @@ const isAbortError = (err) =>
   (typeof axios !== "undefined" && axios.isCancel?.(err));
 
 
-/** Paginated fetch for server-side data, with cancellation + stale-response guard. */
-const fetchData = async (direction = "down") => {
-  if (isLoading.value || !props.api_url) return;
+/**
+ * Paginated fetch for server-side data, with cancellation + stale-response guard.
+ * Scrolling for more waits for the page in flight; a new search (`replace`)
+ * cancels it instead, or typing straight after opening would be dropped.
+ */
+const fetchData = async (direction = "down", { replace = false } = {}) => {
+  if (!props.api_url) return;
+  if (isLoading.value && !replace) return;
 
   // Cancel any in-flight request before starting a new one
   if (activeController) activeController.abort();
@@ -411,9 +416,11 @@ const fetchData = async (direction = "down") => {
         ? filteredOptions.value.concat(apiData)
         : apiData;
 
-      // Re-pin a previously-resolved selection if it isn't on this page
+      // Re-pin a previously-resolved selection if it isn't on this page —
+      // but not while searching, or it tops results it does not match.
       const sel = selected.value;
       if (
+        !searchFilter.value &&
         isObjectNotEmpty(sel) &&
         sel.id !== undefined &&
         sel.name &&
@@ -455,8 +462,11 @@ const fetchData = async (direction = "down") => {
 const fetchOptionById = async (id) => {
   if (!props.api_url || id === null || id === undefined || id === "") return null;
   try {
+    // `id` lets the server answer with exactly that row; `search` is still
+    // sent so a server that only knows the search contract keeps working,
+    // as long as the row lands on the first page.
     const { data } = await axios.get(props.api_url, {
-      params: { search: id, per_page: 20 },
+      params: { id, search: id, per_page: 20 },
     });
     if (isUnmounted) return null;
     const list = data?.data;
@@ -812,7 +822,7 @@ watch(searchFilter, () => {
     firstPage.value = 1;
     filteredOptions.value = [];
     listLoaded.value = false;
-    fetchData("down");
+    fetchData("down", { replace: true });
   }, 250);
 });
 
