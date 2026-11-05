@@ -553,25 +553,33 @@ export default {
              this.checkedIds.map(id => axios.delete(`${this.xprops.route}/${id}`))
         );
 
-         results.forEach((result, index) => {
-         if (result.status === 'rejected') {
-             console.log(`Error deleting ID ${this.checkedIds[index]}:`, result.reason);
-           }
-        });
-
-
+        const failures = results
+          .map((result, index) => ({ result, id: this.checkedIds[index] }))
+          .filter(({ result }) => result.status === 'rejected');
 
         this.checkedIds = [];
 
         this.$refs.ConfirmationDelete.hideLoading();
 
-        GlToast.methods.add({
-          message:
-            this.language?.selected_items_deleted_successfully ??
-            "Selected items deleted successfully.",
-          type: "success",
-          duration: 5000,
-        });
+        if (failures.length === 0) {
+          GlToast.methods.add({
+            message:
+              this.language?.selected_items_deleted_successfully ??
+              "Selected items deleted successfully.",
+            type: "success",
+            duration: 5000,
+          });
+        } else {
+          const reason = failures[0].result.reason?.response?.data?.message;
+          const deleted = results.length - failures.length;
+          GlToast.methods.add({
+            message:
+              `${deleted} of ${results.length} deleted. Not deleted: #${failures.map(({ id }) => id).join(', #')}.` +
+              (reason ? ` ${reason}` : ''),
+            type: "error",
+            duration: 10000,
+          });
+        }
 
         this.GetItemLists();
       } else {

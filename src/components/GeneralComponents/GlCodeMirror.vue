@@ -12,6 +12,7 @@
 
   <div class="mb-4" :class="field_name" v-if="!show">
     <label
+      v-if="label_name"
       :class="{
         'gl-label-form': error_message == '',
         'gl-label-form-invalid': error_message !== '',
@@ -44,14 +45,16 @@ import {
   watch,
   defineProps,
   defineEmits,
+  defineExpose,
   onUnmounted,
 } from "vue";
-import { EditorState, StateEffect } from "@codemirror/state";
-import { EditorView, keymap } from "@codemirror/view";
+import { EditorState, StateEffect, Prec } from "@codemirror/state";
+import { EditorView, keymap, placeholder as placeholderExtension } from "@codemirror/view";
 import { lineNumbers, highlightActiveLineGutter } from "@codemirror/view";
 
 import { defaultKeymap } from "@codemirror/commands";
 import { javascript } from "@codemirror/lang-javascript";
+import { sql, MySQL, PostgreSQL, StandardSQL } from "@codemirror/lang-sql";
 
 import { oneDark } from "@codemirror/theme-one-dark";
 
@@ -63,11 +66,31 @@ const props = defineProps({
     type: String,
     default: "",
   },
+  // "javascript" or "sql"; anything else is plain text.
   language: {
     type: String,
     default: "javascript",
   },
+  // For SQL: "mysql" or "postgresql" picks the keywords and quoting; empty is standard SQL.
+  dialect: {
+    type: String,
+    default: "",
+  },
+  // For SQL completion: { tableName: ["column", ...] }.
+  sqlSchema: {
+    type: Object,
+    default: null,
+  },
   theme: {
+    type: String,
+    default: "",
+  },
+  // A CSS height such as "320px"; empty lets the editor grow with its content.
+  height: {
+    type: String,
+    default: "",
+  },
+  placeholder: {
     type: String,
     default: "",
   },
@@ -93,8 +116,8 @@ const props = defineProps({
 
 });
 
-// Define emits
-const emit = defineEmits(["update:modelValue", "change"]);
+// Define emits: "run" fires on Ctrl/Cmd+Enter.
+const emit = defineEmits(["update:modelValue", "change", "run"]);
 
 // Reference to the editor DOM element
 const editor = ref(null);
@@ -102,11 +125,31 @@ const editor = ref(null);
 // Reference to the EditorView instance
 let editorView = null;
 
+const sqlDialect = (dialect) => {
+  switch ((dialect || "").toLowerCase()) {
+    case "mysql":
+    case "mariadb":
+      return MySQL;
+    case "postgresql":
+    case "postgres":
+    case "pgsql":
+      return PostgreSQL;
+    default:
+      return StandardSQL;
+  }
+};
+
 // Function to get language extension
 const getLanguageExtension = (language) => {
   switch (language) {
     case "javascript":
       return javascript();
+
+    case "sql":
+      return sql({
+        dialect: sqlDialect(props.dialect),
+        schema: props.sqlSchema || undefined,
+      });
 
     // Add more languages here
     default:
@@ -121,7 +164,7 @@ const getThemeExtension = (theme) => {
       return oneDark;
 
     default:
-     
+
       return document.body.classList.contains("dark") ?  oneDark : [];
   }
 };
@@ -137,6 +180,58 @@ const getHighlightActiveLineExtension = (highlight) => {
   return highlight ? [highlightActiveLineGutter()] : [];
 };
 
+const getHeightExtension = (height) => {
+  if (!height) {
+    return [];
+  }
+
+  return [
+    EditorView.theme({
+      "&": { height },
+      ".cm-scroller": { overflow: "auto" },
+    }),
+  ];
+};
+
+const getPlaceholderExtension = (text) => {
+  return text ? [placeholderExtension(text)] : [];
+};
+
+// Ctrl/Cmd+Enter runs; it sits above the default keymap so Enter's binding does not swallow it.
+const runKeymap = Prec.highest(
+  keymap.of([
+    {
+      key: "Mod-Enter",
+      run: () => {
+        emit("run");
+        return true;
+      },
+    },
+  ])
+);
+
+// One list of extensions for both the first state and every reconfigure.
+const buildExtensions = () => [
+  ...getLineNumbersExtension(props.showLineNumbers),
+  ...getHighlightActiveLineExtension(props.highlightActiveLine),
+  highlightActiveLineGutter(),
+  runKeymap,
+  keymap.of(defaultKeymap),
+  getLanguageExtension(props.language),
+  ...getThemeExtension(props.theme),
+  ...getHeightExtension(props.height),
+  ...getPlaceholderExtension(props.placeholder),
+  autocompletion(),
+  EditorView.updateListener.of((v) => {
+    if (v.docChanged) {
+      const newValue = v.state.doc.toString();
+      emit("update:modelValue", newValue);
+      emit("change", newValue);
+    }
+  }),
+  EditorView.lineWrapping,
+];
+
 
 
 onMounted(() => {
@@ -144,23 +239,7 @@ onMounted(() => {
     // Initialize EditorState
     const state = EditorState.create({
       doc: props.modelValue,
-      extensions: [
-        ...getLineNumbersExtension(props.showLineNumbers),
-        ...getHighlightActiveLineExtension(props.highlightActiveLine),
-        highlightActiveLineGutter(), //
-        keymap.of(defaultKeymap),
-        getLanguageExtension(props.language),
-        ...getThemeExtension(props.theme),
-        autocompletion(),
-        EditorView.updateListener.of((v) => {
-          if (v.docChanged) {
-            const newValue = v.state.doc.toString();
-            emit("update:modelValue", newValue);
-            emit("change", newValue);
-          }
-        }),
-        EditorView.lineWrapping,
-      ],
+      extensions: buildExtensions(),
     });
 
     // Initialize EditorView
@@ -190,33 +269,23 @@ watch(
   }
 );
 
-// Watch for language, theme, showLineNumbers, and highlightActiveLine changes
+// Rebuild the extensions when any option changes.
 watch(
-  () => [props.language, props.theme, props.showLineNumbers, props.highlightActiveLine],
-  ([newLang, newTheme, newShowLineNumbers, newHighlightActiveLine]) => {
+  () => [props.language, props.dialect, props.sqlSchema, props.theme, props.showLineNumbers, props.highlightActiveLine, props.height, props.placeholder],
+  () => {
     if (editorView) {
       editorView.dispatch({
-        effects: StateEffect.reconfigure.of([
-          ...getLineNumbersExtension(newShowLineNumbers),
-          ...getHighlightActiveLineExtension(newHighlightActiveLine),
-          highlightActiveLineGutter(), // Ensure it's included if highlightActiveLine is true
-          keymap.of([...defaultKeymap]),
-          getLanguageExtension(newLang),
-          ...getThemeExtension(newTheme),
-          autocompletion(),
-          EditorView.updateListener.of((v) => {
-            if (v.docChanged) {
-              const newValue = v.state.doc.toString();
-              emit('update:modelValue', newValue);
-              emit('change', newValue);
-            }
-          }),
-          EditorView.lineWrapping,
-        ]),
+        effects: StateEffect.reconfigure.of(buildExtensions()),
       });
     }
   }
 );
+
+const focus = () => {
+  editorView?.focus();
+};
+
+defineExpose({ focus });
 
 // Cleanup on unmount
 onUnmounted(() => {

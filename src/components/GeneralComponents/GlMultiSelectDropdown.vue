@@ -195,6 +195,14 @@
         </div>
       </div>
     </div>
+
+    <span class="block mt-1 text-sm font-normal leading-5 text-red-500">{{
+      error_message
+    }}</span>
+
+    <small class="block mt-1 text-sm font-normal leading-5 text-gray-500">
+      {{ description }}
+    </small>
   </div>
 </template>
 
