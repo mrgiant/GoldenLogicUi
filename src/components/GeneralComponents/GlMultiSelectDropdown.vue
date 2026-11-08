@@ -32,11 +32,11 @@
         >{{ label_name }}</label
       >
 
-      <div class="inline-flex ml-2 rounded-md shadow-xs" role="group">
+      <div class="inline-flex mb-1.5 ms-2 rounded-lg shadow-xs" role="group">
         <button
           @click="selectAll"
           type="button"
-          class="px-4 py-0 text-sm font-medium text-gray-900 bg-transparent border border-gray-900 ltr:rounded-tl-lg rtl:rounded-tr-lg hover:bg-gray-900 hover:text-white focus:z-10 focus:bg-gray-900 focus:text-white dark:border-white dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:bg-gray-700"
+          class="rounded-s-lg px-3 py-1 text-xs font-medium text-gray-700 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-900 focus:z-10 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700"
         >
           {{ language?.select_all ?? "Select all" }}
         </button>
@@ -44,7 +44,7 @@
         <button
           @click="deselectAll"
           type="button"
-          class="ltr:rounded-tr-lg rtl:rounded-tl-lg! px-4 py-0 text-sm font-medium text-gray-900 bg-transparent border border-gray-900 hover:bg-gray-900 hover:text-white focus:z-10 focus:bg-gray-900 focus:text-white dark:border-white dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:bg-gray-700"
+          class="-ms-px rounded-e-lg px-3 py-1 text-xs font-medium text-gray-700 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-900 focus:z-10 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700"
         >
           {{ language?.deselect_all ?? "Deselect all" }}
         </button>

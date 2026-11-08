@@ -48,6 +48,14 @@ const props = defineProps({
     type: String,
     default: "",
   },
+
+  // "md" is the form row; "sm" matches a small button (text-sm, py-2) so
+  // the toggle can sit in a toolbar beside one.
+  size: {
+    type: String,
+    default: "md",
+    validator: (value) => ["md", "sm"].includes(value),
+  },
 });
 
 const emit = defineEmits(["update:modelValue"]);
@@ -55,6 +63,10 @@ const emit = defineEmits(["update:modelValue"]);
 
 
 const input = ref(null);
+
+const sizeClasses = computed(() =>
+  props.size === "sm" ? "items-center px-3 py-1.5 text-sm" : "p-2 h-10"
+);
 
 
 
@@ -88,7 +100,7 @@ const proxyValue = computed({
   <div :class="field_name" v-if="show">
 
     <div>
-    <li class="flex justify-between p-2 h-10 -mb-px border  rounded-lg no-underlin   bg-gray-50 focus:border-primary  dark:bg-gray-800 dark:border-gray-700  dark:text-white dark:focus:border-primaryDark border-gray-200">
+    <li class="flex justify-between -mb-px border  rounded-lg no-underlin   bg-gray-50 focus:border-primary  dark:bg-gray-800 dark:border-gray-700  dark:text-white dark:focus:border-primaryDark border-gray-200" :class="sizeClasses">
       {{ label_name }}
 
       <label class="relative inline-flex items-center cursor-pointer">
@@ -105,7 +117,7 @@ const proxyValue = computed({
 
         />
         <div
-          class="w-11 h-6 bg-gray-200 peer-focus:outline-hidden peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:rtl:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[1px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"
+          class="w-11 h-6 bg-gray-200 peer-focus:outline-hidden peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:rtl:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"
         ></div>
 
       </label>
@@ -120,9 +132,8 @@ const proxyValue = computed({
     <div class=" flex justify-between items-center" v-if="has_label_up">
         <label  class="gl-label-form">{{ label_name }}</label>
     </div>
-    <li class="flex  p-2 h-10 -mb-px border  rounded-lg no-underlin   bg-gray-50 focus:border-primary  dark:bg-gray-800 dark:border-gray-700  dark:text-white dark:focus:border-primaryDark border-gray-200"
-    
-     :class="has_label_up ? 'justify-end':'justify-between'"
+    <li class="flex -mb-px border  rounded-lg no-underlin   bg-gray-50 focus:border-primary  dark:bg-gray-800 dark:border-gray-700  dark:text-white dark:focus:border-primaryDark border-gray-200"
+     :class="[sizeClasses, has_label_up ? 'justify-end':'justify-between']"
     >
       {{ has_label_up ? "" : label_name }}
 
@@ -139,7 +150,7 @@ const proxyValue = computed({
          
         />
         <div
-          class="w-11 h-6 bg-gray-200 peer-focus:outline-hidden   rounded-full peer dark:bg-gray-500 peer-checked:after:translate-x-full peer-checked:rtl:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[1px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-400 peer-checked:bg-primary dark:peer-checked:bg-primaryDark"
+          class="w-11 h-6 bg-gray-200 peer-focus:outline-hidden   rounded-full peer dark:bg-gray-500 peer-checked:after:translate-x-full peer-checked:rtl:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-400 peer-checked:bg-primary dark:peer-checked:bg-primaryDark"
         ></div>
 
       </label>
