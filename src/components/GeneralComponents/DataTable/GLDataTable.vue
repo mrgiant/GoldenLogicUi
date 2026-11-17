@@ -112,7 +112,7 @@
               v-for="(column, colIndex) in columns"
               :key="colIndex"
               :data-label="column"
-              class="text-pretty before:content-[attr(data-label)] before:font-bold dark:before:text-gray-400 lg:before:content-[''] print:before:content-['']! flex flex-col justify-between gap-2 lg:table-cell print:table-cell! py-4 px-5 lg:py-3 lg:px-4 print:py-3! print:px-4! border-[1px]! dark:border-gray-700"
+              class="text-pretty before:content-[attr(data-label)] before:font-bold dark:before:text-gray-400 lg:before:content-[''] print:before:content-['']! flex flex-row flex-wrap items-center justify-between gap-x-4 gap-y-1 wrap-anywhere lg:wrap-normal lg:table-cell print:table-cell! py-2.5 px-4 lg:py-3 lg:px-4 print:py-3! print:px-4! border-[1px]! dark:border-gray-700"
               :class="{
                 'rounded-t-lg lg:rounded-t-none!': colIndex === 0,
                 'rounded-b-lg lg:rounded-b-none!':
@@ -156,7 +156,8 @@
                             </li>
 
                             <template v-for="pageNumber in displayedPageNumbers" :key="pageNumber">
-                                <li>
+                                <!-- A phone shows the two pages either side of the current one, so the bar fits. -->
+                                <li :class="Math.abs(pageNumber - currentPage) > 2 ? 'hidden sm:block' : ''">
                                     <a
                                         href="#"
                                         @click.prevent="goToPage(pageNumber)"

@@ -241,11 +241,11 @@
 
           <tr v-if="!isLoading && !error" v-for="(item, index) in itemLists.data" :key="index"
             class="text-gray-500   dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-200">
-            <!-- remove  md:flex-row from  below td to be the text below lable if want in line add it -->
+            <!-- Below lg each row is a card: a field's label and value share a line, and a long value wraps under its label. -->
 
            
             <td v-if="enable_select_deselect_delete"
-              class="print:hidden! text-center rounded-t-lg lg:rounded-t-none! print:rounded-t-none! text-pretty before:content-[attr(data-label)] before:font-bold dark:before:text-gray-400 lg:before:content-[''] print:before:content-['']! flex flex-col justify-between gap-2 lg:table-cell py-4 px-5 lg:py-3 lg:px-4 print:py-3! print:px-4! border! dark:border-gray-700"
+              class="print:hidden! text-center rounded-t-lg lg:rounded-t-none! print:rounded-t-none! text-pretty before:content-[attr(data-label)] before:font-bold dark:before:text-gray-400 lg:before:content-[''] print:before:content-['']! flex flex-col justify-between gap-2 lg:table-cell py-2 px-4 lg:py-3 lg:px-4 print:py-3! print:px-4! border! dark:border-gray-700"
               data-label="">
               <input :checked="checkedIds.includes(item.id)" @change="toggleCheck(item.id)" type="checkbox" value=""
                 class="w-4 h-4 rounded-sm" />
@@ -253,7 +253,7 @@
 
             <td v-for="(column, colIndex) in visibleColumns" :style="column?.style" :key="colIndex"
               :data-label="column.field_label"
-              class="text-pretty before:content-[attr(data-label)] before:font-bold lg:before:content-none print:before:content-none! flex flex-col justify-between gap-2 lg:table-cell print:table-cell! py-4 px-5 lg:py-3 lg:px-4 print:py-3! print:px-4! border! dark:border-gray-700"
+              class="text-pretty before:content-[attr(data-label)] before:font-bold lg:before:content-none print:before:content-none! flex flex-row flex-wrap items-center justify-between gap-x-4 gap-y-1 wrap-anywhere lg:wrap-normal lg:table-cell print:table-cell! py-2.5 px-4 lg:py-3 lg:px-4 print:py-3! print:px-4! border! dark:border-gray-700"
               :class="{
                 /* 'rounded-t-lg lg:rounded-t-none': colIndex === 0,*/
                 'rounded-b-lg lg:rounded-b-none!':

@@ -2,7 +2,8 @@
 
 
 
-     <ul ref="tabList" role="tablist" class="flex flex-row flex-wrap mb-0 list-none text-gray-500 dark:text-gray-400" :class="[isUnderline ? 'gap-1 px-2 mb-4 bg-white border border-gray-200 rounded-xl dark:bg-gray-900 dark:border-gray-700' : 'gap-2 pt-3 pb-4', tabsWrapperClass]">
+     <!-- The underline bar stays one row on a phone and scrolls sideways, instead of wrapping into rows. -->
+     <ul ref="tabList" role="tablist" class="flex flex-row mb-0 list-none text-gray-500 dark:text-gray-400" :class="[isUnderline ? 'flex-nowrap overflow-x-auto overflow-y-hidden [scrollbar-width:none] lg:flex-wrap gap-1 px-2 mb-4 bg-white border border-gray-200 rounded-xl dark:bg-gray-900 dark:border-gray-700' : 'flex-wrap gap-2 pt-3 pb-4', tabsWrapperClass]">
           <li
             v-for="(tab, index) in tabs"
             :key="tab.title"
@@ -11,7 +12,7 @@
             class="-mb-px text-center"
             :class="{
               'flex-auto ': autoFlexTabs && !isUnderline,
-
+              'shrink-0 whitespace-nowrap': isUnderline,
             }"
           >
 
@@ -64,7 +65,7 @@
 
 <script setup>
 
-import { defineProps, defineEmits, useSlots,onMounted,onBeforeUnmount,Comment,ref, provide, watch, computed } from 'vue';
+import { defineProps, defineEmits, useSlots,onMounted,onBeforeUnmount,Comment,ref, provide, watch, computed, nextTick } from 'vue';
 import { nextGlId } from './useGlFocusTrap.js';
 
 const props = defineProps({
@@ -253,8 +254,29 @@ const updateTabFromHash = () => {
 
 
 
+/**
+ * Scrolls a sideways-scrolling tab bar until the selected tab shows, so a
+ * tab opened from the address (#activity, say) isn't hidden off the edge.
+ */
+const revealSelectedTab = () => {
+  const list = tabList.value;
+  const tab = list?.querySelector('[aria-selected="true"]');
+
+  if (!tab || list.scrollWidth <= list.clientWidth) {
+    return;
+  }
+
+  const listBox = list.getBoundingClientRect();
+  const tabBox = tab.getBoundingClientRect();
+
+  if (tabBox.left < listBox.left || tabBox.right > listBox.right) {
+    list.scrollLeft += tabBox.left - listBox.left - 16;
+  }
+};
+
 watch(selectedTitle, (newTitle) => {
   handleTabChange(newTitle);
+  nextTick(revealSelectedTab);
 });
 
 // Parent-driven updates via :activeTab prop
