@@ -2,7 +2,7 @@
 
 
 
-     <ul ref="tabList" role="tablist" class="flex flex-row flex-wrap gap-2 pt-3 pb-4 mb-0 list-none text-gray-500 dark:text-gray-400" :class="tabsWrapperClass">
+     <ul ref="tabList" role="tablist" class="flex flex-row flex-wrap mb-0 list-none text-gray-500 dark:text-gray-400" :class="[isUnderline ? 'gap-1 px-2 mb-4 bg-white border border-gray-200 rounded-xl dark:bg-gray-900 dark:border-gray-700' : 'gap-2 pt-3 pb-4', tabsWrapperClass]">
           <li
             v-for="(tab, index) in tabs"
             :key="tab.title"
@@ -10,7 +10,7 @@
             @click="selectedTitle = tab.title"
             class="-mb-px text-center"
             :class="{
-              'flex-auto ': autoFlexTabs,
+              'flex-auto ': autoFlexTabs && !isUnderline,
 
             }"
           >
@@ -23,8 +23,8 @@
                :aria-controls="panelId"
                :tabindex="isTabFocusable(tab, index) ? 0 : -1"
                @keydown="onTabKeydown($event, index)"
-               :class="{' bg-gray-50 dark:bg-gray-900  hover:text-gray-900 hover:bg-gray-100  dark:hover:bg-gray-800 dark:hover:text-white border border-gray-300 dark:border-gray-700 hover:border-primary dark:hover:border-primaryDark': selectedTitle != tab.title, 'text-white  bg-primary dark:bg-primaryDark': selectedTitle === tab.title}"
-              class="block px-5 py-3 text-xs font-bold leading-normal rounded-xl    tabs_buttons"
+               :class="tabClasses(tab)"
+              class="block leading-normal tabs_buttons"
             >
               <span
                 v-if="tab.icon && isSvgIcon(tab.icon)"
@@ -32,6 +32,11 @@
                 v-html="tab.icon"
               ></span>
               <i v-else-if="tab.icon" :class="tab.icon" class="me-2 text-sm"></i>{{ tab.title }}
+              <span
+                v-if="tab.badge !== undefined && tab.badge !== null && tab.badge !== ''"
+                class="inline-flex items-center px-2 py-0.5 ms-2 text-[11px] font-semibold rounded-full align-middle"
+                :class="selectedTitle === tab.title && !isUnderline ? 'bg-white/20 text-white' : 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-200'"
+              >{{ tab.badge }}</span>
             </a>
           </li>
         </ul>
@@ -75,6 +80,18 @@ const props = defineProps({
     type: String,
     default: '',
   },
+  // 'pills' (the default) draws each tab as a button; 'underline' draws a
+  // single bar with a line under the selected tab, for pages with many tabs.
+  variant: {
+    type: String,
+    default: 'pills',
+  },
+  // Keep a tab's content mounted once it has been opened, so coming back to
+  // it does not reload it or lose its page, search and scroll.
+  keepAlive: {
+    type: Boolean,
+    default: false,
+  },
 });
 const emit = defineEmits(['TabChange']);
 const slots = useSlots();
@@ -96,6 +113,29 @@ const isSvgIcon = (val) =>
 const selectedTitle = ref("");
 
 provide('selectedTitle', selectedTitle);
+provide('glTabsKeepAlive', computed(() => props.keepAlive));
+
+const isUnderline = computed(() => props.variant === 'underline');
+
+const tabClasses = (tab) => {
+  const selected = selectedTitle.value === tab.title;
+
+  if (isUnderline.value) {
+    return [
+      'px-3 pt-3.5 pb-3 text-sm border-b-[3px] cursor-pointer',
+      selected
+        ? 'font-bold text-gray-900 border-primary dark:text-white dark:border-primaryDark'
+        : 'font-medium border-transparent hover:text-gray-900 hover:border-gray-300 dark:hover:text-white dark:hover:border-gray-600',
+    ];
+  }
+
+  return [
+    'px-5 py-3 text-xs font-bold rounded-xl',
+    selected
+      ? 'text-white  bg-primary dark:bg-primaryDark'
+      : ' bg-gray-50 dark:bg-gray-900  hover:text-gray-900 hover:bg-gray-100  dark:hover:bg-gray-800 dark:hover:text-white border border-gray-300 dark:border-gray-700 hover:border-primary dark:hover:border-primaryDark',
+  ];
+};
 
 // ARIA wiring: one tabpanel, labelled by whichever tab is selected.
 const uid = nextGlId("gl-tabs");
