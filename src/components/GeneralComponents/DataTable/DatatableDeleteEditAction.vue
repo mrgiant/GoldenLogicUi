@@ -16,7 +16,7 @@
         class="flex lg:justify-center"
     >
         <button
-            v-on:click="openDropdown"
+            v-on:click="toggle"
             class="inline-flex items-center p-2 text-sm font-medium text-center text-gray-900 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-hidden dark:text-white focus:ring-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
             type="button"
         >
@@ -35,7 +35,9 @@
 
         <div
             v-show="open"
-            class="xs:right-[unset] ltr:lg:right-[30px] rtl:lg:left-[30px]  absolute z-10 mt-11 origin-top-right bg-white divide-y divide-gray-100 rounded-lg shadow-sm w-44 dark:bg-gray-700 dark:divide-gray-600"
+            ref="menu"
+            :style="style"
+            class="fixed z-50 bg-white divide-y divide-gray-100 rounded-lg shadow-sm w-44 dark:bg-gray-700 dark:divide-gray-600"
         >
             <ul
                 class="py-2 text-sm text-gray-700 dark:text-gray-200"
@@ -73,6 +75,7 @@
 
 <script setup>
 import { ref } from "vue";
+import { useGlFloatingMenu } from "./useGlFloatingMenu.js";
 import DeleteConfirmationModal from "/src/components/GeneralComponents/DeleteConfirmationModal.vue"
 import GlToast  from '/src/Stores/toast.js';
 
@@ -108,7 +111,7 @@ const props = defineProps({
     },
 });
 
-const open = ref(false);
+const { open, menu, style, toggle, close: closeDropdown } = useGlFloatingMenu();
 const open_delete_modal = ref(false);
 
 const closeDeleteModal = () => {
@@ -116,20 +119,14 @@ const closeDeleteModal = () => {
 };
 
 const openDeleteModal = () => {
+    closeDropdown();
     open_delete_modal.value = true;
-};
-
-const closeDropdown = () => {
-    open.value = false;
-};
-
-const openDropdown = () => {
-    open.value = true;
 };
 
 const emit = defineEmits(["deleteAction", "editAction"]);
 
 const editAction = (data) => {
+    closeDropdown();
     emit("editAction", data);
 };
 

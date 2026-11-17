@@ -63,6 +63,7 @@ export { default as GlToast }  from './Stores/toast.js';
 
 
 export { default as GlDatatableAction }  from'./components/GeneralComponents/DataTable/DatatableAction.vue';
+export { default as GlDatatableActionsMenu }  from'./components/GeneralComponents/DataTable/DatatableActionsMenu.vue';
 export { default as GlDatatableDeleteAction }  from'./components/GeneralComponents/DataTable/DatatableDeleteAction.vue';
 export { default as GlDatatableDeleteEditAction }  from'./components/GeneralComponents/DataTable/DatatableDeleteEditAction.vue';
 export { default as GlDatatableFileDownload }  from'./components/GeneralComponents/DataTable/DatatableFileDownload.vue';
@@ -93,6 +94,7 @@ export { default as GlStatusBadge } from './components/GeneralComponents/GlStatu
 export { STATES as GL_STATUS_STATES, resolveStatus as resolveGlStatus, statusState as glStatusState, worstState as glWorstState } from './components/GeneralComponents/glStatusMap.js';
 export { default as GlLogViewer } from './components/GeneralComponents/GlLogViewer.vue';
 export { useGlFocusTrap } from './components/GeneralComponents/useGlFocusTrap.js';
+export { useGlFloatingMenu } from './components/GeneralComponents/DataTable/useGlFloatingMenu.js';
 
 
 
